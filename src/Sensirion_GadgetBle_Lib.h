@@ -10,10 +10,10 @@
 
 #include "esp_timer.h"
 
-#include <BLEDevice.h>
-#include <BLEUtils.h>
-#include <BLEServer.h>
 #include <BLE2902.h>
+#include <BLEDevice.h>
+#include <BLEServer.h>
+#include <BLEUtils.h>
 
 // BLE Characteristics and Service Uuids
 
@@ -29,23 +29,18 @@
 #define MAX_SAMPLE_SIZE 8 // TODO: Adapt depending on data type
 #define SAMPLE_BUFFER_SIZE_BYTES 60000
 
-class GadgetBle
-{
-public:
-    // CAUTION when adapting! GadgetBle::getPositionInSample will need adjustment too!
+class GadgetBle {
+  public:
+    // CAUTION when adapting! GadgetBle::getPositionInSample will need
+    // adjustment too!
     enum DataType {
-        T_RH_V3,        // not fully supported yet
-        T_RH_V4,        // not fully supported yet
-        T_RH_CO2,       // not fully supported yet
+        T_RH_V3,  // not fully supported yet
+        T_RH_V4,  // not fully supported yet
+        T_RH_CO2, // not fully supported yet
         T_RH_CO2_ALT,
         T_RH_CO2_PM25
     };
-    enum Unit {
-        T,
-        RH,
-        CO2,
-        PM2P5
-    };
+    enum Unit { T, RH, CO2, PM2P5 };
     GadgetBle(DataType dataType);
     void begin();
     void writeTemperature(float temperature);
@@ -54,8 +49,11 @@ public:
     void writePM2p5(float pm2p5);
     void commit();
     void handleEvents();
-    String getDeviceIdString() { return _deviceIdString; }
-private:
+    String getDeviceIdString() {
+        return _deviceIdString;
+    }
+
+  private:
     void _bleInit();
     int _getPositionInSample(Unit unit);
     void _writeValue(int convertedValue, Unit unit);
@@ -74,10 +72,10 @@ private:
     uint8_t _sampleTypeAdv;
     int _sampleBufferSize;
 
-    BLEAdvertising *_bleAdvertising;
-    BLE2902 *_transferDescr;
-    BLECharacteristic *_transferChar;
-    BLECharacteristic *_sampleCntChar;
+    BLEAdvertising* _bleAdvertising;
+    BLE2902* _transferDescr;
+    BLECharacteristic* _transferChar;
+    BLECharacteristic* _sampleCntChar;
 
     String _deviceIdString;
 };

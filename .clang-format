@@ -1,0 +1,8 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 4
+PointerAlignment: Left
+SpaceBeforeInheritanceColon: false
+IndentCaseLabels: true
+AllowShortFunctionsOnASingleLine: None
