@@ -21,7 +21,6 @@ static std::array<uint8_t, MAX_SAMPLE_SIZE> currentSample = {
 };
 static std::array<uint8_t, SAMPLE_BUFFER_SIZE_BYTES> sampleBuffer;
 static uint32_t sampleBufferIdx = 0;
-static uint16_t sampleBufferSize = 0;
 static bool sampleBufferWraped = false;
 static uint16_t downloadSeqNumber = 0;
 static uint32_t sampleIntervalMs = 600000; // 10 minutes
@@ -217,7 +216,7 @@ void GadgetBle::_bleInit() {
     // - Download Service: Sample Count Characeristic
     _sampleCntChar = bleDownloadService->createCharacteristic(
         SAMPLE_CNT_CHAR_UUID, BLECharacteristic::PROPERTY_READ);
-    _sampleCntChar->setValue(sampleBufferSize);
+    _sampleCntChar->setValue(_sampleBufferSize);
 
     // - Download Service: Logging Interval Characteristic
     BLECharacteristic* loggerIntervalChar =
@@ -274,8 +273,8 @@ void GadgetBle::_addCurrentSampleToHistory() {
         sampleBufferWraped = true;
     }
 
-    sampleBufferSize = _computeBufferSize();
-    _sampleCntChar->setValue(sampleBufferSize);
+    _sampleBufferSize = _computeBufferSize();
+    _sampleCntChar->setValue(_sampleBufferSize);
 }
 
 // This requires proper adjustment as soon as we have more data types!
