@@ -96,6 +96,30 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     bool _deviceConnected = false;
     bool _oldDeviceConnected = false;
 
+    // Advertisement Data
+    // Note, that the GADGET_NAME will be also attached
+    // by the BLE library, so it can not be too long!
+    // Byte 0: 2 bytes for BLE company identifier
+    // Byte 2: advertising type
+    // Byte 3: sample type
+    // Byte 4: device identifier
+    // Byte 6: 2 bytes for sample value
+    // Byte 8: 2 bytes for sample value
+    // Byte 10: 2 bytes for sample value
+    // Byte 12: 2 bytes for sample value
+    std::array<uint8_t, 14> _advertisedData = {};
+
+    // Download Header template
+    // Byte 0: 2 bytes sequcnce number
+    // Byte 2: 1 byte version number
+    // Byte 3: 1 byte protocol identifier
+    // Byte 4: 2 bytes sample type
+    // Byte 6: 4 bytes sampling interval in ms
+    // Byte 10: 4 bytes age lastest sample in ms
+    // Byte 14: 2 bytes sample count
+    // Byte 16: 4 bytes unused
+    std::array<uint8_t, DOWNLOAD_PKT_SIZE> _downloadHeader = {};
+
     // BLEServerCallbacks
 
     void onConnect(BLEServer* serverInst);

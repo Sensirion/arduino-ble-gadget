@@ -13,42 +13,10 @@
 static const int INVALID_POSITION = -1;
 static const int ADV_SAMPLE_OFFSET = 6;
 
-// Download Header template
-// Byte 0: 2 bytes sequcnce number
-// Byte 2: 1 byte version number
-// Byte 3: 1 byte protocol identifier
-// Byte 4: 2 bytes sample type
-// Byte 6: 4 bytes sampling interval in ms
-// Byte 10: 4 bytes age lastest sample in ms
-// Byte 14: 2 bytes sample count
-// Byte 16: 4 bytes unused
-static std::array<uint8_t, DOWNLOAD_PKT_SIZE> downloadHeader = {
-    0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-};
-
-// Advertisement Data
-// Note, that the GADGET_NAME will be also attached by the BLE library, so it
-// can not be too long!
-// Byte 0: 2 bytes for BLE company identifier
-// Byte 2: advertising type
-// Byte 3: sample type
-// Byte 4: device identifier
-// Byte 6: 2 bytes for sample value
-// Byte 8: 2 bytes for sample value
-// Byte 10: 2 bytes for sample value
-// Byte 12: 2 bytes for sample value
-static std::array<uint8_t, 14> advertisedData = {
-    0xD5, 0x06, 0x00, 0x00, 0xFF, 0xFF, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
-
 GadgetBle::GadgetBle(DataType dataType) {
-    _lastCacheTime = 0;
-
-    _sampleBufferSize = 0;
-    _deviceIdString = "n/a";
-    _advSampleType = 0;
+    // Company identifier
+    _advertisedData[0] = 0xD5;
+    _advertisedData[1] = 0x06;
 
     switch (dataType) {
         case T_RH_V3:
@@ -84,10 +52,16 @@ GadgetBle::GadgetBle(DataType dataType) {
         default:
             break;
     }
+
+    _advSampleType = 0;
+    _lastCacheTime = 0;
+    _deviceIdString = "n/a";
+
+    _sampleBufferSize = 0;
     _sampleBufferCapcity = _computeRealSampleBufferSize();
 
-    advertisedData[2] = _advSampleType;
-    advertisedData[3] = _sampleTypeAdv;
+    _advertisedData[2] = _advSampleType;
+    _advertisedData[3] = _sampleTypeAdv;
 }
 
 void GadgetBle::begin() {
@@ -185,8 +159,8 @@ void GadgetBle::_bleInit() {
     std::string macAddress = BLEDevice::getAddress().toString();
 
     // - Mac address: Add device Id to BLE advertising frame
-    advertisedData[5] = strtol(macAddress.substr(15, 17).c_str(), NULL, 16);
-    advertisedData[4] = strtol(macAddress.substr(12, 14).c_str(), NULL, 16);
+    _advertisedData[5] = strtol(macAddress.substr(15, 17).c_str(), NULL, 16);
+    _advertisedData[4] = strtol(macAddress.substr(12, 14).c_str(), NULL, 16);
 
     // - Mac address: Keep deviceIdString for application
     char cDevId[6];
@@ -239,8 +213,8 @@ void GadgetBle::_bleInit() {
 }
 
 void GadgetBle::_updateAdvertising() {
-    std::string manufData((char*)(advertisedData.data()),
-                          advertisedData.size());
+    std::string manufData((char*)(_advertisedData.data()),
+                          _advertisedData.size());
 
     BLEAdvertisementData scanResponse;
     scanResponse.setManufacturerData(manufData);
@@ -287,8 +261,8 @@ void GadgetBle::_writeValue(int convertedValue, Unit unit) {
         return;
     }
 
-    advertisedData[position + ADV_SAMPLE_OFFSET] = (uint8_t)convertedValue;
-    advertisedData[position + ADV_SAMPLE_OFFSET + 1] =
+    _advertisedData[position + ADV_SAMPLE_OFFSET] = (uint8_t)convertedValue;
+    _advertisedData[position + ADV_SAMPLE_OFFSET + 1] =
         (uint8_t)(convertedValue >> 8);
 
     // update current sample cache
@@ -339,20 +313,20 @@ bool GadgetBle::_handleDownload() {
             uint32_t ageLastSampleMs = (uint32_t)std::round(
                 (esp_timer_get_time() - _lastCacheTime) / 1000);
 
-            downloadHeader[4] = _sampleTypeDL;
-            downloadHeader[5] = _sampleTypeDL >> 8;
-            downloadHeader[6] = _sampleIntervalMs;
-            downloadHeader[7] = _sampleIntervalMs >> 8;
-            downloadHeader[8] = _sampleIntervalMs >> 16;
-            downloadHeader[9] = _sampleIntervalMs >> 24;
-            downloadHeader[10] = ageLastSampleMs;
-            downloadHeader[11] = ageLastSampleMs >> 8;
-            downloadHeader[12] = ageLastSampleMs >> 16;
-            downloadHeader[13] = ageLastSampleMs >> 24;
-            downloadHeader[14] = sampleCnt;
-            downloadHeader[15] = (sampleCnt >> 8);
-            _transferChar->setValue(downloadHeader.data(),
-                                    downloadHeader.size());
+            _downloadHeader[4] = _sampleTypeDL;
+            _downloadHeader[5] = _sampleTypeDL >> 8;
+            _downloadHeader[6] = _sampleIntervalMs;
+            _downloadHeader[7] = _sampleIntervalMs >> 8;
+            _downloadHeader[8] = _sampleIntervalMs >> 16;
+            _downloadHeader[9] = _sampleIntervalMs >> 24;
+            _downloadHeader[10] = ageLastSampleMs;
+            _downloadHeader[11] = ageLastSampleMs >> 8;
+            _downloadHeader[12] = ageLastSampleMs >> 16;
+            _downloadHeader[13] = ageLastSampleMs >> 24;
+            _downloadHeader[14] = sampleCnt;
+            _downloadHeader[15] = (sampleCnt >> 8);
+            _transferChar->setValue(_downloadHeader.data(),
+                                    _downloadHeader.size());
             _downloadSeqNumber++;
             _transferChar->notify();
         } else {
