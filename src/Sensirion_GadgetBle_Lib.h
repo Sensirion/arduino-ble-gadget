@@ -46,7 +46,7 @@ class GadgetBle {
         T_RH_CO2_PM25
     };
     enum Unit { T, RH, CO2, PM2P5 };
-    GadgetBle(DataType dataType);
+    explicit GadgetBle(DataType dataType);
     void begin();
     void writeTemperature(float temperature);
     void writeHumidity(float humidity);

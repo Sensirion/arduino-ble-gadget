@@ -3,7 +3,7 @@
 GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_CO2_PM25);
 
 void setup() {
-Serial.begin(115200);
+  Serial.begin(115200);
   delay(100);
 
   // Initialize the GadgetBle Library
