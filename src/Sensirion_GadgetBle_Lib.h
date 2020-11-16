@@ -1,7 +1,7 @@
 /*
  GadgetBle.h - Library for providing sensor data via Bluetooth.
  Created by Bjoern Muntwyler, November 7, 2020.
- Released into the public domain.
+ Released under BSD-3 licence
  */
 #ifndef Sensirion_GadgetBle_Lib_h
 #define Sensirion_GadgetBle_Lib_h

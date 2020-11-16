@@ -1,7 +1,7 @@
 /*
  GadgetBle.h - Library for providing sensor data via Bluetooth.
  Created by Bjoern Muntwyler, November 7, 2020.
- Released into the public domain.
+ Released under BSD-3 licence
  */
 
 // TODO: Still need to properly handle packet size and sample type/adv. sample type/logger sample type
