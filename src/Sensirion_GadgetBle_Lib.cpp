@@ -359,7 +359,7 @@ bool GadgetBle::_handleDownload() {
             _downloadSeqNumber++;
             _transferChar->notify();
         } else {
-            uint8_t valueBuffer[DOWNLOAD_PKT_SIZE];
+            std::array<uint8_t, DOWNLOAD_PKT_SIZE> valueBuffer = {};
             valueBuffer[0] = _downloadSeqNumber;
             valueBuffer[1] = (_downloadSeqNumber >> 8);
             for (int j = 0; j < _sampleCntPerPacket; j++) {
@@ -374,7 +374,7 @@ bool GadgetBle::_handleDownload() {
                 }
             }
 
-            _transferChar->setValue((uint8_t*)&valueBuffer, DOWNLOAD_PKT_SIZE);
+            _transferChar->setValue(valueBuffer.data(), valueBuffer.size());
             _downloadSeqNumber++;
             _transferChar->notify();
         }
