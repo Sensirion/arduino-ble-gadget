@@ -14,17 +14,9 @@ static const int INVALID_POSITION = -1;
 
 static const int ADV_SAMPLE_OFFSET = 6;
 
-static int64_t lastCacheTime = 0;
-
-static std::array<uint8_t, MAX_SAMPLE_SIZE> currentSample = {
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
-static std::array<uint8_t, SAMPLE_BUFFER_SIZE_BYTES> sampleBuffer;
 static uint32_t sampleBufferIdx = 0;
 static bool sampleBufferWraped = false;
-static uint16_t downloadSeqNumber = 0;
 static uint32_t sampleIntervalMs = 600000; // 10 minutes
-static bool downloading = false;
 
 // Download Header template
 // Byte 0: 2 bytes sequcnce number
@@ -80,7 +72,7 @@ class LogIntervalCallback: public BLECharacteristicCallbacks {
 };
 
 GadgetBle::GadgetBle(DataType dataType) {
-    lastCacheTime = 0;
+    _lastCacheTime = 0;
 
     _deviceIdString = "n/a";
     _advSampleType = 0;
@@ -172,8 +164,8 @@ void GadgetBle::writePM2p5(float value) {
 }
 
 void GadgetBle::commit() {
-    if (esp_timer_get_time() - lastCacheTime >= (sampleIntervalMs * 1000)) {
-        lastCacheTime = esp_timer_get_time();
+    if (esp_timer_get_time() - _lastCacheTime >= (sampleIntervalMs * 1000)) {
+        _lastCacheTime = esp_timer_get_time();
         _addCurrentSampleToHistory();
     }
 
@@ -265,7 +257,7 @@ void GadgetBle::_updateAdvertising() {
 
 void GadgetBle::_addCurrentSampleToHistory() {
     for (int i = 0; i < _sampleSize; i++) {
-        sampleBuffer[sampleBufferIdx++] = currentSample[i];
+        _sampleBuffer[sampleBufferIdx++] = _currentSample[i];
     }
 
     if (sampleBufferIdx + _sampleSize - 1 >= _sampleBufferSize) {
@@ -303,8 +295,8 @@ void GadgetBle::_writeValue(int convertedValue, Unit unit) {
         (uint8_t)(convertedValue >> 8);
 
     // update current sample cache
-    currentSample[position] = (uint8_t)convertedValue;
-    currentSample[position + 1] = (uint8_t)(convertedValue >> 8);
+    _currentSample[position] = (uint8_t)convertedValue;
+    _currentSample[position + 1] = (uint8_t)(convertedValue >> 8);
 }
 
 // Download Logger Related
@@ -312,14 +304,14 @@ void GadgetBle::_writeValue(int convertedValue, Unit unit) {
 void GadgetBle::_updateConnectionState() {
     // connecting
     if (deviceConnected && !oldDeviceConnected) {
-        downloadSeqNumber = 0;
+        _downloadSeqNumber = 0;
         oldDeviceConnected = deviceConnected;
     }
 
     // disconnecting
     if (!deviceConnected && oldDeviceConnected) {
         _transferDescr->setNotifications(false);
-        downloadSeqNumber = 0;
+        _downloadSeqNumber = 0;
         oldDeviceConnected = deviceConnected;
     }
 }
@@ -334,21 +326,21 @@ bool GadgetBle::_handleDownload() {
     uint16_t sampleCnt = _computeBufferSize();
 
     // Download Finished
-    if (downloading && downloadSeqNumber >= sampleCnt) {
-        downloading = false;
+    if (_downloading && _downloadSeqNumber >= sampleCnt) {
+        _downloading = false;
         _transferDescr->setNotifications(false);
-        downloadSeqNumber = 0;
+        _downloadSeqNumber = 0;
         return false;
     }
 
     if (_transferDescr->getNotifications()) {
-        downloading = true;
-        if (downloadSeqNumber == 0) {
+        _downloading = true;
+        if (_downloadSeqNumber == 0) {
             // send header
             sampleCnt -= 1;
 
             uint32_t ageLastSampleMs = (uint32_t)std::round(
-                (esp_timer_get_time() - lastCacheTime) / 1000);
+                (esp_timer_get_time() - _lastCacheTime) / 1000);
 
             downloadHeader[4] = _sampleTypeDL;
             downloadHeader[5] = _sampleTypeDL >> 8;
@@ -364,26 +356,26 @@ bool GadgetBle::_handleDownload() {
             downloadHeader[15] = (sampleCnt >> 8);
             _transferChar->setValue(downloadHeader.data(),
                                     downloadHeader.size());
-            downloadSeqNumber++;
+            _downloadSeqNumber++;
             _transferChar->notify();
         } else {
             uint8_t valueBuffer[DOWNLOAD_PKT_SIZE];
-            valueBuffer[0] = downloadSeqNumber;
-            valueBuffer[1] = (downloadSeqNumber >> 8);
+            valueBuffer[0] = _downloadSeqNumber;
+            valueBuffer[1] = (_downloadSeqNumber >> 8);
             for (int j = 0; j < _sampleCntPerPacket; j++) {
                 for (int i = 0; i < _sampleSize; i++) {
-                    uint32_t idx = ((downloadSeqNumber - 1) *
+                    uint32_t idx = ((_downloadSeqNumber - 1) *
                                     (_sampleSize * _sampleCntPerPacket)) +
                                    i + (j * _sampleSize);
                     if (sampleBufferWraped) {
                         idx = (sampleBufferIdx + idx) % _sampleBufferSize;
                     }
-                    valueBuffer[i + 2 + (j * _sampleSize)] = sampleBuffer[idx];
+                    valueBuffer[i + 2 + (j * _sampleSize)] = _sampleBuffer[idx];
                 }
             }
 
             _transferChar->setValue((uint8_t*)&valueBuffer, DOWNLOAD_PKT_SIZE);
-            downloadSeqNumber++;
+            _downloadSeqNumber++;
             _transferChar->notify();
         }
         return true;
