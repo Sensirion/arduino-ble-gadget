@@ -1,0 +1,6 @@
+clang-format:
+  image: sensirion/embedded-ci:2.2.0
+  tags: [linux, docker]
+  script:
+    - clang-format-7 -i src/*
+    - git diff --exit-code
