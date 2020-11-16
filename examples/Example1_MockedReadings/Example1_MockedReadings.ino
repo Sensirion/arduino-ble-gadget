@@ -25,7 +25,7 @@ void loop() {
     Serial.println("Measurement");
     gadgetBle.writeTemperature((float) (++t % 50));
     gadgetBle.writeHumidity((float) (++rh % 100));
-    gadgetBle.writeCO2((++co2 % 1000));
+    gadgetBle.writeCO2((float) (++co2 % 1000));
     gadgetBle.writePM2p5((float) (++pm % 200));  
     gadgetBle.commit();
     lastMmntTime = esp_timer_get_time();

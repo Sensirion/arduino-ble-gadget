@@ -145,12 +145,14 @@ void GadgetBle::writeHumidity(float value) {
     _writeValue(converted, Unit::RH);
 }
 
-void GadgetBle::writeCO2(uint16_t value) {
+void GadgetBle::writeCO2(float value) {
     if (isnan(value)) {
         return;
     }
 
-    _writeValue(value, Unit::CO2);
+    int converted = (uint16_t)std::round(value);
+
+    _writeValue(converted, Unit::CO2);
 }
 
 void GadgetBle::writePM2p5(float value) {

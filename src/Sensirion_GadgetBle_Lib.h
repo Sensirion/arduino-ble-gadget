@@ -50,7 +50,7 @@ class GadgetBle {
     void begin();
     void writeTemperature(float temperature);
     void writeHumidity(float humidity);
-    void writeCO2(uint16_t co2);
+    void writeCO2(float co2);
     void writePM2p5(float pm2p5);
     void commit();
     void handleEvents();
