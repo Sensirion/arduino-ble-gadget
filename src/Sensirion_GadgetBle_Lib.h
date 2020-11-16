@@ -86,9 +86,8 @@ class GadgetBle {
 
     int64_t _lastCacheTime = 0;
 
-    std::array<uint8_t, MAX_SAMPLE_SIZE> _currentSample = {
-        {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}};
-    std::array<uint8_t, SAMPLE_BUFFER_SIZE_BYTES> _sampleBuffer;
+    std::array<uint8_t, MAX_SAMPLE_SIZE> _currentSample = {};
+    std::array<uint8_t, SAMPLE_BUFFER_SIZE_BYTES> _sampleBuffer = {};
     uint16_t _downloadSeqNumber = 0;
     bool _downloading = false;
 };
