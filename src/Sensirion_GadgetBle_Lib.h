@@ -17,17 +17,22 @@
 
 // BLE Characteristics and Service Uuids
 
-#define DOWNLOAD_SERVICE_UUID "00008000-b38d-4985-720e-0f993a68ee41"
-#define LOGGER_INTERVAL_UUID "00008001-b38d-4985-720e-0f993a68ee41"
-#define SAMPLE_CNT_CHAR_UUID "00008002-b38d-4985-720e-0f993a68ee41"
-#define TRANSFER_NOTIFY_UUID "00008004-b38d-4985-720e-0f993a68ee41"
+static const char* const DOWNLOAD_SERVICE_UUID =
+    "00008000-b38d-4985-720e-0f993a68ee41";
+static const char* const LOGGER_INTERVAL_UUID =
+    "00008001-b38d-4985-720e-0f993a68ee41";
+static const char* const SAMPLE_CNT_CHAR_UUID =
+    "00008002-b38d-4985-720e-0f993a68ee41";
+static const char* const TRANSFER_NOTIFY_UUID =
+    "00008004-b38d-4985-720e-0f993a68ee41";
 
 // BLE Protocol Specifics
 
-#define GADGET_NAME "MyCO2" // TODO: Change this name to something more generic
-#define DOWNLOAD_PKT_SIZE 20
-#define MAX_SAMPLE_SIZE 8 // TODO: Adapt depending on data type
-#define SAMPLE_BUFFER_SIZE_BYTES 60000
+// TODO: Change this name to something more generic
+static const char* const GADGET_NAME = "MyCO2";
+static const size_t DOWNLOAD_PKT_SIZE = 20;
+static const size_t MAX_SAMPLE_SIZE = 8; // TODO: Adapt depending on data type
+static const size_t SAMPLE_BUFFER_SIZE_BYTES = 60000;
 
 class GadgetBle {
   public:

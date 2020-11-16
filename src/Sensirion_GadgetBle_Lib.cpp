@@ -10,7 +10,7 @@
 #include "Sensirion_GadgetBle_Lib.h"
 #include "Arduino.h"
 
-#define INVALID_POSITION -1
+static const int INVALID_POSITION = -1;
 
 static const int ADV_SAMPLE_OFFSET = 6;
 
@@ -283,20 +283,14 @@ int GadgetBle::_getPositionInSample(Unit unit) {
     switch (unit) {
         case T:
             return 0;
-            break;
         case RH:
             return 2;
-            break;
         case CO2:
             return 4;
-            break;
         case PM2P5:
             return 6;
-            break;
-        default:
-            return INVALID_POSITION;
-            break;
     }
+    return INVALID_POSITION;
 }
 
 void GadgetBle::_writeValue(int convertedValue, Unit unit) {
