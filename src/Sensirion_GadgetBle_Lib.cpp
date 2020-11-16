@@ -283,20 +283,14 @@ int GadgetBle::_getPositionInSample(Unit unit) {
     switch (unit) {
         case T:
             return 0;
-            break;
         case RH:
             return 2;
-            break;
         case CO2:
             return 4;
-            break;
         case PM2P5:
             return 6;
-            break;
-        default:
-            return INVALID_POSITION;
-            break;
     }
+    return INVALID_POSITION;
 }
 
 void GadgetBle::_writeValue(int convertedValue, Unit unit) {
