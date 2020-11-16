@@ -43,19 +43,6 @@ static std::array<uint8_t, 14> advertisedData = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
-static bool deviceConnected = false;
-static bool oldDeviceConnected = false;
-
-class ConnectionStateTracker: public BLEServerCallbacks {
-    void onConnect(BLEServer* serverInst) {
-        deviceConnected = true;
-    };
-
-    void onDisconnect(BLEServer* serverInst) {
-        deviceConnected = false;
-    }
-};
-
 GadgetBle::GadgetBle(DataType dataType) {
     _lastCacheTime = 0;
 
@@ -167,6 +154,16 @@ void GadgetBle::handleEvents() {
     _handleDownload();
 }
 
+// BLEServerCallbacks
+
+void GadgetBle::onConnect(BLEServer* serverInst) {
+    _deviceConnected = true;
+};
+
+void GadgetBle::onDisconnect(BLEServer* serverInst) {
+    _deviceConnected = false;
+}
+
 // BLECharacteristicCallbacks
 
 void GadgetBle::onWrite(BLECharacteristic* characteristic) {
@@ -199,7 +196,7 @@ void GadgetBle::_bleInit() {
 
     // Initialize BLEServer
     BLEServer* bleServer = BLEDevice::createServer();
-    bleServer->setCallbacks(new ConnectionStateTracker());
+    bleServer->setCallbacks(this);
 
     // - Create Download Service
     BLEService* bleDownloadService =
@@ -303,16 +300,16 @@ void GadgetBle::_writeValue(int convertedValue, Unit unit) {
 
 void GadgetBle::_updateConnectionState() {
     // connecting
-    if (deviceConnected && !oldDeviceConnected) {
+    if (_deviceConnected && !_oldDeviceConnected) {
         _downloadSeqNumber = 0;
-        oldDeviceConnected = deviceConnected;
+        _oldDeviceConnected = _deviceConnected;
     }
 
     // disconnecting
-    if (!deviceConnected && oldDeviceConnected) {
+    if (!_deviceConnected && _oldDeviceConnected) {
         _transferDescr->setNotifications(false);
         _downloadSeqNumber = 0;
-        oldDeviceConnected = deviceConnected;
+        _oldDeviceConnected = _deviceConnected;
     }
 }
 
