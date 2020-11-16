@@ -34,7 +34,7 @@ static const size_t DOWNLOAD_PKT_SIZE = 20;
 static const size_t MAX_SAMPLE_SIZE = 8; // TODO: Adapt depending on data type
 static const size_t SAMPLE_BUFFER_SIZE_BYTES = 60000;
 
-class GadgetBle {
+class GadgetBle: BLECharacteristicCallbacks {
   public:
     // CAUTION when adapting! GadgetBle::getPositionInSample will need
     // adjustment too!
@@ -43,7 +43,7 @@ class GadgetBle {
         T_RH_V4,  // not fully supported yet
         T_RH_CO2, // not fully supported yet
         T_RH_CO2_ALT,
-        T_RH_CO2_PM25
+        T_RH_CO2_PM25   // not fully supported yet
     };
     enum Unit { T, RH, CO2, PM2P5 };
     explicit GadgetBle(DataType dataType);
@@ -76,6 +76,7 @@ class GadgetBle {
     uint8_t _advSampleType;
     uint8_t _sampleTypeAdv;
     int _sampleBufferSize;
+    int _sampleBufferCapcity;
 
     BLEAdvertising* _bleAdvertising;
     BLE2902* _transferDescr;
@@ -85,11 +86,16 @@ class GadgetBle {
     String _deviceIdString;
 
     int64_t _lastCacheTime = 0;
-
+    uint32_t _sampleIntervalMs = 600000; // default at 10 min
+    uint32_t _sampleBufferIdx = 0;
+    bool _sampleBufferWraped = false;
     std::array<uint8_t, MAX_SAMPLE_SIZE> _currentSample = {};
     std::array<uint8_t, SAMPLE_BUFFER_SIZE_BYTES> _sampleBuffer = {};
     uint16_t _downloadSeqNumber = 0;
     bool _downloading = false;
+
+    // BLECharacteristicCallbacks
+    void onWrite(BLECharacteristic* characteristic);
 };
 
 #endif
