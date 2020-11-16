@@ -27,19 +27,29 @@ static uint32_t sampleIntervalMs = 600000; // 10 minutes
 static bool downloading = false;
 
 // Download Header template
-// [ 0   | 1   | 2       | 3        | 4    | 5   | 6  | 7  | 8  | 9  | 10  | 11
-// | 12   | 13   | 14  | 15  | 16 | 17 | 18 | 19 ] [   Seq.Nr  | version |
-// protocol | sampleType |  sampleIntervalMs |    ageLatestSampleMs    |
-// sampleCnt |       unused      ]
+// Byte 0: 2 bytes sequcnce number
+// Byte 2: 1 byte version number
+// Byte 3: 1 byte protocol identifier
+// Byte 4: 2 bytes sample type
+// Byte 6: 4 bytes sampling interval in ms
+// Byte 10: 4 bytes age lastest sample in ms
+// Byte 14: 2 bytes sample count
+// Byte 16: 4 bytes unused
 static uint8_t downloadHeader[DOWNLOAD_PKT_SIZE] = {
     0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 // Advertisement Data
 // Note, that the GADGET_NAME will be also attached by the BLE library, so it
-// can not be too long! [ 0  | 1  | 2       | 3          | 4    | 5   | 6  | 7
-// | 8  | 9  | 10  | 11  | 12   | 13   ] [   ID    | AdvType | SampleType |
-// DeviceId  |   val1  |   val2  |    val3   |     val4    ]
+// can not be too long!
+// Byte 0: 2 bytes for BLE company identifier
+// Byte 2: advertising type
+// Byte 3: sample type
+// Byte 4: device identifier
+// Byte 6: 2 bytes for sample value
+// Byte 8: 2 bytes for sample value
+// Byte 10: 2 bytes for sample value
+// Byte 12: 2 bytes for sample value
 static uint8_t advertisedData[14] = {0xD5, 0x06, 0x00, 0x00, 0xFF, 0xFF, 0x00,
                                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
@@ -70,7 +80,7 @@ GadgetBle::GadgetBle(DataType dataType) {
     lastCacheTime = 0;
 
     _deviceIdString = "n/a";
-    _advSampleType = 0; // no further adv.sample type defined yet
+    _advSampleType = 0;
 
     switch (dataType) {
         case T_RH_V3:
@@ -132,8 +142,8 @@ void GadgetBle::writeHumidity(float value) {
     }
 
     int converted = (int)std::round((value / 100) * 65535);
-    if (_dataType ==
-        DataType::T_RH_V4) { // special conversion for SHT4x RH samples
+    // special conversion for SHT4x RH samples
+    if (_dataType == DataType::T_RH_V4) {
         converted = (int)std::round(((value + 6.0) * 65535) / 125.0);
     }
 
