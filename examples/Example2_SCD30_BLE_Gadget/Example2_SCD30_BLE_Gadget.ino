@@ -15,10 +15,6 @@ static int startCheckingAfterUs = 1900000;
 
 GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_CO2_ALT);
 
-void scd30Init() {
-
-}
-
 void setup() {
   Serial.begin(115200);
   delay(100);
