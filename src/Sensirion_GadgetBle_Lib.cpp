@@ -231,9 +231,9 @@ void GadgetBle::_bleInit() {
     _bleAdvertising = BLEDevice::getAdvertising();
     _bleAdvertising->addServiceUUID(DOWNLOAD_SERVICE_UUID);
     _bleAdvertising->setScanResponse(true);
-    _bleAdvertising->setMinPreferred(
-        0x06); // helps with iPhone connection issues
-    _bleAdvertising->setMinPreferred(0x12);
+    // helps with iPhone connection issues
+    _bleAdvertising->setMinPreferred(0x06);
+    _bleAdvertising->setMaxPreferred(0x12);
 
     _updateAdvertising();
 
