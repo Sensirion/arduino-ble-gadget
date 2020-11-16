@@ -16,9 +16,10 @@ static const int ADV_SAMPLE_OFFSET = 6;
 
 static int64_t lastCacheTime = 0;
 
-static uint8_t currentSample[MAX_SAMPLE_SIZE] = {0x00, 0x00, 0x00, 0x00,
-                                                 0x00, 0x00, 0x00, 0x00};
-static uint8_t sampleBuffer[SAMPLE_BUFFER_SIZE_BYTES];
+static std::array<uint8_t, MAX_SAMPLE_SIZE> currentSample = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
+static std::array<uint8_t, SAMPLE_BUFFER_SIZE_BYTES> sampleBuffer;
 static uint32_t sampleBufferIdx = 0;
 static uint16_t sampleBufferSize = 0;
 static bool sampleBufferWraped = false;
@@ -35,9 +36,10 @@ static bool downloading = false;
 // Byte 10: 4 bytes age lastest sample in ms
 // Byte 14: 2 bytes sample count
 // Byte 16: 4 bytes unused
-static uint8_t downloadHeader[DOWNLOAD_PKT_SIZE] = {
+static std::array<uint8_t, DOWNLOAD_PKT_SIZE> downloadHeader = {
     0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+    0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+};
 
 // Advertisement Data
 // Note, that the GADGET_NAME will be also attached by the BLE library, so it
@@ -50,8 +52,10 @@ static uint8_t downloadHeader[DOWNLOAD_PKT_SIZE] = {
 // Byte 8: 2 bytes for sample value
 // Byte 10: 2 bytes for sample value
 // Byte 12: 2 bytes for sample value
-static uint8_t advertisedData[14] = {0xD5, 0x06, 0x00, 0x00, 0xFF, 0xFF, 0x00,
-                                     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+static std::array<uint8_t, 14> advertisedData = {
+    0xD5, 0x06, 0x00, 0x00, 0xFF, 0xFF, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
 
 static bool deviceConnected = false;
 static bool oldDeviceConnected = false;
@@ -247,7 +251,8 @@ void GadgetBle::_bleInit() {
 }
 
 void GadgetBle::_updateAdvertising() {
-    std::string manufData((char*)advertisedData, sizeof advertisedData);
+    std::string manufData((char*)(advertisedData.data()),
+                          advertisedData.size());
 
     BLEAdvertisementData scanResponse;
     scanResponse.setManufacturerData(manufData);
@@ -364,9 +369,8 @@ bool GadgetBle::_handleDownload() {
             downloadHeader[13] = ageLastSampleMs >> 24;
             downloadHeader[14] = sampleCnt;
             downloadHeader[15] = (sampleCnt >> 8);
-
-            _transferChar->setValue((uint8_t*)&downloadHeader,
-                                    DOWNLOAD_PKT_SIZE);
+            _transferChar->setValue(downloadHeader.data(),
+                                    downloadHeader.size());
             downloadSeqNumber++;
             _transferChar->notify();
         } else {
