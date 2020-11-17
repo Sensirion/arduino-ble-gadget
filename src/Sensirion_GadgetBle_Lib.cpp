@@ -58,7 +58,7 @@ GadgetBle::GadgetBle(DataType dataType) {
     _deviceIdString = "n/a";
 
     _sampleBufferSize = 0;
-    _sampleBufferCapcity = _computeRealSampleBufferSize();
+    _sampleBufferCapacity = _computeRealSampleBufferSize();
 
     _advertisedData[2] = _advSampleType;
     _advertisedData[3] = _sampleTypeAdv;
@@ -234,7 +234,7 @@ void GadgetBle::_addCurrentSampleToHistory() {
         _sampleBuffer[_sampleBufferIdx++] = _currentSample[i];
     }
 
-    if (_sampleBufferIdx + _sampleSize - 1 >= _sampleBufferCapcity) {
+    if (_sampleBufferIdx + _sampleSize - 1 >= _sampleBufferCapacity) {
         _sampleBufferIdx = 0;
         _sampleBufferWraped = true;
     }
@@ -293,7 +293,7 @@ void GadgetBle::_updateConnectionState() {
 
 uint16_t GadgetBle::_computeBufferSize() {
     return static_cast<uint16_t>(
-        ((_sampleBufferWraped) ? static_cast<double>(_sampleBufferCapcity)
+        ((_sampleBufferWraped) ? static_cast<double>(_sampleBufferCapacity)
                                : static_cast<double>(_sampleBufferIdx)) /
         _sampleSize);
 }
@@ -344,7 +344,7 @@ bool GadgetBle::_handleDownload() {
                                     (_sampleSize * _sampleCntPerPacket)) +
                                    i + (j * _sampleSize);
                     if (_sampleBufferWraped) {
-                        idx = (_sampleBufferIdx + idx) % _sampleBufferCapcity;
+                        idx = (_sampleBufferIdx + idx) % _sampleBufferCapacity;
                     }
                     valueBuffer[i + 2 + (j * _sampleSize)] = _sampleBuffer[idx];
                 }

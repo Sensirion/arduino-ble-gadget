@@ -76,7 +76,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     uint8_t _advSampleType;
     uint8_t _sampleTypeAdv;
     int _sampleBufferSize;
-    int _sampleBufferCapcity;
+    int _sampleBufferCapacity;
 
     BLEAdvertising* _bleAdvertising;
     BLE2902* _transferDescr;
