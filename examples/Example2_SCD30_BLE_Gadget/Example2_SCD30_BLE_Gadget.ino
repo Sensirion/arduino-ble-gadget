@@ -38,7 +38,7 @@ void loop() {
     if (scd30.isAvailable()) {
       scd30.getCarbonDioxideConcentration(result);
 
-      gadgetBle.writeCO2((uint16_t) std::round(result[0]));
+      gadgetBle.writeCO2(result[0]);
       gadgetBle.writeTemperature(result[1]);
       gadgetBle.writeHumidity(result[2]);
 
