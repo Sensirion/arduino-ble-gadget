@@ -44,24 +44,7 @@ Download the **Sensirion MyAmbience CO2** App to monitor your gadget, plot the s
 
 ### Create your own CO2 Monitor
 
-1. Same as above, but open **Example 2**
-2. Click the link in the top import statement and install the SCD30 library
-	* [How to import a zip library](https://www.arduino.cc/en/Guide/Libraries#importing-a-zip-library)
-3. Connect your CO2 sensor to the ESP32 (you can also choose other pins for SDA and SCL, but don't forget to adjust the Example code accordingly)
-	* Connect the 3.3V to the 3.3V pin of the ESP32
-	* Connect GND to GND on the ESP32
-	* Connect the **SDA** pin to **GPIO 26**
-	* Connect the **SCL** pin to **GPIO 27**
-4. Press upload
-5. Check the measured values in the Tools -> Serial Monitor or in the Tools -> Serial Plotter
-	* Set the baud rate to 115200 for proper decoding
-6. Download the **Sensirion MyAmbience CO2** App for [Android](https://play.google.com/store/apps/details?id=com.sensirion.myam) or [iOS](https://apps.apple.com/ch/app/sensirion-myambience-co2/id1529131572) and enjoy.
-
-<img src="documents/images/ESP32-SCD30-HWSetup.png" width="600">
-
-<img src="documents/images/SerialPlotterView.png" width="600">
-
-<img src="documents/images/MyAmbienceCO2_Live.png" width="300"><img src="documents/images/MyAmbienceCO2_Plot.png" width="300">
+Follow the [instructions in this tutorial](documents/SCD30_Monitor_Tutorial.md).
 
 
 ## Repository Contents
