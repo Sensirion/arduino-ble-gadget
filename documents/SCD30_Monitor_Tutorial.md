@@ -10,6 +10,8 @@ The tutorial is structured in 3 parts
 * **Software Setup**: Learn how to setup your computer to program the development board
 * **Monitor Setup**: Learn how to monitor your CO2 levels on your computer and via the *Sensirion MyAmbience CO2* app
 
+If you have a [LILYGO® TTGO T-Display ESP32](http://www.lilygo.cn/prod_view.aspx?TypeId=50033&Id=1126&FId=t3:50033:3) then make sure to follow the instructions on the very bottom of this tutorial to enable the UI of your gadget.
+
 ## Hardware Setup
 
 To complete this tutorial, you'll need
@@ -53,6 +55,8 @@ For each of the downloaded .zip files: In the Arduino IDE, select `Sketch -> inc
 
 <img src="images/Arduino-import-zip-lib.png" width="500">
 
+Restart the Arduino IDE when you're done with the steps above.
+
 ### Launch the CO2 Monitor
 
 1. Open the Arduino IDE.
@@ -84,3 +88,21 @@ Download the **Sensirion MyAmbience CO2** app to monitor your CO2 levels, downlo
 Note that on Android devices the Location services need to be enabled and the corresponding permissions granted to the application. This is required to allow the app to scan for nearby Bluetooth devices. This is a requirement of the Android OS for Bluetooth scanning. The app itself does not use your location.
 
 <img src="images/MyAmbienceCO2_Live.png" width="300"><img src="images/MyAmbienceCO2_Plot.png" width="300">
+
+## Additional Steps for LILYGO® TTGO T-Display ESP32
+
+The LILYGO® TTGO T-Display ESP32 is an ESP32 DevKit with a small 1.14 inch display attached. This allows us to visualize the current CO2 concentration and level color in green, yellow or red, depending if the CO2 level is good, bad or very bad.
+
+<img src="images/TTGO-Gadget.png" width="600">
+
+Follow all the instructions above and additionally do the following:
+
+1. Go to [TTGO T-Display's Github Repository](https://github.com/Xinyuan-LilyGO/TTGO-T-Display)
+	* [Download the code as zip](https://github.com/Xinyuan-LilyGO/TTGO-T-Display/archive/master.zip) and extract its content
+2. Copy the Folder `TFT_eSPI` to your Arduino library path
+	* On Windows, this is by default `C:\Users\Your User Name\Documents\Arduino\libraries`
+3. In the same library path, open the Sensirion Gadget Ble Arduino Library folder, then Examples, then Example 3 and copy the content as follows into the `TFT_eSPI` folder
+	* Copy all files in the folder `fonts` to `TFT_eSPI/Fonts/Custom/`
+	* Copy the file `User_Custom_Fonts.h` to `TFT_eSPI/User_Setups/`
+4. In the Arduino IDE, open **Example 3** by clicking on `File -> Examples -> Sensirion Gadget BLE Lib -> Example3_SCD30_BLE_TTGO_Gadget`
+5. Press the Upload button.
