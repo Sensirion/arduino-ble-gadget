@@ -11,71 +11,12 @@
 #include "Arduino.h"
 
 static const int INVALID_POSITION = -1;
-
 static const int ADV_SAMPLE_OFFSET = 6;
 
-static uint32_t sampleBufferIdx = 0;
-static bool sampleBufferWraped = false;
-static uint32_t sampleIntervalMs = 600000; // 10 minutes
-
-// Download Header template
-// Byte 0: 2 bytes sequcnce number
-// Byte 2: 1 byte version number
-// Byte 3: 1 byte protocol identifier
-// Byte 4: 2 bytes sample type
-// Byte 6: 4 bytes sampling interval in ms
-// Byte 10: 4 bytes age lastest sample in ms
-// Byte 14: 2 bytes sample count
-// Byte 16: 4 bytes unused
-static std::array<uint8_t, DOWNLOAD_PKT_SIZE> downloadHeader = {
-    0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-};
-
-// Advertisement Data
-// Note, that the GADGET_NAME will be also attached by the BLE library, so it
-// can not be too long!
-// Byte 0: 2 bytes for BLE company identifier
-// Byte 2: advertising type
-// Byte 3: sample type
-// Byte 4: device identifier
-// Byte 6: 2 bytes for sample value
-// Byte 8: 2 bytes for sample value
-// Byte 10: 2 bytes for sample value
-// Byte 12: 2 bytes for sample value
-static std::array<uint8_t, 14> advertisedData = {
-    0xD5, 0x06, 0x00, 0x00, 0xFF, 0xFF, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-};
-
-static bool deviceConnected = false;
-static bool oldDeviceConnected = false;
-
-class ConnectionStateTracker: public BLEServerCallbacks {
-    void onConnect(BLEServer* serverInst) {
-        deviceConnected = true;
-    };
-
-    void onDisconnect(BLEServer* serverInst) {
-        deviceConnected = false;
-    }
-};
-
-class LogIntervalCallback: public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic* characteristic) {
-        std::string value = characteristic->getValue();
-        sampleIntervalMs =
-            value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] << 24);
-        sampleBufferWraped = false;
-        sampleBufferIdx = 0;
-    }
-};
-
 GadgetBle::GadgetBle(DataType dataType) {
-    _lastCacheTime = 0;
-
-    _deviceIdString = "n/a";
-    _advSampleType = 0;
+    // Company identifier
+    _advertisedData[0] = 0xD5;
+    _advertisedData[1] = 0x06;
 
     switch (dataType) {
         case T_RH_V3:
@@ -111,10 +52,16 @@ GadgetBle::GadgetBle(DataType dataType) {
         default:
             break;
     }
-    _sampleBufferSize = _computeRealSampleBufferSize();
 
-    advertisedData[2] = _advSampleType;
-    advertisedData[3] = _sampleTypeAdv;
+    _advSampleType = 0;
+    _lastCacheTime = 0;
+    _deviceIdString = "n/a";
+
+    _sampleBufferSize = 0;
+    _sampleBufferCapcity = _computeRealSampleBufferSize();
+
+    _advertisedData[2] = _advSampleType;
+    _advertisedData[3] = _sampleTypeAdv;
 }
 
 void GadgetBle::begin() {
@@ -145,12 +92,14 @@ void GadgetBle::writeHumidity(float value) {
     _writeValue(converted, Unit::RH);
 }
 
-void GadgetBle::writeCO2(uint16_t value) {
+void GadgetBle::writeCO2(float value) {
     if (isnan(value)) {
         return;
     }
 
-    _writeValue(value, Unit::CO2);
+    int converted = (uint16_t)std::round(value);
+
+    _writeValue(converted, Unit::CO2);
 }
 
 void GadgetBle::writePM2p5(float value) {
@@ -164,7 +113,7 @@ void GadgetBle::writePM2p5(float value) {
 }
 
 void GadgetBle::commit() {
-    if (esp_timer_get_time() - _lastCacheTime >= (sampleIntervalMs * 1000)) {
+    if (esp_timer_get_time() - _lastCacheTime >= (_sampleIntervalMs * 1000)) {
         _lastCacheTime = esp_timer_get_time();
         _addCurrentSampleToHistory();
     }
@@ -179,6 +128,28 @@ void GadgetBle::handleEvents() {
     _handleDownload();
 }
 
+// BLEServerCallbacks
+
+void GadgetBle::onConnect(BLEServer* serverInst) {
+    _deviceConnected = true;
+};
+
+void GadgetBle::onDisconnect(BLEServer* serverInst) {
+    _deviceConnected = false;
+}
+
+// BLECharacteristicCallbacks
+
+void GadgetBle::onWrite(BLECharacteristic* characteristic) {
+    std::string value = characteristic->getValue();
+    _sampleIntervalMs =
+        value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] << 24);
+    _sampleBufferWraped = false;
+    _sampleBufferIdx = 0;
+    _sampleBufferSize = 0;
+    _sampleCntChar->setValue(_sampleBufferSize);
+}
+
 // Internal Stuff
 
 void GadgetBle::_bleInit() {
@@ -188,8 +159,8 @@ void GadgetBle::_bleInit() {
     std::string macAddress = BLEDevice::getAddress().toString();
 
     // - Mac address: Add device Id to BLE advertising frame
-    advertisedData[5] = strtol(macAddress.substr(15, 17).c_str(), NULL, 16);
-    advertisedData[4] = strtol(macAddress.substr(12, 14).c_str(), NULL, 16);
+    _advertisedData[5] = strtol(macAddress.substr(15, 17).c_str(), NULL, 16);
+    _advertisedData[4] = strtol(macAddress.substr(12, 14).c_str(), NULL, 16);
 
     // - Mac address: Keep deviceIdString for application
     char cDevId[6];
@@ -199,7 +170,7 @@ void GadgetBle::_bleInit() {
 
     // Initialize BLEServer
     BLEServer* bleServer = BLEDevice::createServer();
-    bleServer->setCallbacks(new ConnectionStateTracker());
+    bleServer->setCallbacks(this);
 
     // - Create Download Service
     BLEService* bleDownloadService =
@@ -215,8 +186,8 @@ void GadgetBle::_bleInit() {
         bleDownloadService->createCharacteristic(
             LOGGER_INTERVAL_UUID, BLECharacteristic::PROPERTY_READ |
                                       BLECharacteristic::PROPERTY_WRITE);
-    loggerIntervalChar->setValue(sampleIntervalMs);
-    loggerIntervalChar->setCallbacks(new LogIntervalCallback());
+    loggerIntervalChar->setValue(_sampleIntervalMs);
+    loggerIntervalChar->setCallbacks(this);
 
     // - Download Service: Data Transfer Characteristic
     _transferChar = bleDownloadService->createCharacteristic(
@@ -242,8 +213,8 @@ void GadgetBle::_bleInit() {
 }
 
 void GadgetBle::_updateAdvertising() {
-    std::string manufData((char*)(advertisedData.data()),
-                          advertisedData.size());
+    std::string manufData((char*)(_advertisedData.data()),
+                          _advertisedData.size());
 
     BLEAdvertisementData scanResponse;
     scanResponse.setManufacturerData(manufData);
@@ -257,12 +228,12 @@ void GadgetBle::_updateAdvertising() {
 
 void GadgetBle::_addCurrentSampleToHistory() {
     for (int i = 0; i < _sampleSize; i++) {
-        _sampleBuffer[sampleBufferIdx++] = _currentSample[i];
+        _sampleBuffer[_sampleBufferIdx++] = _currentSample[i];
     }
 
-    if (sampleBufferIdx + _sampleSize - 1 >= _sampleBufferSize) {
-        sampleBufferIdx = 0;
-        sampleBufferWraped = true;
+    if (_sampleBufferIdx + _sampleSize - 1 >= _sampleBufferCapcity) {
+        _sampleBufferIdx = 0;
+        _sampleBufferWraped = true;
     }
 
     _sampleBufferSize = _computeBufferSize();
@@ -290,8 +261,8 @@ void GadgetBle::_writeValue(int convertedValue, Unit unit) {
         return;
     }
 
-    advertisedData[position + ADV_SAMPLE_OFFSET] = (uint8_t)convertedValue;
-    advertisedData[position + ADV_SAMPLE_OFFSET + 1] =
+    _advertisedData[position + ADV_SAMPLE_OFFSET] = (uint8_t)convertedValue;
+    _advertisedData[position + ADV_SAMPLE_OFFSET + 1] =
         (uint8_t)(convertedValue >> 8);
 
     // update current sample cache
@@ -303,22 +274,22 @@ void GadgetBle::_writeValue(int convertedValue, Unit unit) {
 
 void GadgetBle::_updateConnectionState() {
     // connecting
-    if (deviceConnected && !oldDeviceConnected) {
+    if (_deviceConnected && !_oldDeviceConnected) {
         _downloadSeqNumber = 0;
-        oldDeviceConnected = deviceConnected;
+        _oldDeviceConnected = _deviceConnected;
     }
 
     // disconnecting
-    if (!deviceConnected && oldDeviceConnected) {
+    if (!_deviceConnected && _oldDeviceConnected) {
         _transferDescr->setNotifications(false);
         _downloadSeqNumber = 0;
-        oldDeviceConnected = deviceConnected;
+        _oldDeviceConnected = _deviceConnected;
     }
 }
 
 uint16_t GadgetBle::_computeBufferSize() {
-    return (uint16_t)(((sampleBufferWraped) ? (double)_sampleBufferSize
-                                            : (double)sampleBufferIdx) /
+    return (uint16_t)(((_sampleBufferWraped) ? (double)_sampleBufferCapcity
+                                             : (double)_sampleBufferIdx) /
                       _sampleSize);
 }
 
@@ -342,20 +313,20 @@ bool GadgetBle::_handleDownload() {
             uint32_t ageLastSampleMs = (uint32_t)std::round(
                 (esp_timer_get_time() - _lastCacheTime) / 1000);
 
-            downloadHeader[4] = _sampleTypeDL;
-            downloadHeader[5] = _sampleTypeDL >> 8;
-            downloadHeader[6] = sampleIntervalMs;
-            downloadHeader[7] = sampleIntervalMs >> 8;
-            downloadHeader[8] = sampleIntervalMs >> 16;
-            downloadHeader[9] = sampleIntervalMs >> 24;
-            downloadHeader[10] = ageLastSampleMs;
-            downloadHeader[11] = ageLastSampleMs >> 8;
-            downloadHeader[12] = ageLastSampleMs >> 16;
-            downloadHeader[13] = ageLastSampleMs >> 24;
-            downloadHeader[14] = sampleCnt;
-            downloadHeader[15] = (sampleCnt >> 8);
-            _transferChar->setValue(downloadHeader.data(),
-                                    downloadHeader.size());
+            _downloadHeader[4] = _sampleTypeDL;
+            _downloadHeader[5] = _sampleTypeDL >> 8;
+            _downloadHeader[6] = _sampleIntervalMs;
+            _downloadHeader[7] = _sampleIntervalMs >> 8;
+            _downloadHeader[8] = _sampleIntervalMs >> 16;
+            _downloadHeader[9] = _sampleIntervalMs >> 24;
+            _downloadHeader[10] = ageLastSampleMs;
+            _downloadHeader[11] = ageLastSampleMs >> 8;
+            _downloadHeader[12] = ageLastSampleMs >> 16;
+            _downloadHeader[13] = ageLastSampleMs >> 24;
+            _downloadHeader[14] = sampleCnt;
+            _downloadHeader[15] = (sampleCnt >> 8);
+            _transferChar->setValue(_downloadHeader.data(),
+                                    _downloadHeader.size());
             _downloadSeqNumber++;
             _transferChar->notify();
         } else {
@@ -367,8 +338,8 @@ bool GadgetBle::_handleDownload() {
                     uint32_t idx = ((_downloadSeqNumber - 1) *
                                     (_sampleSize * _sampleCntPerPacket)) +
                                    i + (j * _sampleSize);
-                    if (sampleBufferWraped) {
-                        idx = (sampleBufferIdx + idx) % _sampleBufferSize;
+                    if (_sampleBufferWraped) {
+                        idx = (_sampleBufferIdx + idx) % _sampleBufferCapcity;
                     }
                     valueBuffer[i + 2 + (j * _sampleSize)] = _sampleBuffer[idx];
                 }
