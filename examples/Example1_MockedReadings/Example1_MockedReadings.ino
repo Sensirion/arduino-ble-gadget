@@ -22,13 +22,13 @@ static int measurementIntervalMs = 1000;
 void loop() {
   if (esp_timer_get_time() - lastMmntTime >= measurementIntervalMs * 1000) {
     Serial.println("Measurement");
-    gadgetBle.writeTemperature((float) (++t % 50));
-    gadgetBle.writeHumidity((float) (++rh % 100));
-    gadgetBle.writeCO2((float) (++co2 % 1000));
+    gadgetBle.writeTemperature(++t % 50);
+    gadgetBle.writeHumidity(++rh % 100);
+    gadgetBle.writeCO2(++co2 % 1000);
     gadgetBle.commit();
     lastMmntTime = esp_timer_get_time();
   }
-  
+
   gadgetBle.handleEvents();
   delay(3);
 }
