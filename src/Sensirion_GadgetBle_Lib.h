@@ -61,13 +61,13 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
   private:
     void _bleInit();
     int _getPositionInSample(Unit unit);
-    void _writeValue(int convertedValue, Unit unit);
+    void _writeValue(uint16_t convertedValue, Unit unit);
     void _updateAdvertising();
     void _updateConnectionState();
     bool _handleDownload();
     uint16_t _computeBufferSize();
     void _addCurrentSampleToHistory();
-    int _computeRealSampleBufferSize();
+    uint16_t _computeRealSampleBufferSize();
 
     DataType _dataType;
     int _sampleSize;
@@ -75,8 +75,8 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     uint16_t _sampleTypeDL;
     uint8_t _advSampleType;
     uint8_t _sampleTypeAdv;
-    int _sampleBufferSize;
-    int _sampleBufferCapcity;
+    uint16_t _sampleBufferSize;
+    uint16_t _sampleBufferCapacity;
 
     BLEAdvertising* _bleAdvertising;
     BLE2902* _transferDescr;

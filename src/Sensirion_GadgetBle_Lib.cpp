@@ -58,7 +58,7 @@ GadgetBle::GadgetBle(DataType dataType) {
     _deviceIdString = "n/a";
 
     _sampleBufferSize = 0;
-    _sampleBufferCapcity = _computeRealSampleBufferSize();
+    _sampleBufferCapacity = _computeRealSampleBufferSize();
 
     _advertisedData[2] = _advSampleType;
     _advertisedData[3] = _sampleTypeAdv;
@@ -73,7 +73,8 @@ void GadgetBle::writeTemperature(float value) {
         return;
     }
 
-    int converted = (int)std::round(((value + 45) / 175) * 65535);
+    uint16_t converted =
+        static_cast<uint16_t>(std::round(((value + 45) / 175) * 65535));
 
     _writeValue(converted, Unit::T);
 }
@@ -83,10 +84,12 @@ void GadgetBle::writeHumidity(float value) {
         return;
     }
 
-    int converted = (int)std::round((value / 100) * 65535);
+    uint16_t converted =
+        static_cast<uint16_t>(std::round((value / 100) * 65535));
     // special conversion for SHT4x RH samples
     if (_dataType == DataType::T_RH_V4) {
-        converted = (int)std::round(((value + 6.0) * 65535) / 125.0);
+        converted =
+            static_cast<uint16_t>(std::round(((value + 6.0) * 65535) / 125.0));
     }
 
     _writeValue(converted, Unit::RH);
@@ -97,7 +100,7 @@ void GadgetBle::writeCO2(float value) {
         return;
     }
 
-    int converted = (uint16_t)std::round(value);
+    uint16_t converted = static_cast<uint16_t>(std::round(value));
 
     _writeValue(converted, Unit::CO2);
 }
@@ -107,7 +110,8 @@ void GadgetBle::writePM2p5(float value) {
         return;
     }
 
-    int converted = (int)std::round((value / 1000) * 65535);
+    uint16_t converted =
+        static_cast<uint16_t>(std::round((value / 1000) * 65535));
 
     _writeValue(converted, Unit::PM2P5);
 }
@@ -213,7 +217,9 @@ void GadgetBle::_bleInit() {
 }
 
 void GadgetBle::_updateAdvertising() {
-    std::string manufData((char*)(_advertisedData.data()),
+    // The API of scanResponse expects a string, so we need to convert our
+    // binary advertising data to a string.
+    std::string manufData(reinterpret_cast<char*>(_advertisedData.data()),
                           _advertisedData.size());
 
     BLEAdvertisementData scanResponse;
@@ -231,7 +237,7 @@ void GadgetBle::_addCurrentSampleToHistory() {
         _sampleBuffer[_sampleBufferIdx++] = _currentSample[i];
     }
 
-    if (_sampleBufferIdx + _sampleSize - 1 >= _sampleBufferCapcity) {
+    if (_sampleBufferIdx + _sampleSize - 1 >= _sampleBufferCapacity) {
         _sampleBufferIdx = 0;
         _sampleBufferWraped = true;
     }
@@ -255,19 +261,20 @@ int GadgetBle::_getPositionInSample(Unit unit) {
     return INVALID_POSITION;
 }
 
-void GadgetBle::_writeValue(int convertedValue, Unit unit) {
+void GadgetBle::_writeValue(uint16_t convertedValue, Unit unit) {
     int position = _getPositionInSample(unit);
     if (position == INVALID_POSITION) {
         return;
     }
 
-    _advertisedData[position + ADV_SAMPLE_OFFSET] = (uint8_t)convertedValue;
+    _advertisedData[position + ADV_SAMPLE_OFFSET] =
+        static_cast<uint8_t>(convertedValue);
     _advertisedData[position + ADV_SAMPLE_OFFSET + 1] =
-        (uint8_t)(convertedValue >> 8);
+        static_cast<uint8_t>(convertedValue >> 8);
 
     // update current sample cache
-    _currentSample[position] = (uint8_t)convertedValue;
-    _currentSample[position + 1] = (uint8_t)(convertedValue >> 8);
+    _currentSample[position] = static_cast<uint8_t>(convertedValue);
+    _currentSample[position + 1] = static_cast<uint8_t>(convertedValue >> 8);
 }
 
 // Download Logger Related
@@ -288,9 +295,10 @@ void GadgetBle::_updateConnectionState() {
 }
 
 uint16_t GadgetBle::_computeBufferSize() {
-    return (uint16_t)(((_sampleBufferWraped) ? (double)_sampleBufferCapcity
-                                             : (double)_sampleBufferIdx) /
-                      _sampleSize);
+    return static_cast<uint16_t>(
+        ((_sampleBufferWraped) ? static_cast<double>(_sampleBufferCapacity)
+                               : static_cast<double>(_sampleBufferIdx)) /
+        _sampleSize);
 }
 
 bool GadgetBle::_handleDownload() {
@@ -310,8 +318,8 @@ bool GadgetBle::_handleDownload() {
             // send header
             sampleCnt -= 1;
 
-            uint32_t ageLastSampleMs = (uint32_t)std::round(
-                (esp_timer_get_time() - _lastCacheTime) / 1000);
+            uint32_t ageLastSampleMs = static_cast<uint32_t>(
+                std::round((esp_timer_get_time() - _lastCacheTime) / 1000));
 
             _downloadHeader[4] = _sampleTypeDL;
             _downloadHeader[5] = _sampleTypeDL >> 8;
@@ -339,7 +347,7 @@ bool GadgetBle::_handleDownload() {
                                     (_sampleSize * _sampleCntPerPacket)) +
                                    i + (j * _sampleSize);
                     if (_sampleBufferWraped) {
-                        idx = (_sampleBufferIdx + idx) % _sampleBufferCapcity;
+                        idx = (_sampleBufferIdx + idx) % _sampleBufferCapacity;
                     }
                     valueBuffer[i + 2 + (j * _sampleSize)] = _sampleBuffer[idx];
                 }
@@ -355,7 +363,8 @@ bool GadgetBle::_handleDownload() {
     return false;
 }
 
-int GadgetBle::_computeRealSampleBufferSize() {
-    return (int)std::floor(SAMPLE_BUFFER_SIZE_BYTES / _sampleSize) *
+uint16_t GadgetBle::_computeRealSampleBufferSize() {
+    return static_cast<uint16_t>(
+               std::floor(SAMPLE_BUFFER_SIZE_BYTES / _sampleSize)) *
            _sampleSize;
 }
