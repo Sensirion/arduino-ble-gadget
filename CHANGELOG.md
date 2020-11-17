@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pass CO2 value as float in SCD30 example.
 
 ### Changed
+- Type changes from int to uint16_t, whereever the BLE protocol requries it.
 - Replace C style casts with their C++ counterparts.
 
 ## [0.2.0] - 2020-11-17

@@ -73,7 +73,8 @@ void GadgetBle::writeTemperature(float value) {
         return;
     }
 
-    int converted = static_cast<int>(std::round(((value + 45) / 175) * 65535));
+    uint16_t converted =
+        static_cast<uint16_t>(std::round(((value + 45) / 175) * 65535));
 
     _writeValue(converted, Unit::T);
 }
@@ -83,11 +84,12 @@ void GadgetBle::writeHumidity(float value) {
         return;
     }
 
-    int converted = static_cast<int>(std::round((value / 100) * 65535));
+    uint16_t converted =
+        static_cast<uint16_t>(std::round((value / 100) * 65535));
     // special conversion for SHT4x RH samples
     if (_dataType == DataType::T_RH_V4) {
         converted =
-            static_cast<int>(std::round(((value + 6.0) * 65535) / 125.0));
+            static_cast<uint16_t>(std::round(((value + 6.0) * 65535) / 125.0));
     }
 
     _writeValue(converted, Unit::RH);
@@ -98,7 +100,7 @@ void GadgetBle::writeCO2(float value) {
         return;
     }
 
-    int converted = static_cast<uint16_t>(std::round(value));
+    uint16_t converted = static_cast<uint16_t>(std::round(value));
 
     _writeValue(converted, Unit::CO2);
 }
@@ -108,7 +110,8 @@ void GadgetBle::writePM2p5(float value) {
         return;
     }
 
-    int converted = static_cast<int>(std::round((value / 1000) * 65535));
+    uint16_t converted =
+        static_cast<uint16_t>(std::round((value / 1000) * 65535));
 
     _writeValue(converted, Unit::PM2P5);
 }
@@ -258,7 +261,7 @@ int GadgetBle::_getPositionInSample(Unit unit) {
     return INVALID_POSITION;
 }
 
-void GadgetBle::_writeValue(int convertedValue, Unit unit) {
+void GadgetBle::_writeValue(uint16_t convertedValue, Unit unit) {
     int position = _getPositionInSample(unit);
     if (position == INVALID_POSITION) {
         return;
@@ -360,8 +363,8 @@ bool GadgetBle::_handleDownload() {
     return false;
 }
 
-int GadgetBle::_computeRealSampleBufferSize() {
-    return static_cast<int>(
+uint16_t GadgetBle::_computeRealSampleBufferSize() {
+    return static_cast<uint16_t>(
                std::floor(SAMPLE_BUFFER_SIZE_BYTES / _sampleSize)) *
            _sampleSize;
 }
