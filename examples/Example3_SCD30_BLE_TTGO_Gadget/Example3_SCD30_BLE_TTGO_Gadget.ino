@@ -1,5 +1,10 @@
 #include "esp_timer.h"
 #include <Wire.h>
+
+// Go to TTGO T-Display's Github Repository
+// Download the code as zip, extract it and copy the Folder TFT_eSPI
+//  => https://github.com/Xinyuan-LilyGO/TTGO-T-Display/archive/master.zip
+// to your Arduino library path
 #include <TFT_eSPI.h>
 #include <SPI.h>
 
