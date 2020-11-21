@@ -29,7 +29,7 @@ static const char* const TRANSFER_NOTIFY_UUID =
 // BLE Protocol Specifics
 
 // TODO: Change this name to something more generic
-static const char* const GADGET_NAME = "MyCO2";
+static const char* const GADGET_NAME = "sensi";
 static const size_t DOWNLOAD_PKT_SIZE = 20;
 static const size_t MAX_SAMPLE_SIZE = 8; // TODO: Adapt depending on data type
 static const size_t SAMPLE_BUFFER_SIZE_BYTES = 60000;
