@@ -36,21 +36,30 @@ static const size_t SAMPLE_BUFFER_SIZE_BYTES = 60000;
 
 class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
   public:
-    // CAUTION when adapting! GadgetBle::getPositionInSample will need
-    // adjustment too!
     enum DataType {
-        T_RH_V3,  // not fully supported yet
-        T_RH_V4,  // not fully supported yet
-        T_RH_CO2, // not fully supported yet
+        T_RH_V3,
+        T_RH_V4,
+        T_RH_VOC,
+        T_RH_CO2,
         T_RH_CO2_ALT,
-        T_RH_CO2_PM25 // not fully supported yet
+        T_RH_CO2_PM25
     };
-    enum Unit { T, RH, CO2, PM2P5 };
+    enum Unit { T, RH, VOC, CO2, PM2P5 };
+    struct SampleType {
+        DataType dataType;
+        int advertisementType;
+        int advSampleType;
+        int dlSampleType;
+        int sampleSize;
+        int sampleCntPerPacket;
+        std::map<Unit, int> unitOffset;
+    };
     explicit GadgetBle(DataType dataType);
     void begin();
     void writeTemperature(float temperature);
     void writeHumidity(float humidity);
     void writeCO2(float co2);
+    void writeVOC(float voc);
     void writePM2p5(float pm2p5);
     void commit();
     void handleEvents();
@@ -70,11 +79,8 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     uint16_t _computeRealSampleBufferSize();
 
     DataType _dataType;
-    int _sampleSize;
-    int _sampleCntPerPacket;
-    uint16_t _sampleTypeDL;
-    uint8_t _advSampleType;
-    uint8_t _sampleTypeAdv;
+    SampleType _sampleType;
+
     uint16_t _sampleBufferSize;
     uint16_t _sampleBufferCapacity;
 

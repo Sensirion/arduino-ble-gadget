@@ -20,48 +20,86 @@ GadgetBle::GadgetBle(DataType dataType) {
 
     switch (dataType) {
         case T_RH_V3:
-            _sampleSize = 4;
-            _sampleCntPerPacket = 4;
-            _sampleTypeDL = 0;
-            _sampleTypeAdv = 4;
+            _sampleType = {
+                DataType::T_RH_V3,             // datatype
+                0,                             // advertisementType
+                4,                             // advSampleType
+                0,                             // dlSampleType
+                4,                             // sampleSize
+                4,                             // sampleCntPerPacket
+                {{Unit::T, 0}, {Unit::RH, 2}}, // unitOffset
+            };
             break;
         case T_RH_V4:
-            _sampleSize = 4;
-            _sampleCntPerPacket = 4;
-            _sampleTypeDL = 5;
-            _sampleTypeAdv = 6;
+            _sampleType = {
+                DataType::T_RH_V3,             // datatype
+                0,                             // advertisementType
+                6,                             // advSampleType
+                5,                             // dlSampleType
+                4,                             // sampleSize
+                4,                             // sampleCntPerPacket
+                {{Unit::T, 0}, {Unit::RH, 2}}, // unitOffset
+            };
+            break;
+        case T_RH_VOC:
+            _sampleType = {
+                DataType::T_RH_VOC, // datatype
+                0,                  // advertisementType
+                3,                  // advSampleType
+                1,                  // dlSampleType
+                6,                  // sampleSize
+                3,                  // sampleCntPerPacket
+                {{Unit::T, 0}, {Unit::RH, 2}, {Unit::VOC, 4}}, // unitOffset
+            };
             break;
         case T_RH_CO2:
-            _sampleSize = 6;
-            _sampleCntPerPacket = 3;
-            _sampleTypeDL = 9;
-            _sampleTypeAdv = 10;
+            _sampleType = {
+                DataType::T_RH_CO2, // datatype
+                0,                  // advertisementType
+                10,                 // advSampleType
+                9,                  // dlSampleType
+                6,                  // sampleSize
+                3,                  // sampleCntPerPacket
+                {{Unit::T, 0}, {Unit::RH, 2}, {Unit::CO2, 4}}, // unitOffset
+            };
             break;
         case T_RH_CO2_ALT:
-            _sampleSize = 8;
-            _sampleCntPerPacket = 2;
-            _sampleTypeDL = 7;
-            _sampleTypeAdv = 8;
+            _sampleType = {
+                DataType::T_RH_CO2_ALT, // datatype
+                0,                      // advertisementType
+                8,                      // advSampleType
+                7,                      // dlSampleType
+                8,                      // sampleSize
+                2,                      // sampleCntPerPacket
+                {{Unit::T, 0}, {Unit::RH, 2}, {Unit::CO2, 4}}, // unitOffset
+            };
             break;
         case T_RH_CO2_PM25:
-            _sampleSize = 8;
-            _sampleCntPerPacket = 2;
-            _sampleTypeDL = 11;
-            _sampleTypeAdv = 12;
+            _sampleType = {
+                DataType::T_RH_CO2_PM25, // datatype
+                0,                       // advertisementType
+                12,                      // advSampleType
+                11,                      // dlSampleType
+                8,                       // sampleSize
+                2,                       // sampleCntPerPacket
+                {{Unit::T, 0},
+                 {Unit::RH, 2},
+                 {Unit::CO2, 4},
+                 {Unit::PM2P5, 6}}, // unitOffset
+            };
             break;
         default:
             break;
     }
 
-    _advSampleType = 0;
     _lastCacheTime = 0;
     _deviceIdString = "n/a";
 
     _sampleBufferSize = 0;
     _sampleBufferCapacity = _computeRealSampleBufferSize();
 
-    _advertisedData[2] = _advSampleType;
-    _advertisedData[3] = _sampleTypeAdv;
+    _advertisedData[2] = _sampleType.advertisementType;
+    _advertisedData[3] = _sampleType.advSampleType;
 }
 
 void GadgetBle::begin() {
@@ -103,6 +141,16 @@ void GadgetBle::writeCO2(float value) {
     uint16_t converted = static_cast<uint16_t>(std::round(value));
 
     _writeValue(converted, Unit::CO2);
+}
+
+void GadgetBle::writeVOC(float value) {
+    if (isnan(value)) {
+        return;
+    }
+
+    uint16_t converted = static_cast<uint16_t>(std::round(value));
+
+    _writeValue(converted, Unit::VOC);
 }
 
 void GadgetBle::writePM2p5(float value) {
@@ -233,11 +281,12 @@ void GadgetBle::_updateAdvertising() {
 }
 
 void GadgetBle::_addCurrentSampleToHistory() {
-    for (int i = 0; i < _sampleSize; i++) {
+    for (int i = 0; i < _sampleType.sampleSize; i++) {
         _sampleBuffer[_sampleBufferIdx++] = _currentSample[i];
     }
 
-    if (_sampleBufferIdx + _sampleSize - 1 >= _sampleBufferCapacity) {
+    if (_sampleBufferIdx + _sampleType.sampleSize - 1 >=
+        _sampleBufferCapacity) {
         _sampleBufferIdx = 0;
         _sampleBufferWraped = true;
     }
@@ -248,17 +297,10 @@ void GadgetBle::_addCurrentSampleToHistory() {
 
 // This requires proper adjustment as soon as we have more data types!
 int GadgetBle::_getPositionInSample(Unit unit) {
-    switch (unit) {
-        case T:
-            return 0;
-        case RH:
-            return 2;
-        case CO2:
-            return 4;
-        case PM2P5:
-            return 6;
+    if (_sampleType.unitOffset.count(unit) == 0) {
+        return INVALID_POSITION;
     }
-    return INVALID_POSITION;
+    return _sampleType.unitOffset.at(unit);
 }
 
 void GadgetBle::_writeValue(uint16_t convertedValue, Unit unit) {
@@ -298,7 +340,7 @@ uint16_t GadgetBle::_computeBufferSize() {
     return static_cast<uint16_t>(
         ((_sampleBufferWraped) ? static_cast<double>(_sampleBufferCapacity)
                                : static_cast<double>(_sampleBufferIdx)) /
-        _sampleSize);
+        _sampleType.sampleSize);
 }
 
 bool GadgetBle::_handleDownload() {
@@ -321,8 +363,8 @@ bool GadgetBle::_handleDownload() {
             uint32_t ageLastSampleMs = static_cast<uint32_t>(
                 std::round((esp_timer_get_time() - _lastCacheTime) / 1000));
 
-            _downloadHeader[4] = _sampleTypeDL;
-            _downloadHeader[5] = _sampleTypeDL >> 8;
+            _downloadHeader[4] = _sampleType.dlSampleType;
+            _downloadHeader[5] = _sampleType.dlSampleType >> 8;
             _downloadHeader[6] = _sampleIntervalMs;
             _downloadHeader[7] = _sampleIntervalMs >> 8;
             _downloadHeader[8] = _sampleIntervalMs >> 16;
@@ -341,15 +383,17 @@ bool GadgetBle::_handleDownload() {
             std::array<uint8_t, DOWNLOAD_PKT_SIZE> valueBuffer = {};
             valueBuffer[0] = _downloadSeqNumber;
             valueBuffer[1] = (_downloadSeqNumber >> 8);
-            for (int j = 0; j < _sampleCntPerPacket; j++) {
-                for (int i = 0; i < _sampleSize; i++) {
+            for (int j = 0; j < _sampleType.sampleCntPerPacket; j++) {
+                for (int i = 0; i < _sampleType.sampleSize; i++) {
                     uint32_t idx = ((_downloadSeqNumber - 1) *
-                                    (_sampleSize * _sampleCntPerPacket)) +
-                                   i + (j * _sampleSize);
+                                    (_sampleType.sampleSize *
+                                     _sampleType.sampleCntPerPacket)) +
+                                   i + (j * _sampleType.sampleSize);
                     if (_sampleBufferWraped) {
                         idx = (_sampleBufferIdx + idx) % _sampleBufferCapacity;
                     }
-                    valueBuffer[i + 2 + (j * _sampleSize)] = _sampleBuffer[idx];
+                    valueBuffer[i + 2 + (j * _sampleType.sampleSize)] =
+                        _sampleBuffer[idx];
                 }
             }
 
@@ -365,6 +409,6 @@ bool GadgetBle::_handleDownload() {
 
 uint16_t GadgetBle::_computeRealSampleBufferSize() {
     return static_cast<uint16_t>(
-               std::floor(SAMPLE_BUFFER_SIZE_BYTES / _sampleSize)) *
-           _sampleSize;
+               std::floor(SAMPLE_BUFFER_SIZE_BYTES / _sampleType.sampleSize)) *
+           _sampleType.sampleSize;
 }
