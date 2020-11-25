@@ -102,6 +102,18 @@ GadgetBle::GadgetBle(DataType dataType) {
     _advertisedData[3] = _sampleType.advSampleType;
 }
 
+void GadgetBle::enableWifiSetupSettings(
+    std::function<void(std::string, std::string)> onWifiSettingsChanged) {
+    _onWifiSettingsChanged = onWifiSettingsChanged;
+}
+
+void GadgetBle::setCurrentWifiSsid(std::string ssid) {
+    _wifiSsidSetting = ssid;
+    if (_wifiSsidChar != NULL) {
+        _wifiSsidChar->setValue(_wifiSsidSetting);
+    }
+}
+
 void GadgetBle::begin() {
     _bleInit();
 }
@@ -193,13 +205,25 @@ void GadgetBle::onDisconnect(BLEServer* serverInst) {
 // BLECharacteristicCallbacks
 
 void GadgetBle::onWrite(BLECharacteristic* characteristic) {
-    std::string value = characteristic->getValue();
-    _sampleIntervalMs =
-        value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] << 24);
-    _sampleBufferWraped = false;
-    _sampleBufferIdx = 0;
-    _sampleBufferSize = 0;
-    _sampleCntChar->setValue(_sampleBufferSize);
+    if (characteristic->getUUID().toString().compare(LOGGER_INTERVAL_UUID) ==
+        0) {
+        std::string value = characteristic->getValue();
+        _sampleIntervalMs =
+            value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] << 24);
+        _sampleBufferWraped = false;
+        _sampleBufferIdx = 0;
+        _sampleBufferSize = 0;
+        _sampleCntChar->setValue(_sampleBufferSize);
+    } else if (characteristic->getUUID().toString().compare(
+                   WIFI_SSID_CHAR_UUID) == 0) {
+        _wifiSsidSetting = characteristic->getValue();
+    } else if (characteristic->getUUID().toString().compare(
+                   WIFI_PWD_CHAR_UUID) == 0) {
+        std::string wifiPwd = characteristic->getValue();
+        if (_onWifiSettingsChanged != NULL) {
+            _onWifiSettingsChanged(_wifiSsidSetting, wifiPwd);
+        }
+    }
 }
 
 // Internal Stuff
@@ -249,6 +273,29 @@ void GadgetBle::_bleInit() {
 
     // - Download Service: Start
     bleDownloadService->start();
+
+    // - Create Gadget Settings Service
+    BLEService* bleGadgetSettingsService =
+        bleServer->createService(GADGET_SETTINGS_SERVICE_UUID);
+
+    // - Gadget Settings Service: WiFi SSID Characteristic
+    if (_onWifiSettingsChanged != NULL) {
+        _wifiSsidChar = bleGadgetSettingsService->createCharacteristic(
+            WIFI_SSID_CHAR_UUID, BLECharacteristic::PROPERTY_READ |
+                                     BLECharacteristic::PROPERTY_WRITE);
+        _wifiSsidChar->setValue(_wifiSsidSetting);
+        _wifiSsidChar->setCallbacks(this);
+
+        // - Gadget Settings Service: WiFi Password Characteristic
+        BLECharacteristic* wifiPwdChar =
+            bleGadgetSettingsService->createCharacteristic(
+                WIFI_PWD_CHAR_UUID, BLECharacteristic::PROPERTY_WRITE);
+        wifiPwdChar->setValue("n/a");
+        wifiPwdChar->setCallbacks(this);
+    }
+
+    // - Gadget Settings Service: Start
+    bleGadgetSettingsService->start();
 
     // Initialize BLE Advertising
     _bleAdvertising = BLEDevice::getAdvertising();

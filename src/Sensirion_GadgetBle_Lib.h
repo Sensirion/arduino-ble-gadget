@@ -7,6 +7,7 @@
 #define Sensirion_GadgetBle_Lib_h
 
 #include "Arduino.h"
+#include <functional>
 
 #include "esp_timer.h"
 
@@ -26,13 +27,20 @@ static const char* const SAMPLE_CNT_CHAR_UUID =
 static const char* const TRANSFER_NOTIFY_UUID =
     "00008004-b38d-4985-720e-0f993a68ee41";
 
+static const char* const GADGET_SETTINGS_SERVICE_UUID =
+    "00008100-b38d-4985-720e-0f993a68ee41";
+static const char* const WIFI_SSID_CHAR_UUID =
+    "00008171-b38d-4985-720e-0f993a68ee41";
+static const char* const WIFI_PWD_CHAR_UUID =
+    "00008172-b38d-4985-720e-0f993a68ee41";
+
 // BLE Protocol Specifics
 
 // TODO: Change this name to something more generic
 static const char* const GADGET_NAME = "sensi";
 static const size_t DOWNLOAD_PKT_SIZE = 20;
 static const size_t MAX_SAMPLE_SIZE = 8; // TODO: Adapt depending on data type
-static const size_t SAMPLE_BUFFER_SIZE_BYTES = 60000;
+static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000;
 
 class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
   public:
@@ -55,6 +63,9 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
         std::map<Unit, int> unitOffset;
     };
     explicit GadgetBle(DataType dataType);
+    void enableWifiSetupSettings(
+        std::function<void(std::string, std::string)> onWifiSettingsChanged);
+    void setCurrentWifiSsid(std::string ssid);
     void begin();
     void writeTemperature(float temperature);
     void writeHumidity(float humidity);
@@ -88,6 +99,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     BLE2902* _transferDescr;
     BLECharacteristic* _transferChar;
     BLECharacteristic* _sampleCntChar;
+    BLECharacteristic* _wifiSsidChar;
 
     String _deviceIdString;
 
@@ -133,6 +145,10 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
 
     // BLECharacteristicCallbacks
     void onWrite(BLECharacteristic* characteristic);
+
+    // WifiSettings change callbacks
+    std::string _wifiSsidSetting = "";
+    std::function<void(std::string, std::string)> _onWifiSettingsChanged;
 };
 
 #endif
