@@ -36,7 +36,6 @@ static const char* const WIFI_PWD_CHAR_UUID =
 
 // BLE Protocol Specifics
 
-// TODO: Change this name to something more generic
 static const char* const GADGET_NAME = "sensi";
 static const size_t DOWNLOAD_PKT_SIZE = 20;
 static const size_t MAX_SAMPLE_SIZE = 8; // TODO: Adapt depending on data type
@@ -67,6 +66,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
         std::function<void(std::string, std::string)> onWifiSettingsChanged);
     void setCurrentWifiSsid(std::string ssid);
     void begin();
+    void setDataType(DataType dataType);
     void writeTemperature(float temperature);
     void writeHumidity(float humidity);
     void writeCO2(float co2);
