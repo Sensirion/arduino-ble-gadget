@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Configurable Wifi credentials via BLE and usage example.
-- Support for more DataTypes: T_RH_VOC, T_RH_V3, T_RH_V4 and T_RH_CO2_PM25.
+- Support for more DataTypes: T_RH_VOC, T_RH_V3, T_RH_V4, T_RH_CO2_PM25 and T_RH_VOC_PM25.
 - Ability to switch the used DataType during operation.
 
 ### Changed
