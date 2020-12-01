@@ -51,8 +51,9 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
         T_RH_CO2_ALT,
         T_RH_CO2_PM25,
         T_RH_VOC_PM25,
+        T_RH_HCHO
     };
-    enum Unit { T, RH, VOC, CO2, PM2P5 };
+    enum Unit { T, RH, VOC, CO2, PM2P5, HCHO };
     struct SampleType {
         DataType dataType;
         int advertisementType;
@@ -73,6 +74,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     void writeCO2(float co2);
     void writeVOC(float voc);
     void writePM2p5(float pm2p5);
+    void writeHCHO(float hcho);
     void commit();
     void handleEvents();
     String getDeviceIdString() {

@@ -110,6 +110,18 @@ void GadgetBle::setDataType(DataType dataType) {
                  {Unit::PM2P5, 6}}, // unitOffset
             };
             break;
+
+        case T_RH_HCHO:
+            _sampleType = {
+                DataType::T_RH_HCHO, // datatype
+                0,                   // advertisementType
+                14,                  // advSampleType
+                13,                  // dlSampleType
+                6,                   // sampleSize
+                3,                   // sampleCntPerPacket
+                {{Unit::T, 0}, {Unit::RH, 2}, {Unit::HCHO, 4}}, // unitOffset
+            };
+            break;
         case T_RH_VOC_PM25:
             _sampleType = {
                 DataType::T_RH_CO2_PM25, // datatype
@@ -197,6 +209,16 @@ void GadgetBle::writePM2p5(float value) {
     uint16_t converted = static_cast<uint16_t>(((value / 1000) * 65535) + 0.5f);
 
     _writeValue(converted, Unit::PM2P5);
+}
+
+void GadgetBle::writeHCHO(float value) {
+    if (isnan(value)) {
+        return;
+    }
+
+    uint16_t converted = static_cast<uint16_t>((value * 5) + 0.5f);
+
+    _writeValue(converted, Unit::HCHO);
 }
 
 void GadgetBle::commit() {
