@@ -7,6 +7,7 @@
 #define Sensirion_GadgetBle_Lib_h
 
 #include "Arduino.h"
+#include <functional>
 
 #include "esp_timer.h"
 
@@ -26,31 +27,50 @@ static const char* const SAMPLE_CNT_CHAR_UUID =
 static const char* const TRANSFER_NOTIFY_UUID =
     "00008004-b38d-4985-720e-0f993a68ee41";
 
+static const char* const GADGET_SETTINGS_SERVICE_UUID =
+    "00008100-b38d-4985-720e-0f993a68ee41";
+static const char* const WIFI_SSID_CHAR_UUID =
+    "00008171-b38d-4985-720e-0f993a68ee41";
+static const char* const WIFI_PWD_CHAR_UUID =
+    "00008172-b38d-4985-720e-0f993a68ee41";
+
 // BLE Protocol Specifics
 
 // TODO: Change this name to something more generic
-static const char* const GADGET_NAME = "MyCO2";
+static const char* const GADGET_NAME = "sensi";
 static const size_t DOWNLOAD_PKT_SIZE = 20;
 static const size_t MAX_SAMPLE_SIZE = 8; // TODO: Adapt depending on data type
-static const size_t SAMPLE_BUFFER_SIZE_BYTES = 60000;
+static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000;
 
 class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
   public:
-    // CAUTION when adapting! GadgetBle::getPositionInSample will need
-    // adjustment too!
     enum DataType {
-        T_RH_V3,  // not fully supported yet
-        T_RH_V4,  // not fully supported yet
-        T_RH_CO2, // not fully supported yet
+        T_RH_V3,
+        T_RH_V4,
+        T_RH_VOC,
+        T_RH_CO2,
         T_RH_CO2_ALT,
-        T_RH_CO2_PM25 // not fully supported yet
+        T_RH_CO2_PM25
     };
-    enum Unit { T, RH, CO2, PM2P5 };
+    enum Unit { T, RH, VOC, CO2, PM2P5 };
+    struct SampleType {
+        DataType dataType;
+        int advertisementType;
+        int advSampleType;
+        int dlSampleType;
+        int sampleSize;
+        int sampleCntPerPacket;
+        std::map<Unit, int> unitOffset;
+    };
     explicit GadgetBle(DataType dataType);
+    void enableWifiSetupSettings(
+        std::function<void(std::string, std::string)> onWifiSettingsChanged);
+    void setCurrentWifiSsid(std::string ssid);
     void begin();
     void writeTemperature(float temperature);
     void writeHumidity(float humidity);
     void writeCO2(float co2);
+    void writeVOC(float voc);
     void writePM2p5(float pm2p5);
     void commit();
     void handleEvents();
@@ -70,11 +90,8 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     uint16_t _computeRealSampleBufferSize();
 
     DataType _dataType;
-    int _sampleSize;
-    int _sampleCntPerPacket;
-    uint16_t _sampleTypeDL;
-    uint8_t _advSampleType;
-    uint8_t _sampleTypeAdv;
+    SampleType _sampleType;
+
     uint16_t _sampleBufferSize;
     uint16_t _sampleBufferCapacity;
 
@@ -82,6 +99,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     BLE2902* _transferDescr;
     BLECharacteristic* _transferChar;
     BLECharacteristic* _sampleCntChar;
+    BLECharacteristic* _wifiSsidChar;
 
     String _deviceIdString;
 
@@ -127,6 +145,10 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
 
     // BLECharacteristicCallbacks
     void onWrite(BLECharacteristic* characteristic);
+
+    // WifiSettings change callbacks
+    std::string _wifiSsidSetting = "";
+    std::function<void(std::string, std::string)> _onWifiSettingsChanged;
 };
 
 #endif
