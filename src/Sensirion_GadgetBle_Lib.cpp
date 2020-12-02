@@ -19,6 +19,28 @@ GadgetBle::GadgetBle(DataType dataType) {
     _advertisedData[0] = 0xD5;
     _advertisedData[1] = 0x06;
 
+    _deviceIdString = "n/a";
+
+    setDataType(dataType);
+}
+
+void GadgetBle::enableWifiSetupSettings(
+    std::function<void(std::string, std::string)> onWifiSettingsChanged) {
+    _onWifiSettingsChanged = onWifiSettingsChanged;
+}
+
+void GadgetBle::setCurrentWifiSsid(std::string ssid) {
+    _wifiSsidSetting = ssid;
+    if (_wifiSsidChar != NULL) {
+        _wifiSsidChar->setValue(_wifiSsidSetting);
+    }
+}
+
+void GadgetBle::begin() {
+    _bleInit();
+}
+
+void GadgetBle::setDataType(DataType dataType) {
     switch (dataType) {
         case T_RH_V3:
             _sampleType = {
@@ -94,29 +116,18 @@ GadgetBle::GadgetBle(DataType dataType) {
     }
 
     _lastCacheTime = 0;
-    _deviceIdString = "n/a";
 
+    _sampleBufferIdx = 0;
+    _sampleBufferWraped = false;
     _sampleBufferSize = 0;
     _sampleBufferCapacity = _computeRealSampleBufferSize();
 
+    if (_sampleCntChar != NULL) {
+        _sampleCntChar->setValue(_sampleBufferSize);
+    }
+
     _advertisedData[2] = _sampleType.advertisementType;
     _advertisedData[3] = _sampleType.advSampleType;
-}
-
-void GadgetBle::enableWifiSetupSettings(
-    std::function<void(std::string, std::string)> onWifiSettingsChanged) {
-    _onWifiSettingsChanged = onWifiSettingsChanged;
-}
-
-void GadgetBle::setCurrentWifiSsid(std::string ssid) {
-    _wifiSsidSetting = ssid;
-    if (_wifiSsidChar != NULL) {
-        _wifiSsidChar->setValue(_wifiSsidSetting);
-    }
-}
-
-void GadgetBle::begin() {
-    _bleInit();
 }
 
 void GadgetBle::writeTemperature(float value) {
