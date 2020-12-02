@@ -9,6 +9,7 @@
 
 #include "Sensirion_GadgetBle_Lib.h"
 #include "Arduino.h"
+#include <cmath>
 
 static const int INVALID_POSITION = -1;
 static const int ADV_SAMPLE_OFFSET = 6;
