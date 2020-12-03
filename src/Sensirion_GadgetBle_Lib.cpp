@@ -9,7 +9,6 @@
 
 #include "Sensirion_GadgetBle_Lib.h"
 #include "Arduino.h"
-#include <cmath>
 
 static const int INVALID_POSITION = -1;
 static const int ADV_SAMPLE_OFFSET = 6;
@@ -150,7 +149,7 @@ void GadgetBle::writeTemperature(float value) {
     }
 
     uint16_t converted =
-        static_cast<uint16_t>(std::round(((value + 45) / 175) * 65535));
+        static_cast<uint16_t>((((value + 45) / 175) * 65535) + 0.5f);
 
     _writeValue(converted, Unit::T);
 }
@@ -160,12 +159,11 @@ void GadgetBle::writeHumidity(float value) {
         return;
     }
 
-    uint16_t converted =
-        static_cast<uint16_t>(std::round((value / 100) * 65535));
+    uint16_t converted = static_cast<uint16_t>(((value / 100) * 65535) + 0.5f);
     // special conversion for SHT4x RH samples
     if (_dataType == DataType::T_RH_V4) {
         converted =
-            static_cast<uint16_t>(std::round(((value + 6.0) * 65535) / 125.0));
+            static_cast<uint16_t>((((value + 6.0) * 65535) / 125.0) + 0.5f);
     }
 
     _writeValue(converted, Unit::RH);
@@ -176,7 +174,7 @@ void GadgetBle::writeCO2(float value) {
         return;
     }
 
-    uint16_t converted = static_cast<uint16_t>(std::round(value));
+    uint16_t converted = static_cast<uint16_t>(value + 0.5f);
 
     _writeValue(converted, Unit::CO2);
 }
@@ -186,7 +184,7 @@ void GadgetBle::writeVOC(float value) {
         return;
     }
 
-    uint16_t converted = static_cast<uint16_t>(std::round(value));
+    uint16_t converted = static_cast<uint16_t>(value + 0.5f);
 
     _writeValue(converted, Unit::VOC);
 }
@@ -196,8 +194,7 @@ void GadgetBle::writePM2p5(float value) {
         return;
     }
 
-    uint16_t converted =
-        static_cast<uint16_t>(std::round((value / 1000) * 65535));
+    uint16_t converted = static_cast<uint16_t>(((value / 1000) * 65535) + 0.5f);
 
     _writeValue(converted, Unit::PM2P5);
 }
@@ -434,7 +431,7 @@ bool GadgetBle::_handleDownload() {
             sampleCnt -= 1;
 
             uint32_t ageLastSampleMs = static_cast<uint32_t>(
-                std::round((esp_timer_get_time() - _lastCacheTime) / 1000));
+                ((esp_timer_get_time() - _lastCacheTime) / 1000) + 0.5f);
 
             _downloadHeader[4] = _sampleType.dlSampleType;
             _downloadHeader[5] = _sampleType.dlSampleType >> 8;
