@@ -36,7 +36,7 @@ static const char* const WIFI_PWD_CHAR_UUID =
 
 // BLE Protocol Specifics
 
-static const char* const GADGET_NAME = "MyCO2";
+static const char* const GADGET_NAME = "sensi";
 static const size_t DOWNLOAD_PKT_SIZE = 20;
 static const size_t MAX_SAMPLE_SIZE = 8; // TODO: Adapt depending on data type
 static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000;
