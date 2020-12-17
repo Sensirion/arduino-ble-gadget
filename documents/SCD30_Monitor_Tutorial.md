@@ -28,7 +28,7 @@ Connect the SCD30 sensor as depicted below:
 * Connect the **SDA** pin to **GPIO 26**
 * Connect the **SCL** pin to **GPIO 27**
 
-<img src="images/ESP32-SCD30-HWSetup.png" width="500">
+<img src="images/SCD30_hardware_setup.png" width="500">
 
 ## Software Setup
 
