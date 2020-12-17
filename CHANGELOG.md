@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SVM40 BLE Gadget example using T_RH_VOC DataType.
 - SFA30 BLE Gadget example using T_RH_HCHO DataType.
 - SCD30 BLE Gadget example using T_RH_CO2 DataType.
+- Setup Tutorials for SCD30, SVM40 and SFA30 examples.
 
 ## [0.5.0] - 2020-12-14
 ### Added
