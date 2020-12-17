@@ -2,13 +2,13 @@
 
 ## Summary
 
-This tutorial enables you to setup a CO2-Monitor sending CO2 measurements via Bluetooth to nearby mobile phones. All steps necessary and a compatible app for Android and iOS are provided here.
+This tutorial enables you to setup a CO2-Monitor sending CO2 measurements via Bluetooth to nearby mobile phones. All steps necessary and links to the compatible app for Android and iOS are provided here.
 
 The tutorial is structured in 3 parts
 
 * **Hardware Setup**: Learn how to wire the sensor to the development board
 * **Software Setup**: Learn how to setup your computer to program the development board
-* **Monitor Setup**: Learn how to monitor your CO2 levels on your computer and via the *Sensirion MyAmbience CO2* app
+* **Monitor Setup**: Learn how to monitor your CO2 levels on your computer and via the *Sensirion MyAmbience* app
 
 If you have a [LILYGO® TTGO T-Display ESP32](http://www.lilygo.cn/prod_view.aspx?TypeId=50033&Id=1126&FId=t3:50033:3) then make sure to follow the instructions on the very bottom of this tutorial to enable the UI of your gadget.
 
@@ -21,12 +21,12 @@ To complete this tutorial, you'll need
 * Cables for soldering the connection or a Grove-to-Jumper cable (available [here](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/110990028/5482559?s=N4IgTCBcDaIOYCcD2A3ApgAgC5IwKwFcBbABzQQwDM0iBDAGzRAF0BfIA))
 * USB cable to connect the ESP32 DevKitC module to your computer
 
-Connect the SCD30 sensor as depicted below:
+Connect the SCD30 sensor to the ESP32 DevKitC as depicted below:
 
-* Connect the VDD to the 3.3V pin of the ESP32
-* Connect GND to GND on the ESP32
-* Connect the **SDA** pin to **GPIO 26**
-* Connect the **SCL** pin to **GPIO 27**
+* **VDD** of the SCD30 to the **3.3V** of the ESP32
+* **GND** of the SCD30 to the **GND** of the ESP32
+* **SDA** of the SCD30 to the **GPIO 26** of the ESP32
+* **SCL** of the SCD30 to the **GPIO 27** of the ESP32
 
 <img src="images/SCD30_hardware_setup.png" width="500">
 
@@ -38,7 +38,7 @@ The following instructions originate from [here](https://github.com/espressif/ar
 
 1. Install the current version of the [Arduino IDE](http://www.arduino.cc/en/main/software).
 2. Start the Arduino IDE and open the Preferences window.
-3. Enter the following link above into *Additional Board Manager URLs* field. You can add multiple URLs, separating them with commas.
+3. Enter the following link into the *Additional Board Manager URLs* field. You can add multiple URLs, separating them with commas.
 	* `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
 4. Open the Boards Manager from `Tools > Board -> Board Manager` and install the *esp32* platform
 5. Select your ESP32 board from the `Tools > Board` menu after the successfull installation.
@@ -55,7 +55,7 @@ For each of the downloaded .zip files: In the Arduino IDE, select `Sketch -> inc
 
 <img src="images/Arduino-import-zip-lib.png" width="500">
 
-Restart the Arduino IDE when you're done with the steps above.
+Restart the Arduino IDE.
 
 ### Launch the CO2 Monitor
 
@@ -80,10 +80,10 @@ To verify that everything is working fine, open the Serial Plotter, while your E
 
 ### Monitor your CO2 levels via Mobile App
 
-Download the **Sensirion MyAmbience CO2** app to monitor your CO2 levels, download history values and export and share the data with your friends.
+Download the **Sensirion MyAmbience** app to monitor your CO2 levels, download history values and export and share the data with your friends.
 
 * [Download for Android](https://play.google.com/store/apps/details?id=com.sensirion.myam)
-* [Download for iOS](https://apps.apple.com/ch/app/sensirion-myambience-co2/id1529131572) 
+* [Download for iOS](https://apps.apple.com/ch/app/id1529131572)
 
 Note that on Android devices the Location services need to be enabled and the corresponding permissions granted to the application. This is required to allow the app to scan for nearby Bluetooth devices. This is a requirement of the Android OS for Bluetooth scanning. The app itself does not use your location.
 
