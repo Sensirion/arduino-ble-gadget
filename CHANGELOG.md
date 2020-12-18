@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.6.0] - 2020-12-18
 ### Added
 - HCHO unit and T_RH_HCHO datatype.
+- SVM40 BLE Gadget example using T_RH_VOC DataType.
+- SFA30 BLE Gadget example using T_RH_HCHO DataType.
+- SCD30 BLE Gadget example using T_RH_CO2 DataType.
+- Setup Tutorials for SCD30, SVM40 and SFA30 examples.
 
 ## [0.5.0] - 2020-12-14
 ### Added
@@ -55,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release supporting T_RH_CO2_ALT datatype only.
 
+[0.6.0]: https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases/tag/v0.6.0
 [0.5.0]: https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases/tag/v0.5.0
 [0.4.2]: https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases/tag/v0.4.2
 [0.4.1]: https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases/tag/v0.4.1
