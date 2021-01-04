@@ -54,7 +54,7 @@ void GadgetBle::setDataType(DataType dataType) {
             break;
         case T_RH_V4:
             _sampleType = {
-                DataType::T_RH_V3,             // datatype
+                DataType::T_RH_V4,             // datatype
                 0,                             // advertisementType
                 6,                             // advSampleType
                 5,                             // dlSampleType
