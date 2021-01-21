@@ -4,7 +4,7 @@ This library enables you to create your own Do-It-Yourself BLE enabled sensor ga
 
 ### Key features are
 
-* Live sensor value broadcasting wihtout requiring a BLE connection
+* Live sensor value broadcasting without requiring a BLE connection
 * Simultaneous monitoring of sensor data from multiple BLE clients
 * **Sensirion MyAmbience CO2** App compatibility - allows you to monitor your gadgets, plot the sensor values and share/export the data.
 * Buffering of sensor data for later download (sensor history download)
