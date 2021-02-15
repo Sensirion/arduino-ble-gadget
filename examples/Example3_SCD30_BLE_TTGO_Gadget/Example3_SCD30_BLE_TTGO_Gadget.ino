@@ -145,7 +145,7 @@ void loop() {
       Serial.println(result[2]);
 
       // display CO2 value
-      displayCo2((uint16_t) std::round(result[0]));
+      displayCo2((uint16_t) round(result[0]));
     }
   }
 
