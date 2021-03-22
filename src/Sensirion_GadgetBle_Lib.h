@@ -11,10 +11,12 @@
 
 #include "esp_timer.h"
 
-#include <BLE2902.h>
-#include <BLEDevice.h>
-#include <BLEServer.h>
-#include <BLEUtils.h>
+// #include <BLE2902.h>
+// #include <BLEDevice.h>
+// #include <BLEServer.h>
+// #include <BLEUtils.h>
+
+#include <NimBLEDevice.h>
 
 // BLE Characteristics and Service Uuids
 
@@ -39,13 +41,15 @@ static const char* const WIFI_PWD_CHAR_UUID =
 static const char* const GADGET_NAME = "S";
 static const size_t DOWNLOAD_PKT_SIZE = 20;
 static const size_t MAX_SAMPLE_SIZE = 12; // TODO: Adapt depending on data type
-static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000;
+static const size_t SAMPLE_BUFFER_SIZE_BYTES = 3000;
 
 class GadgetBle;
 
 typedef uint16_t (GadgetBle::*t_converter)(float);
 
-class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
+class GadgetBle: NimBLECharacteristicCallbacks,
+                 BLEServerCallbacks,
+                 NimBLEDescriptorCallbacks {
   public:
     enum DataType {
         T_RH_V3,
@@ -120,7 +124,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     uint16_t _sampleBufferCapacity;
 
     BLEAdvertising* _bleAdvertising;
-    BLE2902* _transferDescr;
+    // NimBLEDescriptor* _transferDescr;
     BLECharacteristic* _transferChar;
     BLECharacteristic* _sampleCntChar;
     BLECharacteristic* _wifiSsidChar;
@@ -171,6 +175,14 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
 
     // BLECharacteristicCallbacks
     void onWrite(BLECharacteristic* characteristic);
+    void onSubscribe(BLECharacteristic* pCharacteristic,
+                     ble_gap_conn_desc* desc, uint16_t subValue);
+    void onNotify(BLECharacteristic* pCharacteristic);
+    void onStatus(BLECharacteristic* pCharacteristic, Status s, int code);
+
+    // BLEDescriptorCallback
+    void onRead(NimBLEDescriptor* pDescriptor);
+    void onWrite(NimBLEDescriptor* pDescriptor);
 
     // WifiSettings change callbacks
     std::string _wifiSsidSetting = "";
