@@ -16,12 +16,14 @@ The tutorial is structured in 3 parts
 
 To complete this tutorial, you'll need
 
-* [ESP32 DevKitC](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
+* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
   available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
 * Sensirion SEN44 Sensor Module
 * USB cable to connect the ESP32 DevKitC module to your computer
 
-Connect the SEN44 module to the ESP32 DevKitC as depicted below:
+Connect the SEN44 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
+different pin layout. If you're using different pins or have a different layout, you might have to adjust the code
+accordingly.
 
 <img src="images/SEN44_hardware_setup.png" width="500">
 

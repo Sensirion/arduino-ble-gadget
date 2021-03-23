@@ -14,16 +14,19 @@ The tutorial is structured in 3 parts
 
 To complete this tutorial, you'll need
 
-* [ESP32 DevKitC](https://www.espressif.com/en/products/devkits/esp32-devkitc) (available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
+* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
+  available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
 * [Sensirions SEK-SVM40](https://www.sensirion.com/en/environmental-sensors/evaluation-kit-sek-svm40/) (available [here](https://www.digikey.com/en/products/detail/sensirion-ag/SEK-SVM40/12820417?s=N4IgTCBcDaIMoDUCyAWADCAugXyA)
 * USB cable to connect the ESP32 DevKitC module to your computer
 
-Connect the SEK-SVM40 module to the ESP32 DevKitC as depicted below:
+Connect the SEK-SVM40 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
+different pin layout. If you're using different pins or have a different layout, you might have to adjust the code
+accordingly.
 
 * **VDD** of the SEK-SVM40 to the **3.3V** of the ESP32
 * **GND** of the SEK-SVM40 to the **GND** of the ESP32
-* **SCL** of the SEK-SVM40 to the **GPIO 22** of the ESP32
-* **SDA** of the SEK-SVM40 to the **GPIO 21** of the ESP32
+* **SCL** of the SEK-SVM40 to the **IO22** of the ESP32
+* **SDA** of the SEK-SVM40 to the **IO21** of the ESP32
 * **SEL** of the SEK-SVM40 to the **GND** of the ESP32  (choosing the I2C interface)
 
 <img src="images/SVM40_hardware_setup.png" width="500">

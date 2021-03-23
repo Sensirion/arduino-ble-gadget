@@ -7,9 +7,6 @@
 
 #include "Sensirion_GadgetBle_Lib.h"
 
-#define SDA_pin 26  // Define the SDA pin used for the SCD30
-#define SCL_pin 27  // Define the SCL pin used for the SCD30
-
 static int64_t lastMmntTime = 0;
 static int startCheckingAfterUs = 1900000;
 
@@ -25,7 +22,7 @@ void setup() {
   Serial.println(gadgetBle.getDeviceIdString());
 
   // Initialize the SCD30 driver
-  Wire.begin(SDA_pin, SCL_pin);
+  Wire.begin();
   scd30.initialize();
   scd30.setAutoSelfCalibration(1);
 }

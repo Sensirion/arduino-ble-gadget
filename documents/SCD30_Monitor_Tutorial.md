@@ -16,17 +16,21 @@ If you have a [LILYGO® TTGO T-Display ESP32](http://www.lilygo.cn/prod_view.asp
 
 To complete this tutorial, you'll need
 
-* [ESP32 DevKitC](https://www.espressif.com/en/products/devkits/esp32-devkitc) (available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
+* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
+  available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
 * [Sensirions SCD30 Sensor](https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/carbon-dioxide-sensors-co2/) (available [here](https://www.digikey.com/en/products/detail/sensirion-ag/SCD30/8445334) or with [Grove Plug](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/101020634/10060357?s=N4IgTCBcDaIMoGEAiBmADCAugXyA) if you don't want to solder anything)
 * Cables for soldering the connection or a Grove-to-Jumper cable (available [here](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/110990028/5482559?s=N4IgTCBcDaIOYCcD2A3ApgAgC5IwKwFcBbABzQQwDM0iBDAGzRAF0BfIA))
 * USB cable to connect the ESP32 DevKitC module to your computer
 
-Connect the SCD30 sensor to the ESP32 DevKitC as depicted below:
+Connect the SCD30 sensor to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
+different pin layout. If you're using different pins or have a different layout, you might have to adjust the code
+accordingly.
 
 * **VDD** of the SCD30 to the **3.3V** of the ESP32
 * **GND** of the SCD30 to the **GND** of the ESP32
-* **SDA** of the SCD30 to the **GPIO 26** of the ESP32
-* **SCL** of the SCD30 to the **GPIO 27** of the ESP32
+* **SCL** of the SCD30 to the **IO22** of the ESP32
+* **SDA** of the SCD30 to the **IO21** of the ESP32
+
 
 <img src="images/SCD30_hardware_setup.png" width="500">
 
@@ -94,6 +98,8 @@ Note that on Android devices the Location services need to be enabled and the co
 The LILYGO® TTGO T-Display ESP32 is an ESP32 DevKit with a small 1.14 inch display attached. This allows us to visualize the current CO2 concentration and level color in green, yellow or red, depending if the CO2 level is good, bad or very bad.
 
 <img src="images/TTGO-Gadget.png" width="600">
+
+Caution: This picture shows an alternative wiring. Use the instructions described in section *Hardware Setup*
 
 Follow all the instructions above and additionally do the following:
 
