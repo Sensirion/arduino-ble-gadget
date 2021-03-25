@@ -136,6 +136,22 @@ void GadgetBle::setDataType(DataType dataType) {
                  {Unit::PM2P5, 6}}, // unitOffset
             };
             break;
+        case T_RH_CO2_VOC_PM25_HCHO:
+            _sampleType = {
+                DataType::T_RH_CO2_VOC_PM25_HCHO, // datatype
+                0,                                // advertisementType
+                20,                               // advSampleType
+                19,                               // dlSampleType
+                12,                               // sampleSize
+                1,                                // sampleCntPerPacket
+                {{Unit::T, 0},
+                 {Unit::RH, 2},
+                 {Unit::CO2, 4},
+                 {Unit::VOC, 6},
+                 {Unit::PM2P5, 8},
+                 {Unit::HCHO, 10}}, // unitOffset
+            };
+            break;
         default:
             break;
     }

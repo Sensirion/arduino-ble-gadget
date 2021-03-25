@@ -36,9 +36,9 @@ static const char* const WIFI_PWD_CHAR_UUID =
 
 // BLE Protocol Specifics
 
-static const char* const GADGET_NAME = "sensi";
+static const char* const GADGET_NAME = "S";
 static const size_t DOWNLOAD_PKT_SIZE = 20;
-static const size_t MAX_SAMPLE_SIZE = 8; // TODO: Adapt depending on data type
+static const size_t MAX_SAMPLE_SIZE = 12; // TODO: Adapt depending on data type
 static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000;
 
 class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
@@ -51,7 +51,8 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
         T_RH_CO2_ALT,
         T_RH_CO2_PM25,
         T_RH_VOC_PM25,
-        T_RH_HCHO
+        T_RH_HCHO,
+        T_RH_CO2_VOC_PM25_HCHO
     };
     enum Unit { T, RH, VOC, CO2, PM2P5, HCHO };
     struct SampleType {
@@ -128,7 +129,9 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     // Byte 8: 2 bytes for sample value
     // Byte 10: 2 bytes for sample value
     // Byte 12: 2 bytes for sample value
-    std::array<uint8_t, 14> _advertisedData = {};
+    // Byte 14: 2 bytes for sample value
+    // Byte 16: 2 bytes for sample value
+    std::array<uint8_t, 18> _advertisedData = {};
 
     // Download Header template
     // Byte 0: 2 bytes sequcnce number
