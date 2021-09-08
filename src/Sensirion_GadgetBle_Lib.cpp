@@ -43,24 +43,26 @@ void GadgetBle::setDataType(DataType dataType) {
     switch (dataType) {
         case T_RH_V3:
             _sampleType = {
-                DataType::T_RH_V3,             // datatype
-                0,                             // advertisementType
-                4,                             // advSampleType
-                0,                             // dlSampleType
-                4,                             // sampleSize
-                4,                             // sampleCntPerPacket
-                {{Unit::T, 0}, {Unit::RH, 2}}, // unitOffset
+                DataType::T_RH_V3, // datatype
+                0,                 // advertisementType
+                4,                 // advSampleType
+                0,                 // dlSampleType
+                4,                 // sampleSize
+                4,                 // sampleCntPerPacket
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}}},
             };
             break;
         case T_RH_V4:
             _sampleType = {
-                DataType::T_RH_V4,             // datatype
-                0,                             // advertisementType
-                6,                             // advSampleType
-                5,                             // dlSampleType
-                4,                             // sampleSize
-                4,                             // sampleCntPerPacket
-                {{Unit::T, 0}, {Unit::RH, 2}}, // unitOffset
+                DataType::T_RH_V4, // datatype
+                0,                 // advertisementType
+                6,                 // advSampleType
+                5,                 // dlSampleType
+                4,                 // sampleSize
+                4,                 // sampleCntPerPacket
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV2}}},
             };
             break;
         case T_RH_VOC:
@@ -71,7 +73,9 @@ void GadgetBle::setDataType(DataType dataType) {
                 1,                  // dlSampleType
                 6,                  // sampleSize
                 3,                  // sampleCntPerPacket
-                {{Unit::T, 0}, {Unit::RH, 2}, {Unit::VOC, 4}}, // unitOffset
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::VOC, {4, &GadgetBle::_convertSimple}}},
             };
             break;
         case T_RH_CO2:
@@ -82,7 +86,9 @@ void GadgetBle::setDataType(DataType dataType) {
                 9,                  // dlSampleType
                 6,                  // sampleSize
                 3,                  // sampleCntPerPacket
-                {{Unit::T, 0}, {Unit::RH, 2}, {Unit::CO2, 4}}, // unitOffset
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::CO2, {4, &GadgetBle::_convertSimple}}},
             };
             break;
         case T_RH_CO2_ALT:
@@ -93,7 +99,9 @@ void GadgetBle::setDataType(DataType dataType) {
                 7,                      // dlSampleType
                 8,                      // sampleSize
                 2,                      // sampleCntPerPacket
-                {{Unit::T, 0}, {Unit::RH, 2}, {Unit::CO2, 4}}, // unitOffset
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::CO2, {4, &GadgetBle::_convertSimple}}},
             };
             break;
         case T_RH_CO2_PM25:
@@ -104,10 +112,10 @@ void GadgetBle::setDataType(DataType dataType) {
                 11,                      // dlSampleType
                 8,                       // sampleSize
                 2,                       // sampleCntPerPacket
-                {{Unit::T, 0},
-                 {Unit::RH, 2},
-                 {Unit::CO2, 4},
-                 {Unit::PM2P5, 6}}, // unitOffset
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::CO2, {4, &GadgetBle::_convertSimple}},
+                 {Unit::PM2P5, {6, &GadgetBle::_convertPM2p5V1}}},
             };
             break;
 
@@ -119,21 +127,23 @@ void GadgetBle::setDataType(DataType dataType) {
                 13,                  // dlSampleType
                 6,                   // sampleSize
                 3,                   // sampleCntPerPacket
-                {{Unit::T, 0}, {Unit::RH, 2}, {Unit::HCHO, 4}}, // unitOffset
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::HCHO, {4, &GadgetBle::_convertHCHOV1}}},
             };
             break;
         case T_RH_VOC_PM25:
             _sampleType = {
-                DataType::T_RH_CO2_PM25, // datatype
+                DataType::T_RH_VOC_PM25, // datatype
                 0,                       // advertisementType
                 16,                      // advSampleType
                 15,                      // dlSampleType
                 8,                       // sampleSize
                 2,                       // sampleCntPerPacket
-                {{Unit::T, 0},
-                 {Unit::RH, 2},
-                 {Unit::VOC, 4},
-                 {Unit::PM2P5, 6}}, // unitOffset
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::VOC, {4, &GadgetBle::_convertSimple}},
+                 {Unit::PM2P5, {6, &GadgetBle::_convertPM2p5V1}}},
             };
             break;
         case T_RH_CO2_VOC_PM25_HCHO:
@@ -144,12 +154,41 @@ void GadgetBle::setDataType(DataType dataType) {
                 19,                               // dlSampleType
                 12,                               // sampleSize
                 1,                                // sampleCntPerPacket
-                {{Unit::T, 0},
-                 {Unit::RH, 2},
-                 {Unit::CO2, 4},
-                 {Unit::VOC, 6},
-                 {Unit::PM2P5, 8},
-                 {Unit::HCHO, 10}}, // unitOffset
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::CO2, {4, &GadgetBle::_convertSimple}},
+                 {Unit::VOC, {6, &GadgetBle::_convertSimple}},
+                 {Unit::PM2P5, {8, &GadgetBle::_convertPM2p5V1}},
+                 {Unit::HCHO, {10, &GadgetBle::_convertHCHOV1}}},
+            };
+            break;
+        case T_RH_VOC_NOX:
+            _sampleType = {
+                DataType::T_RH_VOC_NOX, // datatype
+                0,                      // advertisementType
+                22,                     // advSampleType
+                21,                     // dlSampleType
+                8,                      // sampleSize
+                2,                      // sampleCntPerPacket
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::VOC, {4, &GadgetBle::_convertSimple}},
+                 {Unit::NOX, {6, &GadgetBle::_convertSimple}}},
+            };
+            break;
+        case T_RH_VOC_NOX_PM25:
+            _sampleType = {
+                DataType::T_RH_VOC_NOX_PM25, // datatype
+                0,                           // advertisementType
+                24,                          // advSampleType
+                23,                          // dlSampleType
+                10,                          // sampleSize
+                2,                           // sampleCntPerPacket
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::VOC, {4, &GadgetBle::_convertSimple}},
+                 {Unit::NOX, {6, &GadgetBle::_convertSimple}},
+                 {Unit::PM2P5, {8, &GadgetBle::_convertPM2p5V2}}},
             };
             break;
         default:
@@ -172,69 +211,31 @@ void GadgetBle::setDataType(DataType dataType) {
 }
 
 void GadgetBle::writeTemperature(float value) {
-    if (isnan(value)) {
-        return;
-    }
-
-    uint16_t converted =
-        static_cast<uint16_t>((((value + 45) / 175) * 65535) + 0.5f);
-
-    _writeValue(converted, Unit::T);
+    _writeValue(value, Unit::T);
 }
 
 void GadgetBle::writeHumidity(float value) {
-    if (isnan(value)) {
-        return;
-    }
-
-    uint16_t converted = static_cast<uint16_t>(((value / 100) * 65535) + 0.5f);
-    // special conversion for SHT4x RH samples
-    if (_dataType == DataType::T_RH_V4) {
-        converted =
-            static_cast<uint16_t>((((value + 6.0) * 65535) / 125.0) + 0.5f);
-    }
-
-    _writeValue(converted, Unit::RH);
+    _writeValue(value, Unit::RH);
 }
 
 void GadgetBle::writeCO2(float value) {
-    if (isnan(value)) {
-        return;
-    }
-
-    uint16_t converted = static_cast<uint16_t>(value + 0.5f);
-
-    _writeValue(converted, Unit::CO2);
+    _writeValue(value, Unit::CO2);
 }
 
 void GadgetBle::writeVOC(float value) {
-    if (isnan(value)) {
-        return;
-    }
+    _writeValue(value, Unit::VOC);
+}
 
-    uint16_t converted = static_cast<uint16_t>(value + 0.5f);
-
-    _writeValue(converted, Unit::VOC);
+void GadgetBle::writeNOx(float value) {
+    _writeValue(value, Unit::NOX);
 }
 
 void GadgetBle::writePM2p5(float value) {
-    if (isnan(value)) {
-        return;
-    }
-
-    uint16_t converted = static_cast<uint16_t>(((value / 1000) * 65535) + 0.5f);
-
-    _writeValue(converted, Unit::PM2P5);
+    _writeValue(value, Unit::PM2P5);
 }
 
 void GadgetBle::writeHCHO(float value) {
-    if (isnan(value)) {
-        return;
-    }
-
-    uint16_t converted = static_cast<uint16_t>((value * 5) + 0.5f);
-
-    _writeValue(converted, Unit::HCHO);
+    _writeValue(value, Unit::HCHO);
 }
 
 void GadgetBle::commit() {
@@ -405,13 +406,23 @@ void GadgetBle::_addCurrentSampleToHistory() {
 
 // This requires proper adjustment as soon as we have more data types!
 int GadgetBle::_getPositionInSample(Unit unit) {
-    if (_sampleType.unitOffset.count(unit) == 0) {
+    if (_sampleType.unitEnc.count(unit) == 0) {
         return INVALID_POSITION;
     }
-    return _sampleType.unitOffset.at(unit);
+    return _sampleType.unitEnc.at(unit).offset;
 }
 
-void GadgetBle::_writeValue(uint16_t convertedValue, Unit unit) {
+void GadgetBle::_writeValue(float value, Unit unit) {
+    if (isnan(value)) {
+        return;
+    }
+
+    if (_sampleType.unitEnc.count(unit) == 0) {
+        return;
+    }
+    t_converter convert = _sampleType.unitEnc.at(unit).converterFct;
+    uint16_t convertedValue = ((this)->*convert)(value);
+
     int position = _getPositionInSample(unit);
     if (position == INVALID_POSITION) {
         return;
@@ -425,6 +436,34 @@ void GadgetBle::_writeValue(uint16_t convertedValue, Unit unit) {
     // update current sample cache
     _currentSample[position] = static_cast<uint8_t>(convertedValue);
     _currentSample[position + 1] = static_cast<uint8_t>(convertedValue >> 8);
+}
+
+uint16_t GadgetBle::_convertSimple(float value) {
+    return static_cast<uint16_t>(value + 0.5f);
+}
+
+uint16_t GadgetBle::_convertTemperatureV1(float value) {
+    return static_cast<uint16_t>((((value + 45) / 175) * 65535) + 0.5f);
+}
+
+uint16_t GadgetBle::_convertHumidityV1(float value) {
+    return static_cast<uint16_t>(((value / 100) * 65535) + 0.5f);
+}
+
+uint16_t GadgetBle::_convertHumidityV2(float value) {
+    return static_cast<uint16_t>((((value + 6.0) * 65535) / 125.0) + 0.5f);
+}
+
+uint16_t GadgetBle::_convertPM2p5V1(float value) {
+    return static_cast<uint16_t>(((value / 1000) * 65535) + 0.5f);
+}
+
+uint16_t GadgetBle::_convertPM2p5V2(float value) {
+    return static_cast<uint16_t>((value * 10) + 0.5f);
+}
+
+uint16_t GadgetBle::_convertHCHOV1(float value) {
+    return static_cast<uint16_t>((value * 5) + 0.5f);
 }
 
 // Download Logger Related

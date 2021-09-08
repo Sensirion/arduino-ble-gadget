@@ -41,6 +41,10 @@ static const size_t DOWNLOAD_PKT_SIZE = 20;
 static const size_t MAX_SAMPLE_SIZE = 12; // TODO: Adapt depending on data type
 static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000;
 
+class GadgetBle;
+
+typedef uint16_t (GadgetBle::*t_converter)(float);
+
 class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
   public:
     enum DataType {
@@ -51,10 +55,16 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
         T_RH_CO2_ALT,
         T_RH_CO2_PM25,
         T_RH_VOC_PM25,
+        T_RH_VOC_NOX,
+        T_RH_VOC_NOX_PM25,
         T_RH_HCHO,
         T_RH_CO2_VOC_PM25_HCHO
     };
-    enum Unit { T, RH, VOC, CO2, PM2P5, HCHO };
+    enum Unit { T, RH, VOC, NOX, CO2, PM2P5, HCHO };
+    struct UnitEnc {
+        int offset;
+        t_converter converterFct;
+    };
     struct SampleType {
         DataType dataType;
         int advertisementType;
@@ -62,7 +72,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
         int dlSampleType;
         int sampleSize;
         int sampleCntPerPacket;
-        std::map<Unit, int> unitOffset;
+        std::map<Unit, UnitEnc> unitEnc;
     };
     explicit GadgetBle(DataType dataType);
     void enableWifiSetupSettings(
@@ -74,6 +84,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     void writeHumidity(float humidity);
     void writeCO2(float co2);
     void writeVOC(float voc);
+    void writeNOx(float nox);
     void writePM2p5(float pm2p5);
     void writeHCHO(float hcho);
     void commit();
@@ -85,13 +96,21 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
   private:
     void _bleInit();
     int _getPositionInSample(Unit unit);
-    void _writeValue(uint16_t convertedValue, Unit unit);
+    void _writeValue(float value, Unit unit);
     void _updateAdvertising();
     void _updateConnectionState();
     bool _handleDownload();
     uint16_t _computeBufferSize();
     void _addCurrentSampleToHistory();
     uint16_t _computeRealSampleBufferSize();
+
+    uint16_t _convertSimple(float value);
+    uint16_t _convertTemperatureV1(float value);
+    uint16_t _convertHumidityV1(float value);
+    uint16_t _convertHumidityV2(float value);
+    uint16_t _convertPM2p5V1(float value);
+    uint16_t _convertPM2p5V2(float value);
+    uint16_t _convertHCHOV1(float value);
 
     DataType _dataType;
     SampleType _sampleType;
