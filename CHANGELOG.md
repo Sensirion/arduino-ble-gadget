@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2021-09-08
+### Added
+- New sample type for T_RH_VOC_NOX
+- New sample type for T_RH_VOC_NOX_PM2P5
+
 ## [0.9.0] - 2021-05-11
 ### Added
 - Add new data type: T_RH_CO2_VOC_PM25_HCHO
