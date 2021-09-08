@@ -87,7 +87,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release supporting T_RH_CO2_ALT datatype only.
 
-[Unreleased]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.9.0...HEAD
+[Unreleased]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.10.0...HEAD
+[0.10.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.7.1...v0.8.0
 [0.7.1]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.7.0...v0.7.1
