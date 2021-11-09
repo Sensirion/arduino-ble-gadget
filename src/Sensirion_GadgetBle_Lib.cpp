@@ -191,6 +191,22 @@ void GadgetBle::setDataType(DataType dataType) {
                  {Unit::PM2P5, {8, &GadgetBle::_convertPM2p5V2}}},
             };
             break;
+        case T_RH_CO2_VOC_NOX_PM25:
+            _sampleType = {
+                DataType::T_RH_CO2_VOC_NOX_PM25, // datatype
+                0,                               // advertisementType
+                26,                              // advSampleType
+                25,                              // dlSampleType
+                12,                              // sampleSize
+                1,                               // sampleCntPerPacket
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::CO2, {4, &GadgetBle::_convertSimple}},
+                 {Unit::VOC, {6, &GadgetBle::_convertSimple}},
+                 {Unit::NOX, {8, &GadgetBle::_convertSimple}},
+                 {Unit::PM2P5, {10, &GadgetBle::_convertPM2p5V2}}},
+            };
+            break;
         default:
             break;
     }
