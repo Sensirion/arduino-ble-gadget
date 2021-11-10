@@ -58,7 +58,8 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
         T_RH_VOC_NOX,
         T_RH_VOC_NOX_PM25,
         T_RH_HCHO,
-        T_RH_CO2_VOC_PM25_HCHO
+        T_RH_CO2_VOC_PM25_HCHO,
+        T_RH_CO2_VOC_NOX_PM25
     };
     enum Unit { T, RH, VOC, NOX, CO2, PM2P5, HCHO };
     struct UnitEnc {
