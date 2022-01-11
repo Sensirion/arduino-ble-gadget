@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, Sensirion AG
+ * Copyright (c) 2022, Sensirion AG
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
