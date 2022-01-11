@@ -4,7 +4,7 @@
 void NimBLEDataProvider::begin() {
 }
 
-void NimBLEDataProvider::writeValue(float value) {
+void NimBLEDataProvider::writeValue(float placeHolderValue) {
 }
 
 void NimBLEDataProvider::commit() {

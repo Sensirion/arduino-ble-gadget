@@ -35,7 +35,7 @@
 class IDataProvider {
   public:
     virtual void begin() = 0;
-    virtual void writeValue(float value) = 0;
+    virtual void writeValue(float placeHolderValue) = 0;
     virtual void commit() = 0;
     virtual void handleEvents() = 0;
 };

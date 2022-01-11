@@ -38,7 +38,7 @@
 class NimBLEDataProvider: public IDataProvider {
   public:
     void begin() override;
-    void writeValue(float value) override;
+    void writeValue(float placeHolderValue) override;
     void commit() override;
     void handleEvents() override;
 };
