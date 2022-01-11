@@ -14,7 +14,7 @@ SensirionI2CSen44 sen44;
 // GadgetBle workflow
 static int64_t lastMmntTime = 0;
 static int mmntIntervalUs = 1000000;
-GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_VOC_PM25);
+GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_VOC_PM25_V2);
 
 void printModuleVersions() {
     uint16_t error;

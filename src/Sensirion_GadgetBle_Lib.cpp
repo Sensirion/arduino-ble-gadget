@@ -118,7 +118,6 @@ void GadgetBle::setDataType(DataType dataType) {
                  {Unit::PM2P5, {6, &GadgetBle::_convertPM2p5V1}}},
             };
             break;
-
         case T_RH_HCHO:
             _sampleType = {
                 DataType::T_RH_HCHO, // datatype
@@ -205,6 +204,50 @@ void GadgetBle::setDataType(DataType dataType) {
                  {Unit::VOC, {6, &GadgetBle::_convertSimple}},
                  {Unit::NOX, {8, &GadgetBle::_convertSimple}},
                  {Unit::PM2P5, {10, &GadgetBle::_convertPM2p5V2}}},
+            };
+            break;
+        case T_RH_CO2_PM25_V2:
+            _sampleType = {
+                DataType::T_RH_CO2_PM25_V2, // datatype
+                0,                          // advertisementType
+                28,                         // advSampleType
+                27,                         // dlSampleType
+                8,                          // sampleSize
+                2,                          // sampleCntPerPacket
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::CO2, {4, &GadgetBle::_convertSimple}},
+                 {Unit::PM2P5, {6, &GadgetBle::_convertPM2p5V2}}},
+            };
+            break;
+        case T_RH_VOC_PM25_V2:
+            _sampleType = {
+                DataType::T_RH_VOC_PM25_V2, // datatype
+                0,                          // advertisementType
+                30,                         // advSampleType
+                29,                         // dlSampleType
+                8,                          // sampleSize
+                2,                          // sampleCntPerPacket
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::VOC, {4, &GadgetBle::_convertSimple}},
+                 {Unit::PM2P5, {6, &GadgetBle::_convertPM2p5V2}}},
+            };
+            break;
+        case T_RH_CO2_VOC_PM25_HCHO_V2:
+            _sampleType = {
+                DataType::T_RH_CO2_VOC_PM25_HCHO_V2, // datatype
+                0,                                   // advertisementType
+                32,                                  // advSampleType
+                31,                                  // dlSampleType
+                12,                                  // sampleSize
+                1,                                   // sampleCntPerPacket
+                {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
+                 {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
+                 {Unit::CO2, {4, &GadgetBle::_convertSimple}},
+                 {Unit::VOC, {6, &GadgetBle::_convertSimple}},
+                 {Unit::PM2P5, {8, &GadgetBle::_convertPM2p5V2}},
+                 {Unit::HCHO, {10, &GadgetBle::_convertHCHOV1}}},
             };
             break;
         default:
