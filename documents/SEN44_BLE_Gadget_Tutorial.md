@@ -25,7 +25,7 @@ Connect the SEN44 module to the ESP32 DevKitC as depicted below. Please note, th
 different pin layout. If you're using different pins or have a different layout, you might have to adjust the code
 accordingly.
 
-<img src="images/SEN44_hardware_setup.png" width="500">
+<img src="images/SEN44_hardware_setup.jpeg" width="500">
 
 | *SEN44* |   *Arduino*    | *Jumper Wire* |
 |---------|----------------|---------------|
