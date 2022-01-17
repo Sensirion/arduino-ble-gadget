@@ -42,17 +42,17 @@ class DataProvider {
     DataProvider(IBLELibraryWrapper& libraryWrapper,
                  DataType dataType = T_RH_V3)
         : _BLELibrary(libraryWrapper),
-          _sampleDataScheme(sampleDataSchemeSelector.at(dataType)){};
+          _sampleConfig(sampleConfigSelector.at(dataType)){};
     void begin();
     void writeValue(float value, Unit unit);
     void commit();
     void handleEvents();
-    void setSampleDataScheme(DataType dataType);
+    void setSampleConfig(DataType dataType);
 
   private:
     IBLELibraryWrapper& _BLELibrary;
     BLEAdvertisementSample _advertisementSample;
-    SampleDataScheme _sampleDataScheme;
+    SampleConfig _sampleConfig;
 };
 
 #endif /* _DATA_PROVIDER_H_ */

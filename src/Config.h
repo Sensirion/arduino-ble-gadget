@@ -50,7 +50,7 @@ enum DataType {
     T_RH_CO2_VOC_PM25_HCHO,
     T_RH_CO2_VOC_NOX_PM25
     /* Add new DataType here. Don't forget to add corresponding
-    SampleDataScheme in Config.cpp */
+    SampleConfig in Config.cpp */
 };
 
 // Converter functions
@@ -63,21 +63,19 @@ uint16_t convertPM2p5V2(float value);
 uint16_t convertHCHOV1(float value);
 /* Declare new converter function here, define in Config.cpp */
 
-// Do not modify
 struct SampleSlot {
     Unit unit;
     size_t offset;
     uint16_t (*converterFunction)(float value);
 };
 
-// Do not modify
-struct SampleDataScheme {
+struct SampleConfig {
     DataType dataType;
     int sampleType;
     int sensirionAdvertisementSampleType;
     std::map<Unit, SampleSlot> sampleSlots;
 };
 
-extern std::map<DataType, SampleDataScheme> sampleDataSchemeSelector;
+extern std::map<DataType, SampleConfig> sampleConfigSelector;
 
 #endif /* _CONFIG_H_ */

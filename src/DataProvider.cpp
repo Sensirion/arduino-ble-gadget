@@ -24,15 +24,15 @@ void DataProvider::writeValue(float value, Unit unit) {
     }
 
     // check for correct unit
-    if (_sampleDataScheme.sampleSlots.count(unit) ==
+    if (_sampleConfig.sampleSlots.count(unit) ==
         0) { // implies unit is not part of sample
         return;
     }
 
     // get relevant metaData
     uint16_t (*converterFunction)(float value) =
-        _sampleDataScheme.sampleSlots.at(unit).converterFunction;
-    size_t offset = _sampleDataScheme.sampleSlots.at(unit).offset;
+        _sampleConfig.sampleSlots.at(unit).converterFunction;
+    size_t offset = _sampleConfig.sampleSlots.at(unit).offset;
 
     // convert float to 16 bit int
     uint16_t convertedValue = converterFunction(value);
@@ -51,6 +51,6 @@ void DataProvider::handleEvents() {
     // future feature;
 }
 
-void DataProvider::setSampleDataScheme(DataType dataType) {
-    _sampleDataScheme = sampleDataSchemeSelector.at(dataType);
+void DataProvider::setSampleConfig(DataType dataType) {
+    _sampleConfig = sampleConfigSelector.at(dataType);
 }

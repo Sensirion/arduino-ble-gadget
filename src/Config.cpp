@@ -1,23 +1,32 @@
 #include "Config.h"
 
-std::map<DataType, SampleDataScheme> sampleDataSchemeSelector = {
-    {
-        T_RH_V3,
-        {DataType::T_RH_V3,
-         0,
-         4,
-         {{Unit::T, {Unit::T, 0, &convertTemperatureV1}},
-          {Unit::RH, {Unit::RH, 2, &convertHumidityV1}}}},
-    },
-    {
-        T_RH_V4,
-        {DataType::T_RH_V4,
-         0,
-         6,
-         {{Unit::T, {Unit::T, 0, &convertTemperatureV1}},
-          {Unit::RH, {Unit::RH, 2, &convertHumidityV2}}}},
-    }
-    /* Add new SampleDataSchemes here */
+std::map<DataType, SampleConfig> sampleConfigSelector = {
+    {T_RH_V3,
+     {.dataType = DataType::T_RH_V3,
+      .sampleType = 0,
+      .sensirionAdvertisementSampleType = 4,
+      .sampleSlots = {{Unit::T,
+                       {.unit = Unit::T,
+                        .offset = 0,
+                        .converterFunction = &convertTemperatureV1}},
+                      {Unit::RH,
+                       {.unit = Unit::RH,
+                        .offset = 2,
+                        .converterFunction = &convertHumidityV1}}}}},
+    {T_RH_V4,
+     {.dataType = DataType::T_RH_V4,
+      .sampleType = 0,
+      .sensirionAdvertisementSampleType = 6,
+      .sampleSlots = {{Unit::T,
+                       {.unit = Unit::T,
+                        .offset = 0,
+                        .converterFunction = &convertTemperatureV1}},
+                      {Unit::RH,
+                       {.unit = Unit::RH,
+                        .offset = 2,
+                        .converterFunction = &convertHumidityV2}}}}}
+
+    /* Add new SampleConfigs here */
 };
 
 // Converter functions
