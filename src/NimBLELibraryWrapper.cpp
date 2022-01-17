@@ -1,11 +1,9 @@
 #include "NimBLELibraryWrapper.h"
 
-void NimBLELibraryWrapper::initDevice(const std::string& deviceName) {
+void NimBLELibraryWrapper::init(const std::string& deviceName) {
     NimBLEDevice::init(deviceName);
     _deviceName = deviceName;
-}
 
-void NimBLELibraryWrapper::initAdvertising() {
     _pNimBLEAdvertising = NimBLEDevice::getAdvertising();
     // Helps with iPhone connection issues (copy/paste)
     _pNimBLEAdvertising->setMinPreferred(0x06);

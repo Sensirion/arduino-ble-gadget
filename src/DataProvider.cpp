@@ -1,7 +1,7 @@
 #include "DataProvider.h"
 
 void DataProvider::begin() {
-    _BLELibrary.initDevice(GADGET_NAME);
+    _BLELibrary.init(GADGET_NAME);
 
     // Fill advertisedData byte array
     _advertisementSample.writeCompanyId(0x06D5);
@@ -11,8 +11,6 @@ void DataProvider::begin() {
     std::string macAddress = _BLELibrary.getDeviceAddress();
     _advertisementSample.writeDeviceId(
         strtol(macAddress.substr(12, 17).c_str(), NULL, 16));
-
-    _BLELibrary.initAdvertising();
 
     _BLELibrary.setAdvertisingData(_advertisementSample.getDataString());
 

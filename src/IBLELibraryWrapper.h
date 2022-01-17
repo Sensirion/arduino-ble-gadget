@@ -36,8 +36,7 @@
 // abstract class
 class IBLELibraryWrapper {
   public:
-    virtual void initDevice(const std::string& deviceName) = 0;
-    virtual void initAdvertising() = 0;
+    virtual void init(const std::string& deviceName) = 0;
     // set device name and manufacturer data
     virtual void setAdvertisingData(const std::string& data) = 0;
     virtual void startAdvertising() = 0;
