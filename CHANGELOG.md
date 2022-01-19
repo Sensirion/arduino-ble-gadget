@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2022-01-19
+### Added
+- SEN54 Example code and tutorial
+- SEN55 Example code and tutorial
+- SVM41 Example code and tutorial
+
 ## [0.12.0] - 2022-01-12
 ### Added
 - New sample types allowing PM2P5 values > 1000 (up to 6552) 
@@ -99,7 +105,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release supporting T_RH_CO2_ALT datatype only.
 
-[Unreleased]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.9.0...v0.10.0
