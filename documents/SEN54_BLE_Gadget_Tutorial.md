@@ -18,7 +18,7 @@ To complete this tutorial, you'll need
 
 * [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
   available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
-* Sensirion SEN54 Sensor Module
+* [Sensirion SEN54 Sensor Module](https://sensirion.com/my-sen-ek)
 * USB cable to connect the ESP32 DevKitC module to your computer
 
 Connect the SEN54 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
