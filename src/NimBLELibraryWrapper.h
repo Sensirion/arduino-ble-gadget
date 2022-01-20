@@ -36,6 +36,7 @@
 
 class NimBLELibraryWrapper: public IBLELibraryWrapper {
   public:
+    virtual ~NimBLELibraryWrapper() = default;
     void init(const std::string& deviceName) override;
     void setAdvertisingData(const std::string& data) override;
     void startAdvertising() override;
