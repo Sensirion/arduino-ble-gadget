@@ -39,8 +39,8 @@ const char* const GADGET_NAME = "S";
 
 class DataProvider {
   public:
-    DataProvider(IBLELibraryWrapper& libraryWrapper,
-                 DataType dataType = T_RH_V3)
+    explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
+                          DataType dataType = T_RH_V3)
         : _BLELibrary(libraryWrapper),
           _sampleConfig(sampleConfigSelector.at(dataType)){};
     void begin();
