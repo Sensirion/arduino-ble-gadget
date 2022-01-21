@@ -38,6 +38,7 @@ struct WrapperPrivateData;
 
 class NimBLELibraryWrapper: public IBLELibraryWrapper {
   public:
+    NimBLELibraryWrapper();
     virtual ~NimBLELibraryWrapper();
     void init() override;
     void setAdvertisingData(const std::string& data) override;

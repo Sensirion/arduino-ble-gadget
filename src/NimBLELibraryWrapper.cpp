@@ -4,6 +4,9 @@
 struct WrapperPrivateData {
     NimBLEAdvertising* _pNimBLEAdvertising;
 };
+NimBLELibraryWrapper::NimBLELibraryWrapper() {
+    init();
+}
 
 NimBLELibraryWrapper::~NimBLELibraryWrapper() {
     NimBLEDevice::deinit();
