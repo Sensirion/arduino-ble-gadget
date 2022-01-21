@@ -34,7 +34,7 @@
 #include "IBLELibraryWrapper.h"
 //#include <NimBLEDevice.h>
 
-class NimBLEAdvertising;
+struct WrapperPrivateData;
 
 class NimBLELibraryWrapper: public IBLELibraryWrapper {
   public:
@@ -47,8 +47,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
 
   private:
     void _updateAdvertising();
-    NimBLEAdvertising* _pNimBLEAdvertising;
-    std::string _deviceName;
+    WrapperPrivateData* _data;
 };
 
 #endif /* _NIM_BLE_LIBRARY_WRAPPER_H_ */
