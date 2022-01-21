@@ -1,4 +1,5 @@
 #include "NimBLELibraryWrapper.h"
+#include "NimBLEDevice.h"
 
 NimBLELibraryWrapper::~NimBLELibraryWrapper() {
     NimBLEDevice::deinit();

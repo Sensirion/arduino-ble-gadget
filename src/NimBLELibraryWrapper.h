@@ -32,7 +32,9 @@
 #define _NIM_BLE_LIBRARY_WRAPPER_H_
 
 #include "IBLELibraryWrapper.h"
-#include <NimBLEDevice.h>
+//#include <NimBLEDevice.h>
+
+class NimBLEAdvertising;
 
 class NimBLELibraryWrapper: public IBLELibraryWrapper {
   public:
