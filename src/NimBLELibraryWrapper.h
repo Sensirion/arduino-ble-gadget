@@ -39,7 +39,7 @@ struct WrapperPrivateData;
 class NimBLELibraryWrapper: public IBLELibraryWrapper {
   public:
     virtual ~NimBLELibraryWrapper();
-    void init(const std::string& deviceName) override;
+    void init() override;
     void setAdvertisingData(const std::string& data) override;
     void startAdvertising() override;
     void stopAdvertising() override;
@@ -47,7 +47,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
 
   private:
     void _updateAdvertising();
-    WrapperPrivateData* _data;
+    static WrapperPrivateData* _data;
 };
 
 #endif /* _NIM_BLE_LIBRARY_WRAPPER_H_ */

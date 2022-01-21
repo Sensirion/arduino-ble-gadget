@@ -35,8 +35,6 @@
 #include "IBLELibraryWrapper.h"
 #include "Samples.h"
 
-const char* const GADGET_NAME = "S";
-
 class DataProvider {
   public:
     explicit DataProvider(IBLELibraryWrapper& libraryWrapper,

@@ -1,7 +1,7 @@
 #include "DataProvider.h"
 
 void DataProvider::begin() {
-    _BLELibrary.init(GADGET_NAME);
+    _BLELibrary.init();
 
     // Fill advertisedData byte array
     _advertisementSample.writeCompanyId(0x06D5);

@@ -33,11 +33,13 @@
 
 #include <string>
 
+const char* const GADGET_NAME = "S";
+
 // abstract class
 class IBLELibraryWrapper {
   public:
     virtual ~IBLELibraryWrapper() = default;
-    virtual void init(const std::string& deviceName) = 0;
+    virtual void init() = 0;
     // set device name and manufacturer data
     virtual void setAdvertisingData(const std::string& data) = 0;
     virtual void startAdvertising() = 0;
