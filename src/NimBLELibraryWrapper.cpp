@@ -1,5 +1,9 @@
 #include "NimBLELibraryWrapper.h"
 
+NimBLELibraryWrapper::~NimBLELibraryWrapper() {
+    NimBLEDevice::deinit();
+}
+
 void NimBLELibraryWrapper::init(const std::string& deviceName) {
     NimBLEDevice::init(deviceName);
     _deviceName = deviceName;
