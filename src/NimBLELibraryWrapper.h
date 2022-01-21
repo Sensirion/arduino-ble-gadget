@@ -49,6 +49,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
   private:
     void _updateAdvertising();
     static WrapperPrivateData* _data;
+    static uint _numberOfInstances;
 };
 
 #endif /* _NIM_BLE_LIBRARY_WRAPPER_H_ */
