@@ -32,13 +32,14 @@
 #define _NIM_BLE_LIBRARY_WRAPPER_H_
 
 #include "IBLELibraryWrapper.h"
-//#include <NimBLEDevice.h>
 
 struct WrapperPrivateData;
 
 class NimBLELibraryWrapper: public IBLELibraryWrapper {
   public:
     NimBLELibraryWrapper();
+    NimBLELibraryWrapper(const NimBLELibraryWrapper& other) = delete;
+    NimBLELibraryWrapper& operator=(const NimBLELibraryWrapper& other) = delete;
     virtual ~NimBLELibraryWrapper();
     void init() override;
     void setAdvertisingData(const std::string& data) override;
@@ -50,6 +51,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
     void _updateAdvertising();
     static WrapperPrivateData* _data;
     static uint _numberOfInstances;
+    void _deinit();
 };
 
 #endif /* _NIM_BLE_LIBRARY_WRAPPER_H_ */
