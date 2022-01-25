@@ -28,16 +28,29 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef _DATA_PROVIDER_H_
+#define _DATA_PROVIDER_H_
 
-#ifndef _I_DATA_PROVIDER_H_
-#define _I_DATA_PROVIDER_H_
+#include "Config.h"
+#include "IBLELibraryWrapper.h"
+#include "Samples.h"
 
-class IDataProvider {
+class DataProvider {
   public:
-    virtual void begin() = 0;
-    virtual void writeValue(float placeHolderValue) = 0;
-    virtual void commit() = 0;
-    virtual void handleEvents() = 0;
+    explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
+                          DataType dataType = T_RH_V3)
+        : _BLELibrary(libraryWrapper),
+          _sampleConfig(sampleConfigSelector.at(dataType)){};
+    void begin();
+    void writeValue(float value, Unit unit);
+    void commit();
+    void handleEvents();
+    void setSampleConfig(DataType dataType);
+
+  private:
+    IBLELibraryWrapper& _BLELibrary;
+    BLEAdvertisementSample _advertisementSample;
+    SampleConfig _sampleConfig;
 };
 
-#endif /* _I_DATA_PROVIDER_H_ */
+#endif /* _DATA_PROVIDER_H_ */
