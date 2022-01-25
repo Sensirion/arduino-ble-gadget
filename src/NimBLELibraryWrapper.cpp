@@ -33,6 +33,9 @@ void NimBLELibraryWrapper::_deinit() {
 }
 
 void NimBLELibraryWrapper::init() {
+    if (_data->BLEDeviceRunning == true) {
+        return;
+    }
     NimBLEDevice::init(GADGET_NAME);
     _data->BLEDeviceRunning = true;
 
