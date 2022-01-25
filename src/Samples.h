@@ -37,26 +37,26 @@
 #include <vector>
 
 struct BLEByteArray {
-    static const size_t DATA_LENGTH = 18;
-    void writeByte(uint8_t byte, const size_t position);
-    void write16BitLittleEndian(const uint16_t value, size_t position);
-    void write16BitBigEndian(const uint16_t value, size_t position);
+    const static size_t MAX_DATA_LENGTH = 18;
+    void writeByte(uint8_t byte, size_t position);
+    void write16BitLittleEndian(uint16_t value, size_t position);
+    void write16BitBigEndian(uint16_t value, size_t position);
     std::string getDataString();
-    std::array<uint8_t, DATA_LENGTH> _data = {};
+    std::array<uint8_t, MAX_DATA_LENGTH> _data = {};
 };
 
 struct BLEAdvertisementSample: BLEByteArray {
-    static const size_t COMPANY_ID_POSITION = 0;
-    static const size_t SENSIRION_ADVERTISEMENT_TYPE_POSITION = 2;
-    static const size_t SAMPLE_TYPE_POSITION = 3;
-    static const size_t DEVICE_ID_POSITION = 4;
-    static const size_t FIRST_SAMPLE_SLOT_POSITION = 6;
+    const static size_t COMPANY_ID_POSITION = 0;
+    const static size_t SENSIRION_ADVERTISEMENT_TYPE_POSITION = 2;
+    const static size_t SAMPLE_TYPE_POSITION = 3;
+    const static size_t DEVICE_ID_POSITION = 4;
+    const static size_t FIRST_SAMPLE_SLOT_POSITION = 6;
 
-    void writeCompanyId(const uint16_t companyID);
-    void writeSensirionAdvertisementType(const uint8_t advType);
-    void writeSampleType(const uint8_t sampleType);
-    void writeDeviceId(const uint16_t deviceID);
-    void writeValue(const uint16_t value, const size_t position);
+    void writeCompanyId(uint16_t companyID);
+    void writeSensirionAdvertisementType(uint8_t advType);
+    void writeSampleType(uint8_t sampleType);
+    void writeDeviceId(uint16_t deviceID);
+    void writeValue(uint16_t value, size_t position);
 };
 
 class BLEDataLoggerSample: public BLEByteArray {
