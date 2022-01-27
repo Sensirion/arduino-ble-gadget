@@ -10,6 +10,9 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
     bool BLEDeviceRunning = false;
     bool deviceConnected = false;
 
+    // BLEServer
+    NimBLEServer* pBLEServer;
+
     // BLEServerCallbacks
     void onConnect(BLEServer* serverInst);
     void onDisconnect(BLEServer* serverInst);
@@ -65,6 +68,12 @@ void NimBLELibraryWrapper::init() {
     // Helps with iPhone connection issues (copy/paste)
     _data->pNimBLEAdvertising->setMinPreferred(0x06);
     _data->pNimBLEAdvertising->setMaxPreferred(0x12);
+
+    // Initialize BLEServer
+    _data->pBLEServer =
+        NimBLEDevice::createServer(); // NimBLEDevice has ownership
+    _data->pBLEServer->setCallbacks(_data);
+
 }
 
 void NimBLELibraryWrapper::setAdvertisingData(const std::string& data) {
