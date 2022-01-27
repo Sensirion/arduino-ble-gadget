@@ -16,6 +16,11 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
     // BLEDownloadService
     NimBLEService* pBLEDownloadService;
 
+    // BLECharacteristics
+    NimBLECharacteristic* pTransferChararacteristic;
+    NimBLECharacteristic* pNumberOfSamplesCharacteristic;
+    NimBLECharacteristic* pSampleHistoryIntervalCharacteristic;
+
     // BLEServerCallbacks
     void onConnect(BLEServer* serverInst);
     void onDisconnect(BLEServer* serverInst);
@@ -104,6 +109,23 @@ void NimBLELibraryWrapper::_createDownloadService() {
     // Create service
     _data->pBLEDownloadService =
         _data->pBLEServer->createService(DOWNLOAD_SERVICE_UUID);
+
+    // Create characteristics
+    _data->pNumberOfSamplesCharacteristic =
+        _data->pBLEDownloadService->createCharacteristic(NUMBER_OF_SAMPLES_UUID,
+                                                         NIMBLE_PROPERTY::READ);
+    _data->pNumberOfSamplesCharacteristic->setValue(0);
+
+    _data->pSampleHistoryIntervalCharacteristic =
+        _data->pBLEDownloadService->createCharacteristic(
+            SAMPLE_HISTORY_INTERVAL_UUID,
+            NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE);
+    _data->pSampleHistoryIntervalCharacteristic->setCallbacks(_data);
+
+    _data->pTransferChararacteristic =
+        _data->pBLEDownloadService->createCharacteristic(
+            DOWNLOAD_PACKET_UUID, NIMBLE_PROPERTY::NOTIFY);
+    _data->pTransferChararacteristic->setCallbacks(_data);
 
     _data->pBLEDownloadService->start();
 }
