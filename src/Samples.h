@@ -36,31 +36,51 @@
 #include <map>
 #include <vector>
 
-struct BLEByteArray {
-    const static size_t MAX_DATA_LENGTH = 18;
-    void writeByte(uint8_t byte, size_t position);
-    void write16BitLittleEndian(uint16_t value, size_t position);
-    void write16BitBigEndian(uint16_t value, size_t position);
+// Must explicitly instantiate template in Samples.cpp before usage
+template<size_t SIZE>
+class ByteBuffer {
+  public:
+    void writeValue(uint16_t value, size_t position); // REMOVE/MAKE PROTECTED
     std::string getDataString();
-    std::array<uint8_t, MAX_DATA_LENGTH> _data = {};
+  protected:
+    void _writeByte(uint8_t byte, size_t position);
+    void _write16BitLittleEndian(uint16_t value, size_t position);
+    void _write16BitBigEndian(uint16_t value, size_t position);
+    std::array<uint8_t, SIZE> _data = {};
 };
 
-struct BLEAdvertisementSample: BLEByteArray {
-    const static size_t COMPANY_ID_POSITION = 0;
-    const static size_t SENSIRION_ADVERTISEMENT_TYPE_POSITION = 2;
-    const static size_t SAMPLE_TYPE_POSITION = 3;
-    const static size_t DEVICE_ID_POSITION = 4;
-    const static size_t FIRST_SAMPLE_SLOT_POSITION = 6;
+const static size_t SAMPLE_BUFFER_SIZE_BYTES = 12; 
+const static size_t SAMPLE_HISTORY_BUFFER_SIZE_BYTES = 30000;
+const static size_t ADVERTISEMENT_HEADER_BUFFER_SIZE_BYTES = 6;
+const static size_t DOWNLOAD_PACKET_BUFFER_SIZE_BYTES = 20;
 
+class SampleBuffer : public ByteBuffer<SAMPLE_BUFFER_SIZE_BYTES>{
+    // Add method to write value using sampleconfig
+    // Also add createAdvertisement packet method to provider that combines
+    // sampleConfig and this sample to create complete advertisement packet
+    // make sampleConfig member or keep in dataprovider?
+};
+
+class SampleHistoryRingBuffer : public ByteBuffer<SAMPLE_HISTORY_BUFFER_SIZE_BYTES>{
+    // add logic for ring buffering, includeing index, iteration
+};
+
+class AdvertisementHeaderBuffer : public ByteBuffer<ADVERTISEMENT_HEADER_BUFFER_SIZE_BYTES>{
+  public:
+    // port public BLESample methods (above)
     void writeCompanyId(uint16_t companyID);
     void writeSensirionAdvertisementType(uint8_t advType);
     void writeSampleType(uint8_t sampleType);
-    void writeDeviceId(uint16_t deviceID);
     void writeValue(uint16_t value, size_t position);
+    void writeDeviceId(uint16_t deviceID);
 };
 
-class BLEDataLoggerSample: public BLEByteArray {
-    // todo
+class DownloadHeaderBuffer : public ByteBuffer<DOWNLOAD_PACKET_BUFFER_SIZE_BYTES>{
+    // add approptiate write methods (see Bjoerns implementation)
+};
+
+class DownloadPacketBuffer : public ByteBuffer<DOWNLOAD_PACKET_BUFFER_SIZE_BYTES>{
+    // add methods to add as many samples from sampleHistoryringBuffer as will fit
 };
 
 #endif /* _SAMPLES_H_ */

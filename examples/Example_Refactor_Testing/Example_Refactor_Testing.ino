@@ -10,6 +10,7 @@ float mockHumi = 0;
 void setup(){
     Serial.begin(115200);
     provider.begin();
+    Serial.println(offsetof(SampleSlot, offset));
 }
 
 void loop(){
