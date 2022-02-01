@@ -3,7 +3,7 @@
 void DataProvider::begin() {
     _BLELibrary.init();
 
-    // Fill advertisedData byte array
+    // Fill advertisement header
     _advertisementHeader.writeCompanyId(0x06D5);
     _advertisementHeader.writeSensirionAdvertisementType(0x00);
 
@@ -18,23 +18,23 @@ void DataProvider::begin() {
 }
 
 void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
-    // check for valid value
+    // Check for valid value
     if (isnan(value)) {
         return;
     }
 
-    // check for correct unit
+    // Check for correct unit
     if (_sampleConfig.sampleSlots.count(unit) ==
         0) { // implies unit is not part of sample
         return;
     }
 
-    // get relevant metaData
+    // Get relevant metaData
     uint16_t (*converterFunction)(float value) =
         _sampleConfig.sampleSlots.at(unit).converterFunction;
     size_t offset = _sampleConfig.sampleSlots.at(unit).offset;
 
-    // convert float to 16 bit int
+    // Convert float to 16 bit int
     uint16_t convertedValue = converterFunction(value);
     _currentSample.writeValue(
         convertedValue,
@@ -42,7 +42,7 @@ void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
 }
 
 void DataProvider::commitSample() {
-    // add sample to sampleBuffer: TODO
+    // Add sample to sampleBuffer: TODO
 
     // Create Advertising Packet
     std::string advertisementPacket = _buildAdvertisementData();
@@ -54,7 +54,7 @@ void DataProvider::commitSample() {
 }
 
 void DataProvider::handleEvents() {
-    // future feature: TODO
+    // Future feature: TODO
 }
 
 void DataProvider::setSampleConfig(DataType dataType) {
