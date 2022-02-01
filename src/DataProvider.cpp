@@ -12,7 +12,7 @@ void DataProvider::begin() {
     _advertisementHeader.writeDeviceId(
         strtol(macAddress.substr(12, 17).c_str(), NULL, 16));
 
-    _BLELibrary.setAdvertisingData(_advertisementHeader.getDataString());
+    _BLELibrary.setAdvertisingData(_buildAdvertisementData());
 
     _BLELibrary.startAdvertising();
 }
@@ -42,12 +42,9 @@ void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
 void DataProvider::commitSample() {
     // Add sample to sampleBuffer: TODO
 
-    // Create Advertising Packet
-    std::string advertisementPacket = _buildAdvertisementData();
-
     // Update Advertising
     _BLELibrary.stopAdvertising();
-    _BLELibrary.setAdvertisingData(advertisementPacket);
+    _BLELibrary.setAdvertisingData(_buildAdvertisementData());
     _BLELibrary.startAdvertising();
 }
 
