@@ -42,15 +42,22 @@ class DataProvider {
         : _BLELibrary(libraryWrapper),
           _sampleConfig(sampleConfigSelector.at(dataType)){};
     void begin();
-    void writeValue(float value, Unit unit);
-    void commit();
+    void writeValueToCurrentSample(float value, Unit unit);
+    void commitSample();
     void handleEvents();
     void setSampleConfig(DataType dataType);
 
   private:
     IBLELibraryWrapper& _BLELibrary;
-    BLEAdvertisementSample _advertisementSample;
+    SampleBuffer _currentSample;
+    AdvertisementHeaderBuffer _advertisementHeader;
+    
     SampleConfig _sampleConfig;
+    std::string _buildAdvertisementData();
+    void _handleDownload();
+    // saveSampleToHistoryBuffer
+    // createAdvertisementSample (using sampleConfig and sampleBuffer)
+    // createDownLoadPacket
 };
 
 #endif /* _DATA_PROVIDER_H_ */

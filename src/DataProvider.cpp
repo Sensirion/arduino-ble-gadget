@@ -4,20 +4,20 @@ void DataProvider::begin() {
     _BLELibrary.init();
 
     // Fill advertisedData byte array
-    _advertisementSample.writeCompanyId(0x06D5);
-    _advertisementSample.writeSensirionAdvertisementType(0x00);
+    _advertisementHeader.writeCompanyId(0x06D5);
+    _advertisementHeader.writeSensirionAdvertisementType(0x00);
 
     // Use part of MAC address as device id
     std::string macAddress = _BLELibrary.getDeviceAddress();
-    _advertisementSample.writeDeviceId(
+    _advertisementHeader.writeDeviceId(
         strtol(macAddress.substr(12, 17).c_str(), NULL, 16));
 
-    _BLELibrary.setAdvertisingData(_advertisementSample.getDataString());
+    _BLELibrary.setAdvertisingData(_advertisementHeader.getDataString());
 
     _BLELibrary.startAdvertising();
 }
 
-void DataProvider::writeValue(float value, Unit unit) {
+void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
     // check for valid value
     if (isnan(value)) {
         return;
@@ -36,21 +36,33 @@ void DataProvider::writeValue(float value, Unit unit) {
 
     // convert float to 16 bit int
     uint16_t convertedValue = converterFunction(value);
-    _advertisementSample.writeValue(
+    _currentSample.writeValue(
         convertedValue,
-        BLEAdvertisementSample::FIRST_SAMPLE_SLOT_POSITION + offset);
+        offset);
 }
 
-void DataProvider::commit() {
+void DataProvider::commitSample() {
+    // add sample to sampleBuffer: TODO
+
+    // Create Advertising Packet
+    std::string advertisementPacket = _buildAdvertisementData();
+
+    // Update Advertising
     _BLELibrary.stopAdvertising();
-    _BLELibrary.setAdvertisingData(_advertisementSample.getDataString());
+    _BLELibrary.setAdvertisingData(advertisementPacket);
     _BLELibrary.startAdvertising();
 }
 
 void DataProvider::handleEvents() {
-    // future feature;
+    // future feature: TODO
 }
 
 void DataProvider::setSampleConfig(DataType dataType) {
     _sampleConfig = sampleConfigSelector.at(dataType);
+}
+
+std::string DataProvider::_buildAdvertisementData() {
+    std::string data = _advertisementHeader.getDataString();
+    data.append(_currentSample.getDataString());
+    return data;
 }
