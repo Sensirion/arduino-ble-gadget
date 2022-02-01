@@ -15,6 +15,6 @@ void setup(){
 
 void loop(){
     delay(100);
-    provider.writeValue(++mockTemp, Unit::T);
-    provider.commit();
+    provider.writeValueToCurrentSample(++mockTemp, Unit::T);
+    provider.commitSample();
 }
