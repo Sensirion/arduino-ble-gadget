@@ -54,12 +54,7 @@ const static size_t SAMPLE_HISTORY_BUFFER_SIZE_BYTES = 30000;
 const static size_t ADVERTISEMENT_HEADER_BUFFER_SIZE_BYTES = 6;
 const static size_t DOWNLOAD_PACKET_BUFFER_SIZE_BYTES = 20;
 
-class SampleBuffer : public ByteBuffer<SAMPLE_BUFFER_SIZE_BYTES>{
-    // Add method to write value using sampleconfig
-    // Also add createAdvertisement packet method to provider that combines
-    // sampleConfig and this sample to create complete advertisement packet
-    // make sampleConfig member or keep in dataprovider?
-};
+class SampleBuffer : public ByteBuffer<SAMPLE_BUFFER_SIZE_BYTES>{};
 
 class SampleHistoryRingBuffer : public ByteBuffer<SAMPLE_HISTORY_BUFFER_SIZE_BYTES>{
     // add logic for ring buffering, includeing index, iteration
