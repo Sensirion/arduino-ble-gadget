@@ -49,9 +49,9 @@ class DataProvider {
 
   private:
     IBLELibraryWrapper& _BLELibrary;
-    SampleBuffer _currentSample;
-    AdvertisementHeaderBuffer _advertisementHeader;
-    
+    Sample _currentSample;
+    AdvertisementHeader _advertisementHeader;
+
     SampleConfig _sampleConfig;
     std::string _buildAdvertisementData();
     void _handleDownload();

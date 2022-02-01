@@ -36,9 +36,7 @@ void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
 
     // Convert float to 16 bit int
     uint16_t convertedValue = converterFunction(value);
-    _currentSample.writeValue(
-        convertedValue,
-        offset);
+    _currentSample.writeValue(convertedValue, offset);
 }
 
 void DataProvider::commitSample() {
