@@ -28,36 +28,27 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _DATA_PROVIDER_H_
-#define _DATA_PROVIDER_H_
+#ifndef _BYTE_ARRAY_H_
+#define _BYTE_ARRAY_H_
 
-#include "AdvertisementHeader.h"
-#include "Config.h"
-#include "IBLELibraryWrapper.h"
-#include "Sample.h"
+#include "Arduino.h"
+#include <array>
 
-class DataProvider {
+const static size_t SAMPLE_SIZE_BYTES = 12;
+const static size_t ADVERTISEMENT_HEADER_SIZE_BYTES = 6;
+const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
+const static size_t DOWNLOAD_PACKET_SIZE_BYTES = 20;
+
+// Must explicitly instantiate template in Samples.cpp before usage
+template <size_t SIZE> class ByteArray {
   public:
-    explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
-                          DataType dataType = T_RH_V3)
-        : _BLELibrary(libraryWrapper),
-          _sampleConfig(sampleConfigSelector.at(dataType)){};
-    void begin();
-    void writeValueToCurrentSample(float value, Unit unit);
-    void commitSample();
-    // void handleEvents();
-    void setSampleConfig(DataType dataType);
+    std::string getDataString();
 
-  private:
-    IBLELibraryWrapper& _BLELibrary;
-    Sample _currentSample;
-    AdvertisementHeader _advertisementHeader;
-
-    SampleConfig _sampleConfig;
-    std::string _buildAdvertisementData();
-    // void _handleDownload();
-    // void _saveSampleToHistoryBuffer();
-    // void _buildDownLoadPacket();
+  protected:
+    void _writeByte(uint8_t byte, size_t position);
+    void _write16BitLittleEndian(uint16_t value, size_t position);
+    void _write16BitBigEndian(uint16_t value, size_t position);
+    std::array<uint8_t, SIZE> _data = {};
 };
 
-#endif /* _DATA_PROVIDER_H_ */
+#endif /* _BYTE_ARRAY_H_ */

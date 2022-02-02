@@ -47,11 +47,11 @@ void DataProvider::commitSample() {
     _BLELibrary.setAdvertisingData(_buildAdvertisementData());
     _BLELibrary.startAdvertising();
 }
-
+/*
 void DataProvider::handleEvents() {
     // Future feature: TODO
 }
-
+*/
 void DataProvider::setSampleConfig(DataType dataType) {
     _sampleConfig = sampleConfigSelector.at(dataType);
 }

@@ -28,36 +28,17 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _DATA_PROVIDER_H_
-#define _DATA_PROVIDER_H_
+#ifndef _ADVERTISEMENT_HEADER_H_
+#define _ADVERTISEMENT_HEADER_H_
 
-#include "AdvertisementHeader.h"
-#include "Config.h"
-#include "IBLELibraryWrapper.h"
-#include "Sample.h"
+#include "ByteArray.h"
 
-class DataProvider {
+class AdvertisementHeader: public ByteArray<ADVERTISEMENT_HEADER_SIZE_BYTES> {
   public:
-    explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
-                          DataType dataType = T_RH_V3)
-        : _BLELibrary(libraryWrapper),
-          _sampleConfig(sampleConfigSelector.at(dataType)){};
-    void begin();
-    void writeValueToCurrentSample(float value, Unit unit);
-    void commitSample();
-    // void handleEvents();
-    void setSampleConfig(DataType dataType);
-
-  private:
-    IBLELibraryWrapper& _BLELibrary;
-    Sample _currentSample;
-    AdvertisementHeader _advertisementHeader;
-
-    SampleConfig _sampleConfig;
-    std::string _buildAdvertisementData();
-    // void _handleDownload();
-    // void _saveSampleToHistoryBuffer();
-    // void _buildDownLoadPacket();
+    void writeCompanyId(uint16_t companyID);
+    void writeSensirionAdvertisementType(uint8_t advType);
+    void writeSampleType(uint8_t sampleType);
+    void writeDeviceId(uint16_t deviceID);
 };
 
-#endif /* _DATA_PROVIDER_H_ */
+#endif /* _ADVERTISEMENT_HEADER_H_ */

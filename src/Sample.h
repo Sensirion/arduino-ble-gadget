@@ -32,54 +32,13 @@
 #ifndef _SAMPLES_H_
 #define _SAMPLES_H_
 
+#include "ByteArray.h"
 #include <Arduino.h>
-#include <map>
-#include <vector>
-
-const static size_t SAMPLE_SIZE_BYTES = 12;
-const static size_t ADVERTISEMENT_HEADER_SIZE_BYTES = 6;
-const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
-const static size_t DOWNLOAD_PACKET_SIZE_BYTES = 20;
-
-// Must explicitly instantiate template in Samples.cpp before usage
-template <size_t SIZE> class ByteArray {
-  public:
-    std::string getDataString();
-
-  protected:
-    void _writeByte(uint8_t byte, size_t position);
-    void _write16BitLittleEndian(uint16_t value, size_t position);
-    void _write16BitBigEndian(uint16_t value, size_t position);
-    std::array<uint8_t, SIZE> _data = {};
-};
 
 // Holds sensor values following the set SampleConfig
 class Sample: public ByteArray<SAMPLE_SIZE_BYTES> {
   public:
     void writeValue(uint16_t value, size_t position);
-};
-
-class AdvertisementHeader: public ByteArray<ADVERTISEMENT_HEADER_SIZE_BYTES> {
-  public:
-    void writeCompanyId(uint16_t companyID);
-    void writeSensirionAdvertisementType(uint8_t advType);
-    void writeSampleType(uint8_t sampleType);
-    void writeDeviceId(uint16_t deviceID);
-};
-
-// Logs Samples over time to be downloaded
-class SampleHistoryRingBuffer
-    : public ByteArray<SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES> {
-    // add logic for ring buffering, includeing index, iteration
-};
-
-class DownloadHeader: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
-    // add approptiate write methods (see Bjoerns implementation)
-};
-
-class DownloadPacket: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
-    // add methods to add as many samples from SampleHistoryRingBuffer as will
-    // fit
 };
 
 #endif /* _SAMPLES_H_ */
