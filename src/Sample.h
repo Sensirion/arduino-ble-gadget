@@ -35,6 +35,8 @@
 #include "ByteArray.h"
 #include <Arduino.h>
 
+const static size_t SAMPLE_SIZE_BYTES = 12;
+
 // Holds sensor values following the set SampleConfig
 class Sample: public ByteArray<SAMPLE_SIZE_BYTES> {
   public:

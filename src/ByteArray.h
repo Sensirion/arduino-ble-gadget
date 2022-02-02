@@ -34,20 +34,30 @@
 #include "Arduino.h"
 #include <array>
 
-const static size_t SAMPLE_SIZE_BYTES = 12;
-const static size_t ADVERTISEMENT_HEADER_SIZE_BYTES = 6;
-const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
-const static size_t DOWNLOAD_PACKET_SIZE_BYTES = 20;
-
 // Must explicitly instantiate template in Samples.cpp before usage
 template <size_t SIZE> class ByteArray {
   public:
-    std::string getDataString();
+    std::string getDataString() {
+        std::string stringData(reinterpret_cast<char*>(_data.data()),
+                               _data.size());
+        return stringData;
+    }
 
   protected:
-    void _writeByte(uint8_t byte, size_t position);
-    void _write16BitLittleEndian(uint16_t value, size_t position);
-    void _write16BitBigEndian(uint16_t value, size_t position);
+    void _writeByte(uint8_t byte, size_t position) {
+        assert(position >= 0 && position < SIZE);
+        _data[position] = byte;
+    }
+    void _write16BitLittleEndian(uint16_t value, size_t position) {
+        assert(position >= 0 && position < SIZE - 1);
+        _data[position] = static_cast<uint8_t>(value);
+        _data[position + 1] = static_cast<uint8_t>(value >> 8);
+    }
+    void _write16BitBigEndian(uint16_t value, size_t position) {
+        assert(position >= 0 && position < SIZE - 1);
+        _data[position + 1] = static_cast<uint8_t>(value);
+        _data[position] = static_cast<uint8_t>(value >> 8);
+    }
     std::array<uint8_t, SIZE> _data = {};
 };
 
