@@ -28,36 +28,19 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _DATA_PROVIDER_H_
-#define _DATA_PROVIDER_H_
 
-#include "AdvertisementHeader.h"
-#include "Config.h"
-#include "IBLELibraryWrapper.h"
-#include "Sample.h"
+#ifndef _SAMPLES_H_
+#define _SAMPLES_H_
 
-class DataProvider {
+#include "ByteArray.h"
+#include <Arduino.h>
+
+const static size_t SAMPLE_SIZE_BYTES = 12;
+
+// Holds sensor values following the set SampleConfig
+class Sample: public ByteArray<SAMPLE_SIZE_BYTES> {
   public:
-    explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
-                          DataType dataType = T_RH_V3)
-        : _BLELibrary(libraryWrapper),
-          _sampleConfig(sampleConfigSelector.at(dataType)){};
-    void begin();
-    void writeValueToCurrentSample(float value, Unit unit);
-    void commitSample();
-    // void handleEvents();
-    void setSampleConfig(DataType dataType);
-
-  private:
-    IBLELibraryWrapper& _BLELibrary;
-    Sample _currentSample;
-    AdvertisementHeader _advertisementHeader;
-
-    SampleConfig _sampleConfig;
-    std::string _buildAdvertisementData();
-    // void _handleDownload();
-    // void _saveSampleToHistoryBuffer();
-    // void _buildDownLoadPacket();
+    void writeValue(uint16_t value, size_t position);
 };
 
-#endif /* _DATA_PROVIDER_H_ */
+#endif /* _SAMPLES_H_ */

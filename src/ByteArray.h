@@ -28,39 +28,37 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#ifndef _BYTE_ARRAY_H_
+#define _BYTE_ARRAY_H_
 
-#ifndef _SAMPLES_H_
-#define _SAMPLES_H_
+#include "Arduino.h"
+#include <array>
 
-#include <Arduino.h>
-#include <map>
-#include <vector>
+// Must explicitly instantiate template in Samples.cpp before usage
+template <size_t SIZE> class ByteArray {
+  public:
+    std::string getDataString() {
+        std::string stringData(reinterpret_cast<char*>(_data.data()),
+                               _data.size());
+        return stringData;
+    }
 
-struct BLEByteArray {
-    const static size_t MAX_DATA_LENGTH = 18;
-    void writeByte(uint8_t byte, size_t position);
-    void write16BitLittleEndian(uint16_t value, size_t position);
-    void write16BitBigEndian(uint16_t value, size_t position);
-    std::string getDataString();
-    std::array<uint8_t, MAX_DATA_LENGTH> _data = {};
+  protected:
+    void _writeByte(uint8_t byte, size_t position) {
+        assert(position >= 0 && position < SIZE);
+        _data[position] = byte;
+    }
+    void _write16BitLittleEndian(uint16_t value, size_t position) {
+        assert(position >= 0 && position < SIZE - 1);
+        _data[position] = static_cast<uint8_t>(value);
+        _data[position + 1] = static_cast<uint8_t>(value >> 8);
+    }
+    void _write16BitBigEndian(uint16_t value, size_t position) {
+        assert(position >= 0 && position < SIZE - 1);
+        _data[position + 1] = static_cast<uint8_t>(value);
+        _data[position] = static_cast<uint8_t>(value >> 8);
+    }
+    std::array<uint8_t, SIZE> _data = {};
 };
 
-struct BLEAdvertisementSample: BLEByteArray {
-    const static size_t COMPANY_ID_POSITION = 0;
-    const static size_t SENSIRION_ADVERTISEMENT_TYPE_POSITION = 2;
-    const static size_t SAMPLE_TYPE_POSITION = 3;
-    const static size_t DEVICE_ID_POSITION = 4;
-    const static size_t FIRST_SAMPLE_SLOT_POSITION = 6;
-
-    void writeCompanyId(uint16_t companyID);
-    void writeSensirionAdvertisementType(uint8_t advType);
-    void writeSampleType(uint8_t sampleType);
-    void writeDeviceId(uint16_t deviceID);
-    void writeValue(uint16_t value, size_t position);
-};
-
-class BLEDataLoggerSample: public BLEByteArray {
-    // todo
-};
-
-#endif /* _SAMPLES_H_ */
+#endif /* _BYTE_ARRAY_H_ */
