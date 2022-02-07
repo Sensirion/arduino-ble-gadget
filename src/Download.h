@@ -36,12 +36,16 @@
 const static size_t DOWNLOAD_PACKET_SIZE_BYTES = 20;
 
 class DownloadHeader: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
-    // add approptiate write methods (see Bjoerns implementation)
+  public:
+    void setDownloadSampleType(uint16_t type);
+    void setIntervalMilliSeconds(uint32_t interval);
+    void setAgeOfLastSampleMilliSeconds(uint32_t age);
+    void setDownloadSampleCount(uint16_t count);
 };
 
 class DownloadPacket: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
-    // add methods to add as many samples from SampleHistoryRingBuffer as will
-    // fit
+  public:
+    void setDownloadSequenceNumber(int16_t number);
 };
 
 #endif /* _DOWNLOAD_H_ */
