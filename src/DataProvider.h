@@ -35,6 +35,7 @@
 #include "Config.h"
 #include "IBLELibraryWrapper.h"
 #include "Sample.h"
+#include "SampleHistoryRingBuffer.h"
 
 class DataProvider {
   public:
@@ -52,6 +53,7 @@ class DataProvider {
     IBLELibraryWrapper& _BLELibrary;
     Sample _currentSample;
     AdvertisementHeader _advertisementHeader;
+    SampleHistoryRingBuffer _sampleHistory;
 
     SampleConfig _sampleConfig;
     std::string _buildAdvertisementData();
