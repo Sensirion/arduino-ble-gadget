@@ -1,7 +1,7 @@
 #include "SampleHistoryRingBuffer.h"
 #include <cmath>
 
-void SampleHistoryRingBuffer::addSample(const Sample& sample){
+void SampleHistoryRingBuffer::addSample(const Sample& sample) {
     // check that sample still fits
     size_t numberOfSamples = _sampleIndex + 1;
     if (numberOfSamples >= capacity()) {
@@ -17,7 +17,8 @@ void SampleHistoryRingBuffer::setSampleSize(size_t sampleSize) {
 }
 
 size_t SampleHistoryRingBuffer::capacity() const {
-    return std::floor(static_cast<double>(_data.size()) / static_cast<double>(_sampleSize));
+    return std::floor(static_cast<double>(_data.size()) /
+                      static_cast<double>(_sampleSize));
 }
 
 void SampleHistoryRingBuffer::_writeSample(const Sample& sample) {

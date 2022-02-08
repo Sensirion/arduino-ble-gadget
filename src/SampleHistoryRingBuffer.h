@@ -51,8 +51,6 @@ class SampleHistoryRingBuffer
     int _sampleIndex = 0;
     bool _bufferIsWrapped = false;
     size_t _sampleSize;
-
-
 };
 
 #endif /* _SAMPLE_HISTORY_RING_BUFFER_ */

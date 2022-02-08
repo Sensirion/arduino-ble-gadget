@@ -40,7 +40,7 @@ void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
 }
 
 void DataProvider::commitSample() {
-    
+
     _sampleHistory.addSample(_currentSample);
 
     // Update Advertising
