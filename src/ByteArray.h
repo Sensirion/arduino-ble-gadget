@@ -42,6 +42,9 @@ template <size_t SIZE> class ByteArray {
                                _data.size());
         return stringData;
     }
+    const std::array<uint8_t, SIZE>& getDataArray() const {
+        return _data;
+    }
 
     uint8_t getByte(int index) const {
         return _data[index];
