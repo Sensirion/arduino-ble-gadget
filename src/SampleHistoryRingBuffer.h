@@ -32,13 +32,27 @@
 #define _SAMPLE_HISTORY_RING_BUFFER_
 
 #include "ByteArray.h"
+#include "Sample.h"
 
 const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
 
 // Logs Samples over time to be downloaded
 class SampleHistoryRingBuffer
     : public ByteArray<SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES> {
-    // TODO: add logic for ring buffering, includeing index, iteration
+  public:
+    void addSample(const Sample& sample);
+    void setSampleSize(size_t sampleSize);
+    size_t capacity() const;
+
+  private:
+    void _writeSample(const Sample& sample);
+    // downloadIndex
+    // lastTimeStamp
+    int _sampleIndex = 0;
+    bool _bufferIsWrapped = false;
+    size_t _sampleSize;
+
+
 };
 
 #endif /* _SAMPLE_HISTORY_RING_BUFFER_ */
