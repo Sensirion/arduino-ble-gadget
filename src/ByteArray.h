@@ -43,6 +43,10 @@ template <size_t SIZE> class ByteArray {
         return stringData;
     }
 
+    uint8_t getByte(int index) const {
+        return _data[index];
+    }
+
   protected:
     void _writeByte(uint8_t byte, size_t position) {
         assert(position >= 0 && position < SIZE);
