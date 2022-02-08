@@ -13,3 +13,8 @@ void DownloadHeader::setAgeOfLastSampleMilliSeconds(uint32_t age){
 void DownloadHeader::setDownloadSampleCount(uint16_t count){
     _write16BitLittleEndian(count, 14);
 }
+
+// DownloadPacket
+void DownloadPacket::setDownloadSequenceNumber(int16_t number) {
+    _write16BitLittleEndian(number, 0);
+}
