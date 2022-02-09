@@ -42,12 +42,16 @@ class SampleHistoryRingBuffer
   public:
     void addSample(const Sample& sample);
     void setSampleSize(size_t sampleSize);
-    size_t capacity() const;
+    size_t sampleCapacity() const;
+    bool isWrapped() const;
+    int getSampleIndex() const;
 
   private:
     void _writeSample(const Sample& sample);
     // downloadIndex
     // lastTimeStamp
+
+    // indicates arrayPosistion to be written to next
     int _sampleIndex = 0;
     bool _bufferIsWrapped = false;
     size_t _sampleSize = 0;
