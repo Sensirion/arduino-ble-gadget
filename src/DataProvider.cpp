@@ -40,7 +40,7 @@ void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
 }
 
 void DataProvider::commitSample() {
-
+    // TODO: only log samples ever x minutes
     _sampleHistory.addSample(_currentSample);
 
     // Update Advertising
@@ -55,11 +55,36 @@ void DataProvider::handleEvents() {
 */
 void DataProvider::setSampleConfig(DataType dataType) {
     _sampleConfig = sampleConfigSelector.at(dataType);
-    _sampleHistory.setSampleSize(_sampleConfig.sampleSize);
+    _sampleHistory.setSampleSize(_sampleConfig.sampleSizeBytes);
 }
 
 std::string DataProvider::_buildAdvertisementData() {
     std::string data = _advertisementHeader.getDataString();
     data.append(_currentSample.getDataString());
     return data;
+}
+
+DownloadPacket DataProvider::_buildDownloadPacket() {
+    DownloadPacket packet;
+    packet.setDownloadSequenceNumber(_downloadSequenceNumber);
+
+    int downloadPacketIdx =
+        _downloadSequenceNumber - 1; // first packet is the header
+    int oldestSampleIdx =
+        _sampleHistory.isWrapped() ? _sampleHistory.getSampleIndex() : 0;
+    int numberOfSentSamples =
+        downloadPacketIdx * _sampleConfig.sampleCountPerPacket;
+    int firstSampleForPacketIdx = oldestSampleIdx + numberOfSentSamples;
+
+    for (int i = 0; i < _sampleConfig.sampleCountPerPacket; ++i) {
+        int sampleIdx =
+            firstSampleForPacketIdx + i % _sampleHistory.sampleCapacity();
+
+        for (int j = 0; j < _sampleConfig.sampleSizeBytes; ++j) {
+            int byteIdx = sampleIdx * _sampleConfig.sampleSizeBytes;
+            uint8_t byte = _sampleHistory.getByte(byteIdx);
+            packet.writeSampleByte(byte, j);
+        }
+    }
+    return packet;
 }
