@@ -50,7 +50,7 @@ class SampleHistoryRingBuffer
     // lastTimeStamp
     int _sampleIndex = 0;
     bool _bufferIsWrapped = false;
-    size_t _sampleSize;
+    size_t _sampleSize = 0;
 };
 
 #endif /* _SAMPLE_HISTORY_RING_BUFFER_ */

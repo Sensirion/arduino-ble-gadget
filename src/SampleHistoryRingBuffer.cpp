@@ -17,6 +17,9 @@ void SampleHistoryRingBuffer::setSampleSize(size_t sampleSize) {
 }
 
 size_t SampleHistoryRingBuffer::capacity() const {
+    if (_sampleSize == 0) {
+        return 0;
+    }
     return std::floor(static_cast<double>(_data.size()) /
                       static_cast<double>(_sampleSize));
 }
