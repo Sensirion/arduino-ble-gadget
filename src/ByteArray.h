@@ -43,6 +43,10 @@ template <size_t SIZE> class ByteArray {
         return stringData;
     }
 
+    uint8_t getByte(int index) const {
+        return _data[index];
+    }
+
   protected:
     void _writeByte(uint8_t byte, size_t position) {
         assert(position >= 0 && position < SIZE);
@@ -57,6 +61,13 @@ template <size_t SIZE> class ByteArray {
         assert(position >= 0 && position < SIZE - 1);
         _data[position + 1] = static_cast<uint8_t>(value);
         _data[position] = static_cast<uint8_t>(value >> 8);
+    }
+    void _write32BitLittleEndian(uint32_t value, size_t position) {
+        assert(position >= 0 && position < SIZE - 3);
+        _data[position] = static_cast<uint8_t>(value);
+        _data[position + 1] = static_cast<uint8_t>(value >> 8);
+        _data[position + 2] = static_cast<uint8_t>(value >> 16);
+        _data[position + 3] = static_cast<uint8_t>(value >> 24);
     }
     std::array<uint8_t, SIZE> _data = {};
 };

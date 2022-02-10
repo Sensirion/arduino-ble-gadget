@@ -40,7 +40,8 @@ void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
 }
 
 void DataProvider::commitSample() {
-    // Add sample to sampleBuffer: TODO
+
+    _sampleHistory.addSample(_currentSample);
 
     // Update Advertising
     _BLELibrary.stopAdvertising();
@@ -54,6 +55,7 @@ void DataProvider::handleEvents() {
 */
 void DataProvider::setSampleConfig(DataType dataType) {
     _sampleConfig = sampleConfigSelector.at(dataType);
+    _sampleHistory.setSampleSize(_sampleConfig.sampleSize);
 }
 
 std::string DataProvider::_buildAdvertisementData() {

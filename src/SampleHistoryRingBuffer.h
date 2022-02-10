@@ -28,38 +28,29 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _DATA_PROVIDER_H_
-#define _DATA_PROVIDER_H_
+#ifndef _SAMPLE_HISTORY_RING_BUFFER_
+#define _SAMPLE_HISTORY_RING_BUFFER_
 
-#include "AdvertisementHeader.h"
-#include "Config.h"
-#include "IBLELibraryWrapper.h"
+#include "ByteArray.h"
 #include "Sample.h"
-#include "SampleHistoryRingBuffer.h"
 
-class DataProvider {
+const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
+
+// Logs Samples over time to be downloaded
+class SampleHistoryRingBuffer
+    : public ByteArray<SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES> {
   public:
-    explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
-                          DataType dataType = T_RH_V3)
-        : _BLELibrary(libraryWrapper),
-          _sampleConfig(sampleConfigSelector.at(dataType)){};
-    void begin();
-    void writeValueToCurrentSample(float value, Unit unit);
-    void commitSample();
-    // void handleEvents();
-    void setSampleConfig(DataType dataType);
+    void addSample(const Sample& sample);
+    void setSampleSize(size_t sampleSize);
+    size_t capacity() const;
 
   private:
-    IBLELibraryWrapper& _BLELibrary;
-    Sample _currentSample;
-    AdvertisementHeader _advertisementHeader;
-    SampleHistoryRingBuffer _sampleHistory;
-
-    SampleConfig _sampleConfig;
-    std::string _buildAdvertisementData();
-    // void _handleDownload();
-    // void _saveSampleToHistoryBuffer();
-    // void _buildDownLoadPacket();
+    void _writeSample(const Sample& sample);
+    // downloadIndex
+    // lastTimeStamp
+    int _sampleIndex = 0;
+    bool _bufferIsWrapped = false;
+    size_t _sampleSize = 0;
 };
 
-#endif /* _DATA_PROVIDER_H_ */
+#endif /* _SAMPLE_HISTORY_RING_BUFFER_ */

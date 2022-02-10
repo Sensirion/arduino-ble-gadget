@@ -71,8 +71,11 @@ struct SampleSlot {
 
 struct SampleConfig {
     DataType dataType;
-    int sampleType;
-    int sensirionAdvertisementSampleType;
+    uint16_t downloadType;
+    uint8_t sampleType;
+    size_t sampleSize;
+    uint8_t sensirionAdvertisementSampleType;
+    // uint16_t downloadSampleType; //
     std::map<Unit, SampleSlot> sampleSlots;
 };
 
