@@ -39,7 +39,7 @@ class DownloadHeader: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
   public:
     void setDownloadSampleType(uint16_t type);
     void setIntervalMilliSeconds(uint32_t interval);
-    void setAgeOfLastSampleMilliSeconds(uint32_t age);
+    void setAgeOfLatestSampleMilliSeconds(uint32_t age);
     void setDownloadSampleCount(uint16_t count);
 };
 

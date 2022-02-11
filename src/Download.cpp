@@ -7,7 +7,8 @@ void DownloadHeader::setDownloadSampleType(uint16_t type){
 void DownloadHeader::setIntervalMilliSeconds(uint32_t interval){
     _write32BitLittleEndian(interval, 6);
 }
-void DownloadHeader::setAgeOfLastSampleMilliSeconds(uint32_t age){
+
+void DownloadHeader::setAgeOfLatestSampleMilliSeconds(uint32_t age) {
     _write32BitLittleEndian(age, 10);
 }
 void DownloadHeader::setDownloadSampleCount(uint16_t count){
