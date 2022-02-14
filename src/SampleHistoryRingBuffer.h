@@ -32,6 +32,8 @@
 #define _SAMPLE_HISTORY_RING_BUFFER_
 
 #include "ByteArray.h"
+#include "Config.h"
+#include "Download.h"
 #include "Sample.h"
 
 const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
@@ -45,6 +47,8 @@ class SampleHistoryRingBuffer
     size_t sampleCapacity() const;
     bool isWrapped() const;
     int getSampleIndex() const;
+    DownloadPacket buildDownloadPacket(const SampleConfig& config,
+                                       int downloadSequenceIdx);
 
   private:
     void _writeSample(const Sample& sample);
