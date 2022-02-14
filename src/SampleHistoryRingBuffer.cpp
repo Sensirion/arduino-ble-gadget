@@ -46,7 +46,7 @@ SampleHistoryRingBuffer::buildDownloadPacket(const SampleConfig& config,
         for (int j = 0; j < config.sampleSizeBytes; ++j) {
             int byteIdx = sampleIdx * config.sampleSizeBytes;
             uint8_t byte = getByte(byteIdx);
-            packet.writeSampleByte(byte, j);
+            packet.writeSampleByte(byte, i*config.sampleSizeBytes + j);
         }
     }
     return packet;
