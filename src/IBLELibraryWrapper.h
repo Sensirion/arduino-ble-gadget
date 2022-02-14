@@ -35,6 +35,15 @@
 
 const char* const GADGET_NAME = "S";
 
+static const char* const DOWNLOAD_SERVICE_UUID =
+    "00008000-b38d-4985-720e-0f993a68ee41";
+static const char* const SAMPLE_HISTORY_INTERVAL_UUID =
+    "00008001-b38d-4985-720e-0f993a68ee41";
+static const char* const NUMBER_OF_SAMPLES_UUID =
+    "00008002-b38d-4985-720e-0f993a68ee41";
+static const char* const DOWNLOAD_PACKET_UUID =
+    "00008004-b38d-4985-720e-0f993a68ee41";
+
 // abstract class
 class IBLELibraryWrapper {
   public:
