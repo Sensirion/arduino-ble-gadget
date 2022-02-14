@@ -33,6 +33,7 @@
 
 #include "AdvertisementHeader.h"
 #include "Config.h"
+#include "Download.h"
 #include "IBLELibraryWrapper.h"
 #include "Sample.h"
 #include "SampleHistoryRingBuffer.h"
@@ -51,6 +52,7 @@ class DataProvider {
 
   private:
     std::string _buildAdvertisementData();
+    DownloadPacket _buildDownloadPacket();
     // void _handleDownload();
     // void _saveSampleToHistoryBuffer();
     IBLELibraryWrapper& _BLELibrary;

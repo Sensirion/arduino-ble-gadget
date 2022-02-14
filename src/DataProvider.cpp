@@ -63,3 +63,29 @@ std::string DataProvider::_buildAdvertisementData() {
     data.append(_currentSample.getDataString());
     return data;
 }
+
+DownloadPacket DataProvider::_buildDownloadPacket() {
+    DownloadPacket packet;
+    packet.setDownloadSequenceNumber(_downloadSequenceIdx);
+
+    int downloadPacketIdx =
+        _downloadSequenceIdx - 1; // first packet is the header
+    int oldestSampleHistoryIdx = _sampleHistory.getOldestSampleIndex();
+    int numberOfSentSamples =
+        downloadPacketIdx * _sampleConfig.sampleCountPerPacket;
+    int startSampleHistoryIdx = oldestSampleHistoryIdx + numberOfSentSamples;
+
+    for (int i = 0; i < _sampleConfig.sampleCountPerPacket; ++i) {
+        int currentSampleHistoryIdx =
+            startSampleHistoryIdx + i % _sampleHistory.sampleCapacity();
+
+        for (int j = 0; j < _sampleConfig.sampleSizeBytes; ++j) {
+            int currentByteHistoryIdx =
+                currentSampleHistoryIdx * _sampleConfig.sampleSizeBytes;
+            int currentBytePacketIdx = i * _sampleConfig.sampleSizeBytes + j;
+            uint8_t byte = _sampleHistory.getByte(currentByteHistoryIdx);
+            packet.writeSampleByte(byte, currentBytePacketIdx);
+        }
+    }
+    return packet;
+}
