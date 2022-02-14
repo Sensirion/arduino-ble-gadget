@@ -2,6 +2,12 @@
 
 void DataProvider::begin() {
     _BLELibrary.init();
+    _BLELibrary.characteristicSetValue(SAMPLE_HISTORY_INTERVAL_UUID,
+                                       _historyIntervalMilliSeconds);
+    _BLELibrary.characteristicSetValue(
+        NUMBER_OF_SAMPLES_UUID, _sampleHistory.numberOfSamplesInBuffer());
+
+    _sampleHistory.setSampleSize(_sampleConfig.sampleSizeBytes);
 
     // Fill advertisement header
     _advertisementHeader.writeCompanyId(0x06D5);
@@ -13,7 +19,6 @@ void DataProvider::begin() {
         strtol(macAddress.substr(12, 17).c_str(), NULL, 16));
 
     _BLELibrary.setAdvertisingData(_buildAdvertisementData());
-
     _BLELibrary.startAdvertising();
 }
 
