@@ -43,6 +43,7 @@ class SampleHistoryRingBuffer
     void addSample(const Sample& sample);
     void setSampleSize(size_t sampleSize);
     size_t sampleCapacity() const;
+    int numberOfSamplesInBuffer() const;
     int getSampleIndex() const;
     int getOldestSampleIndex() const;
     uint64_t latestHistoryTimeStamp = 0;

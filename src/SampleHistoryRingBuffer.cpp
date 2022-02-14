@@ -24,6 +24,9 @@ size_t SampleHistoryRingBuffer::sampleCapacity() const {
                       static_cast<double>(_sampleSize));
 }
 
+int SampleHistoryRingBuffer::numberOfSamplesInBuffer() const {
+    return _bufferIsWrapped ? sampleCapacity() : _sampleIndex;
+}
 int SampleHistoryRingBuffer::getSampleIndex() const {
     return _sampleIndex;
 }
