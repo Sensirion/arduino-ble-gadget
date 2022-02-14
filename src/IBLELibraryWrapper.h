@@ -54,6 +54,13 @@ class IBLELibraryWrapper {
     virtual void startAdvertising() = 0;
     virtual void stopAdvertising() = 0;
     virtual std::string getDeviceAddress() = 0;
+    virtual void characteristicSetValue(const char* uuid, const uint8_t* data,
+                                        size_t size) = 0;
+    virtual void characteristicSetValue(const char* uuid, int value);
+    virtual std::string characteristicGetValue(const char* uuid) = 0;
+    virtual void characteristicNotify(const char* uuid) = 0;
+    // virtual void updateConnectionState() = 0;
+    // virtual void handleDownload() = 0;
 };
 
 #endif /* _I_BLE_LIBRARY_WRAPPER_H_ */
