@@ -36,17 +36,20 @@ SampleHistoryRingBuffer::buildDownloadPacket(const SampleConfig& config,
 
     int downloadPacketIdx =
         downloadSequenceIdx - 1; // first packet is the header
-    int oldestSampleIdx = _bufferIsWrapped ? _sampleIndex : 0;
+    int oldestSampleHistoryIdx = _bufferIsWrapped ? _sampleIndex : 0;
     int numberOfSentSamples = downloadPacketIdx * config.sampleCountPerPacket;
-    int firstSampleForPacketIdx = oldestSampleIdx + numberOfSentSamples;
+    int startSampleHistoryIdx = oldestSampleHistoryIdx + numberOfSentSamples;
 
     for (int i = 0; i < config.sampleCountPerPacket; ++i) {
-        int sampleIdx = firstSampleForPacketIdx + i % sampleCapacity();
+        int currentSampleHistoryIdx =
+            startSampleHistoryIdx + i % sampleCapacity();
 
         for (int j = 0; j < config.sampleSizeBytes; ++j) {
-            int byteIdx = sampleIdx * config.sampleSizeBytes;
-            uint8_t byte = getByte(byteIdx);
-            packet.writeSampleByte(byte, i*config.sampleSizeBytes + j);
+            int currentByteHistoryIdx =
+                currentSampleHistoryIdx * config.sampleSizeBytes;
+            int currentBytePacketIdx = i * config.sampleSizeBytes + j;
+            uint8_t byte = getByte(currentByteHistoryIdx);
+            packet.writeSampleByte(byte, currentBytePacketIdx);
         }
     }
     return packet;
