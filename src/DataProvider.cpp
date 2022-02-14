@@ -66,10 +66,10 @@ std::string DataProvider::_buildAdvertisementData() {
 
 DownloadPacket DataProvider::_buildDownloadPacket() {
     DownloadPacket packet;
-    packet.setDownloadSequenceNumber(_downloadSequenceNumber);
+    packet.setDownloadSequenceNumber(_downloadSequenceIdx);
 
     int downloadPacketIdx =
-        _downloadSequenceNumber - 1; // first packet is the header
+        _downloadSequenceIdx - 1; // first packet is the header
     int oldestSampleIdx =
         _sampleHistory.isWrapped() ? _sampleHistory.getSampleIndex() : 0;
     int numberOfSentSamples =

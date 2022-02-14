@@ -60,7 +60,7 @@ class DataProvider {
     AdvertisementHeader _advertisementHeader;
     SampleHistoryRingBuffer _sampleHistory;
     int _sampleHistoryIndex;
-    int _downloadSequenceNumber = 0; // first packet is the header
+    int _downloadSequenceIdx = 0; // first packet is the header
 
     SampleConfig _sampleConfig;
 };
