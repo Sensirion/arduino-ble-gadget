@@ -4,7 +4,7 @@
 void SampleHistoryRingBuffer::addSample(const Sample& sample) {
     // check that sample still fits
     size_t numberOfSamples = _sampleIndex + 1;
-    if (numberOfSamples >= capacity()) {
+    if (numberOfSamples >= sampleCapacity()) {
         _bufferIsWrapped = true;
         _sampleIndex = 0;
     }
@@ -16,12 +16,20 @@ void SampleHistoryRingBuffer::setSampleSize(size_t sampleSize) {
     _sampleSize = sampleSize;
 }
 
-size_t SampleHistoryRingBuffer::capacity() const {
+size_t SampleHistoryRingBuffer::sampleCapacity() const {
     if (_sampleSize == 0) {
         return 0;
     }
     return std::floor(static_cast<double>(_data.size()) /
                       static_cast<double>(_sampleSize));
+}
+
+int SampleHistoryRingBuffer::getSampleIndex() const {
+    return _sampleIndex;
+}
+
+int SampleHistoryRingBuffer::getOldestSampleIndex() const {
+    return _bufferIsWrapped ? _sampleIndex : 0;
 }
 
 void SampleHistoryRingBuffer::_writeSample(const Sample& sample) {

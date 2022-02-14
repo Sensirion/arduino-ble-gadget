@@ -33,6 +33,7 @@
 
 #include "AdvertisementHeader.h"
 #include "Config.h"
+#include "Download.h"
 #include "IBLELibraryWrapper.h"
 #include "Sample.h"
 #include "SampleHistoryRingBuffer.h"
@@ -50,16 +51,18 @@ class DataProvider {
     void setSampleConfig(DataType dataType);
 
   private:
+    std::string _buildAdvertisementData();
+    DownloadPacket _buildDownloadPacket();
+    // void _handleDownload();
+    // void _saveSampleToHistoryBuffer();
     IBLELibraryWrapper& _BLELibrary;
     Sample _currentSample;
     AdvertisementHeader _advertisementHeader;
     SampleHistoryRingBuffer _sampleHistory;
+    int _sampleHistoryIndex;
+    int _downloadSequenceIdx = 0; // first packet is the header
 
     SampleConfig _sampleConfig;
-    std::string _buildAdvertisementData();
-    // void _handleDownload();
-    // void _saveSampleToHistoryBuffer();
-    // void _buildDownLoadPacket();
 };
 
 #endif /* _DATA_PROVIDER_H_ */

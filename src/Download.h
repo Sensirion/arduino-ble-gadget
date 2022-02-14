@@ -28,33 +28,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _SAMPLE_HISTORY_RING_BUFFER_
-#define _SAMPLE_HISTORY_RING_BUFFER_
+#ifndef _DOWNLOAD_H_
+#define _DOWNLOAD_H_
 
 #include "ByteArray.h"
-#include "Sample.h"
 
-const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
+const static size_t DOWNLOAD_PACKET_SIZE_BYTES = 20;
 
-// Logs Samples over time to be downloaded
-class SampleHistoryRingBuffer
-    : public ByteArray<SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES> {
+class DownloadHeader: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
   public:
-    void addSample(const Sample& sample);
-    void setSampleSize(size_t sampleSize);
-    size_t sampleCapacity() const;
-    int getSampleIndex() const;
-    int getOldestSampleIndex() const;
-
-  private:
-    void _writeSample(const Sample& sample);
-    // downloadIndex
-    // lastTimeStamp
-
-    // indicates arrayPosistion to be written to next
-    int _sampleIndex = 0;
-    bool _bufferIsWrapped = false;
-    size_t _sampleSize = 0;
+    void setDownloadSampleType(uint16_t type);
+    void setIntervalMilliSeconds(uint32_t interval);
+    void setAgeOfLatestSampleMilliSeconds(uint32_t age);
+    void setDownloadSampleCount(uint16_t count);
 };
 
-#endif /* _SAMPLE_HISTORY_RING_BUFFER_ */
+class DownloadPacket: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
+  public:
+    void setDownloadSequenceNumber(int16_t number);
+    void writeSampleByte(uint8_t byte, size_t positionInSampleData);
+};
+
+#endif /* _DOWNLOAD_H_ */

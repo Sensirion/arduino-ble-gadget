@@ -73,9 +73,9 @@ struct SampleConfig {
     DataType dataType;
     uint16_t downloadType;
     uint8_t sampleType;
-    size_t sampleSize;
+    size_t sampleSizeBytes;
+    size_t sampleCountPerPacket;
     uint8_t sensirionAdvertisementSampleType;
-    // uint16_t downloadSampleType; //
     std::map<Unit, SampleSlot> sampleSlots;
 };
 
