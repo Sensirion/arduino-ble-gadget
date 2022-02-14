@@ -19,6 +19,9 @@ void DownloadPacket::setDownloadSequenceNumber(int16_t number) {
     _write16BitLittleEndian(number, 0);
 }
 
-void DownloadPacket::writeSampleByte(uint8_t byte, size_t position) {
-    _writeByte(byte, 2 + position); // shift to after downloadSequenceNumber
+void DownloadPacket::writeSampleByte(uint8_t byte,
+                                     size_t positionInSampleData) {
+    _writeByte(
+        byte,
+        2 + positionInSampleData); // shift to after downloadSequenceNumber
 }
