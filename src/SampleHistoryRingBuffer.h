@@ -45,7 +45,6 @@ class SampleHistoryRingBuffer
     void addSample(const Sample& sample);
     void setSampleSize(size_t sampleSize);
     size_t sampleCapacity() const;
-    bool isWrapped() const;
     int getSampleIndex() const;
     DownloadPacket buildDownloadPacket(const SampleConfig& config,
                                        int downloadSequenceIdx);
