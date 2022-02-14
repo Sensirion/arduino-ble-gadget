@@ -44,6 +44,7 @@ class SampleHistoryRingBuffer
     void setSampleSize(size_t sampleSize);
     size_t sampleCapacity() const;
     int getSampleIndex() const;
+    int getOldestSampleIndex() const;
 
   private:
     void _writeSample(const Sample& sample);

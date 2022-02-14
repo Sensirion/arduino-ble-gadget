@@ -28,6 +28,10 @@ int SampleHistoryRingBuffer::getSampleIndex() const {
     return _sampleIndex;
 }
 
+int SampleHistoryRingBuffer::getOldestSampleIndex() const {
+    return _bufferIsWrapped ? _sampleIndex : 0;
+}
+
 void SampleHistoryRingBuffer::_writeSample(const Sample& sample) {
     for (int byteIndex = 0; byteIndex < _sampleSize; ++byteIndex) {
         _data[_sampleIndex + byteIndex] = sample.getByte(byteIndex);
