@@ -48,9 +48,10 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
     std::string getDeviceAddress() override;
 
   private:
+    void _deinit();
+    void _createDownloadService();
     static WrapperPrivateData* _data;
     static uint _numberOfInstances;
-    void _deinit();
 };
 
 #endif /* _NIM_BLE_LIBRARY_WRAPPER_H_ */

@@ -13,6 +13,9 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
     // BLEServer
     NimBLEServer* pBLEServer;
 
+    // BLEDownloadService
+    NimBLEService* pBLEDownloadService;
+
     // BLEServerCallbacks
     void onConnect(BLEServer* serverInst);
     void onDisconnect(BLEServer* serverInst);
@@ -74,6 +77,8 @@ void NimBLELibraryWrapper::init() {
         NimBLEDevice::createServer(); // NimBLEDevice has ownership
     _data->pBLEServer->setCallbacks(_data);
 
+    // Create Dwownload Service
+    _createDownloadService();
 }
 
 void NimBLELibraryWrapper::setAdvertisingData(const std::string& data) {
@@ -90,6 +95,15 @@ void NimBLELibraryWrapper::startAdvertising() {
 void NimBLELibraryWrapper::stopAdvertising() {
     _data->pNimBLEAdvertising->stop();
 }
+
 std::string NimBLELibraryWrapper::getDeviceAddress() {
     return NimBLEDevice::getAddress().toString();
+}
+
+void NimBLELibraryWrapper::_createDownloadService() {
+    // Create service
+    _data->pBLEDownloadService =
+        _data->pBLEServer->createService(DOWNLOAD_SERVICE_UUID);
+
+    _data->pBLEDownloadService->start();
 }
