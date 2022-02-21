@@ -2,6 +2,7 @@
 
 void DataProvider::begin() {
     _BLELibrary.init();
+    _BLELibrary.setProviderCallbacks(this);
     _BLELibrary.characteristicSetValue(SAMPLE_HISTORY_INTERVAL_UUID,
                                        _historyIntervalMilliSeconds);
     _BLELibrary.characteristicSetValue(
@@ -102,4 +103,20 @@ DownloadPacket DataProvider::_buildDownloadPacket() {
         }
     }
     return packet;
+}
+
+void DataProvider::onHistoryIntervalChange(int interval) {
+    _historyIntervalMilliSeconds = static_cast<uint64_t>(interval);
+    _sampleHistory.reset();
+    _BLELibrary.characteristicSetValue(
+        NUMBER_OF_SAMPLES_UUID, _sampleHistory.numberOfSamplesInBuffer());
+}
+
+void DataProvider::onConnectionEvent() {
+    _downloadSequenceIdx = 0;
+    _isDownloading = false;
+}
+
+void DataProvider::onDownloadRequest() {
+    _isDownloading = true;
 }

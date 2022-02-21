@@ -35,15 +35,17 @@
 #include "Config.h"
 #include "Download.h"
 #include "IBLELibraryWrapper.h"
+#include "IProviderCallbacks.h"
 #include "Sample.h"
 #include "SampleHistoryRingBuffer.h"
 
-class DataProvider {
+class DataProvider: public IProviderCallbacks {
   public:
     explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
                           DataType dataType = T_RH_V3)
         : _BLELibrary(libraryWrapper),
           _sampleConfig(sampleConfigSelector.at(dataType)){};
+    ~DataProvider(){};
     void begin();
     void writeValueToCurrentSample(float value, Unit unit);
     void commitSample();
@@ -60,10 +62,16 @@ class DataProvider {
     AdvertisementHeader _advertisementHeader;
     SampleHistoryRingBuffer _sampleHistory;
     int _sampleHistoryIndex;
+    int _isDownloading = false;
     int _downloadSequenceIdx = 0; // first packet is the header
 
     SampleConfig _sampleConfig;
     uint64_t _historyIntervalMilliSeconds = 60000; // = 10 minutes
+
+    // ProviderCallbacks
+    void onHistoryIntervalChange(int interval) override;
+    void onConnectionEvent() override;
+    void onDownloadRequest() override;
 };
 
 #endif /* _DATA_PROVIDER_H_ */
