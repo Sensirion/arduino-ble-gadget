@@ -76,12 +76,15 @@ DownloadPacket DataProvider::_buildDownloadPacket() {
     int startSampleHistoryIdx = oldestSampleHistoryIdx + numberOfSentSamples;
 
     for (int i = 0; i < _sampleConfig.sampleCountPerPacket; ++i) {
+        if (numberOfSentSamples + i > _numberOfSamplesToDownload) {
+            return packet;
+        }
         int currentSampleHistoryIdx =
             startSampleHistoryIdx + i % _sampleHistory.sampleCapacity();
 
         for (int j = 0; j < _sampleConfig.sampleSizeBytes; ++j) {
             int currentByteHistoryIdx =
-                currentSampleHistoryIdx * _sampleConfig.sampleSizeBytes;
+                currentSampleHistoryIdx * _sampleConfig.sampleSizeBytes + j;
             int currentBytePacketIdx = i * _sampleConfig.sampleSizeBytes + j;
             uint8_t byte = _sampleHistory.getByte(currentByteHistoryIdx);
             packet.writeSampleByte(byte, currentBytePacketIdx);
