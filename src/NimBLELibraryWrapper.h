@@ -46,6 +46,11 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
     void startAdvertising() override;
     void stopAdvertising() override;
     std::string getDeviceAddress() override;
+    void characteristicSetValue(const char* uuid, const uint8_t* data,
+                                size_t size) override;
+    void characteristicSetValue(const char* uuid, int value) override;
+    std::string characteristicGetValue(const char* uuid) override;
+    void characteristicNotify(const char* uuid) override;
 
   private:
     void _deinit();

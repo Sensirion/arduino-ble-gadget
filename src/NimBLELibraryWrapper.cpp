@@ -105,6 +105,24 @@ std::string NimBLELibraryWrapper::getDeviceAddress() {
     return NimBLEDevice::getAddress().toString();
 }
 
+void NimBLELibraryWrapper::characteristicSetValue(const char* uuid,
+                                                  const uint8_t* data,
+                                                  size_t size) {
+    _data->pBLEDownloadService->getCharacteristic(uuid)->setValue(data, size);
+}
+
+void NimBLELibraryWrapper::characteristicSetValue(const char* uuid, int value) {
+    _data->pBLEDownloadService->getCharacteristic(uuid)->setValue(value);
+}
+
+std::string NimBLELibraryWrapper::characteristicGetValue(const char* uuid) {
+    return _data->pBLEDownloadService->getCharacteristic(uuid)->getValue();
+}
+
+void NimBLELibraryWrapper::characteristicNotify(const char* uuid) {
+    _data->pBLEDownloadService->getCharacteristic(uuid)->notify(true);
+}
+
 void NimBLELibraryWrapper::_createDownloadService() {
     // Create service
     _data->pBLEDownloadService =
