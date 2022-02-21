@@ -45,8 +45,14 @@ void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
 }
 
 void DataProvider::commitSample() {
-    // TODO: only log samples ever x minutes
-    _sampleHistory.addSample(_currentSample);
+    uint64_t currentTimeStamp = millis();
+    if ((currentTimeStamp - _sampleHistory.latestHistoryTimeStamp) >=
+        _historyIntervalMilliSeconds) {
+        _sampleHistory.addSample(_currentSample);
+        _BLELibrary.characteristicSetValue(
+            NUMBER_OF_SAMPLES_UUID, _sampleHistory.numberOfSamplesInBuffer());
+        _sampleHistory.latestHistoryTimeStamp = currentTimeStamp;
+    }
 
     // Update Advertising
     _BLELibrary.stopAdvertising();

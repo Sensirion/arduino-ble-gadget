@@ -63,6 +63,7 @@ class DataProvider {
     int _downloadSequenceIdx = 0; // first packet is the header
 
     SampleConfig _sampleConfig;
+    uint64_t _historyIntervalMilliSeconds = 60000; // = 10 minutes
 };
 
 #endif /* _DATA_PROVIDER_H_ */

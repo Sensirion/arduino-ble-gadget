@@ -45,6 +45,8 @@ class SampleHistoryRingBuffer
     size_t sampleCapacity() const;
     int getSampleIndex() const;
     int getOldestSampleIndex() const;
+    uint64_t latestHistoryTimeStamp = 0;
+    void reset();
 
   private:
     void _writeSample(const Sample& sample);
