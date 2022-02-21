@@ -1,4 +1,5 @@
 #include "DataProvider.h"
+#include <math.h>
 
 void DataProvider::begin() {
     _BLELibrary.init();
@@ -60,11 +61,43 @@ void DataProvider::commitSample() {
     _BLELibrary.setAdvertisingData(_buildAdvertisementData());
     _BLELibrary.startAdvertising();
 }
-/*
-void DataProvider::handleEvents() {
-    // Future feature: TODO
+
+void DataProvider::handleDownload() {
+    if (_isDownloading == false) {
+        return;
+    }
+
+    // Download Completed
+    if (_downloadSequenceIdx >=
+        _numberOfSamplePacketsToDownload + 1) { // +1 because of the header
+        _isDownloading = false;
+        _downloadSequenceIdx = 0;
+        _numberOfSamplesToDownload = 0;
+        _numberOfSamplePacketsToDownload = 0;
+        return;
+    }
+
+    // Start Download
+    if (_downloadSequenceIdx == 0) {
+        _numberOfSamplesToDownload = _sampleHistory.numberOfSamplesInBuffer();
+        _numberOfSamplePacketsToDownload =
+            _numberOfPacketsRequired(_numberOfSamplesToDownload);
+        DownloadHeader header = _buildDownloadHeader();
+        _BLELibrary.characteristicSetValue(DOWNLOAD_PACKET_UUID,
+                                           header.getDataArray().data(),
+                                           header.getDataArray().size());
+        _BLELibrary.characteristicNotify(DOWNLOAD_PACKET_UUID);
+        ++_downloadSequenceIdx;
+    } else { // Continue Download
+        DownloadPacket packet = _buildDownloadPacket();
+        _BLELibrary.characteristicSetValue(DOWNLOAD_PACKET_UUID,
+                                           packet.getDataArray().data(),
+                                           packet.getDataArray().size());
+        _BLELibrary.characteristicNotify(DOWNLOAD_PACKET_UUID);
+        ++_downloadSequenceIdx;
+    }
 }
-*/
+
 void DataProvider::setSampleConfig(DataType dataType) {
     _sampleConfig = sampleConfigSelector.at(dataType);
     _sampleHistory.setSampleSize(_sampleConfig.sampleSizeBytes);

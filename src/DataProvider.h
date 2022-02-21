@@ -49,15 +49,13 @@ class DataProvider: public IProviderCallbacks {
     void begin();
     void writeValueToCurrentSample(float value, Unit unit);
     void commitSample();
-    // void handleEvents();
+    void handleDownload();
     void setSampleConfig(DataType dataType);
 
   private:
     std::string _buildAdvertisementData();
     DownloadHeader _buildDownloadHeader();
     DownloadPacket _buildDownloadPacket();
-    // void _handleDownload();
-    // void _saveSampleToHistoryBuffer();
     int _numberOfPacketsRequired(int numberOfSamples) const;
     IBLELibraryWrapper& _BLELibrary;
     Sample _currentSample;
@@ -66,6 +64,8 @@ class DataProvider: public IProviderCallbacks {
     int _sampleHistoryIndex;
     int _isDownloading = false;
     int _downloadSequenceIdx = 0; // first packet is the header
+    int _numberOfSamplesToDownload = 0;
+    int _numberOfSamplePacketsToDownload = 0;
 
     SampleConfig _sampleConfig;
     uint64_t _historyIntervalMilliSeconds = 60000; // = 10 minutes
