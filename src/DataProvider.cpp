@@ -105,6 +105,12 @@ DownloadPacket DataProvider::_buildDownloadPacket() {
     return packet;
 }
 
+int DataProvider::_numberOfPacketsRequired(int numberOfSamples) const {
+    return static_cast<int>(
+        std::ceil(static_cast<double>(numberOfSamples) /
+                  static_cast<double>(_sampleConfig.sampleCountPerPacket)));
+}
+
 void DataProvider::onHistoryIntervalChange(int interval) {
     _historyIntervalMilliSeconds = static_cast<uint64_t>(interval);
     _sampleHistory.reset();

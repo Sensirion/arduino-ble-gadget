@@ -57,6 +57,7 @@ class DataProvider: public IProviderCallbacks {
     DownloadPacket _buildDownloadPacket();
     // void _handleDownload();
     // void _saveSampleToHistoryBuffer();
+    int _numberOfPacketsRequired(int numberOfSamples) const;
     IBLELibraryWrapper& _BLELibrary;
     Sample _currentSample;
     AdvertisementHeader _advertisementHeader;
