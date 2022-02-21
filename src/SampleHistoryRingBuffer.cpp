@@ -34,6 +34,7 @@ int SampleHistoryRingBuffer::getOldestSampleIndex() const {
 
 void SampleHistoryRingBuffer::_writeSample(const Sample& sample) {
     for (int byteIndex = 0; byteIndex < _sampleSize; ++byteIndex) {
-        _data[_sampleIndex + byteIndex] = sample.getByte(byteIndex);
+        _data[_sampleIndex * _sampleSize + byteIndex] =
+            sample.getByte(byteIndex);
     }
 }
