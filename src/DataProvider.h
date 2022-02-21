@@ -54,6 +54,7 @@ class DataProvider: public IProviderCallbacks {
 
   private:
     std::string _buildAdvertisementData();
+    DownloadHeader _buildDownloadHeader();
     DownloadPacket _buildDownloadPacket();
     // void _handleDownload();
     // void _saveSampleToHistoryBuffer();

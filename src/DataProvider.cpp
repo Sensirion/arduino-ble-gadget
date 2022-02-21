@@ -76,6 +76,19 @@ std::string DataProvider::_buildAdvertisementData() {
     return data;
 }
 
+DownloadHeader DataProvider::_buildDownloadHeader() {
+    DownloadHeader header;
+    uint32_t age = static_cast<uint32_t>(std::round(
+        static_cast<double>(millis() - _sampleHistory.latestHistoryTimeStamp) /
+        1000.0));
+    header.setDownloadSampleType(_sampleConfig.downloadType);
+    header.setIntervalMilliSeconds(_historyIntervalMilliSeconds);
+    header.setAgeOfLatestSampleMilliSeconds(age);
+    header.setDownloadSampleCount(
+        static_cast<uint16_t>(_sampleHistory.numberOfSamplesInBuffer()));
+    return header;
+}
+
 DownloadPacket DataProvider::_buildDownloadPacket() {
     DownloadPacket packet;
     packet.setDownloadSequenceNumber(_downloadSequenceIdx);
