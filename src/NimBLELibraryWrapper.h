@@ -51,6 +51,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
     void characteristicSetValue(const char* uuid, int value) override;
     std::string characteristicGetValue(const char* uuid) override;
     void characteristicNotify(const char* uuid) override;
+    void setProviderCallbacks(IProviderCallbacks* providerCallbacks) override;
 
   private:
     void _deinit();

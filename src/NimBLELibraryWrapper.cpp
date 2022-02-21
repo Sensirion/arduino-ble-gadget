@@ -8,7 +8,6 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
                            BLEServerCallbacks {
     NimBLEAdvertising* pNimBLEAdvertising;
     bool BLEDeviceRunning = false;
-    bool deviceConnected = false;
 
     // BLEServer
     NimBLEServer* pBLEServer;
@@ -27,18 +26,33 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
 
     // BLECharacteristicCallbacks
     void onWrite(BLECharacteristic* characteristic);
+
+    // DataProvider Callbacks
+    IProviderCallbacks* providerCallbacks = nullptr;
 };
 
 void WrapperPrivateData::onConnect(NimBLEServer* serverInst) {
-    deviceConnected = true;
+    if (providerCallbacks != nullptr) {
+        providerCallbacks->onConnectionEvent();
+    }
 }
 
 void WrapperPrivateData::onDisconnect(BLEServer* serverInst) {
-    deviceConnected = false;
+    if (providerCallbacks != nullptr) {
+        providerCallbacks->onConnectionEvent();
+    }
 }
 
 void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
-    // todo: download service (upcoming story)
+    if (characteristic->getUUID().toString().compare(
+            SAMPLE_HISTORY_INTERVAL_UUID) == 0) {
+        std::string value = characteristic->getValue();
+        uint32_t sampleIntervalMs =
+            value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] << 24);
+        if (providerCallbacks != nullptr) {
+            providerCallbacks->onHistoryIntervalChange(sampleIntervalMs);
+        }
+    }
 }
 
 WrapperPrivateData* NimBLELibraryWrapper::_data = nullptr;
@@ -121,6 +135,11 @@ std::string NimBLELibraryWrapper::characteristicGetValue(const char* uuid) {
 
 void NimBLELibraryWrapper::characteristicNotify(const char* uuid) {
     _data->pBLEDownloadService->getCharacteristic(uuid)->notify(true);
+}
+
+void NimBLELibraryWrapper::setProviderCallbacks(
+    IProviderCallbacks* providerCallbacks) {
+    _data->providerCallbacks = providerCallbacks;
 }
 
 void NimBLELibraryWrapper::_createDownloadService() {
