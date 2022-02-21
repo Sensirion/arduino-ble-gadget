@@ -26,6 +26,8 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
 
     // BLECharacteristicCallbacks
     void onWrite(BLECharacteristic* characteristic);
+    void onSubscribe(NimBLECharacteristic* pCharacteristic,
+                     ble_gap_conn_desc* desc, uint16_t subValue);
 
     // DataProvider Callbacks
     IProviderCallbacks* providerCallbacks = nullptr;
@@ -40,6 +42,14 @@ void WrapperPrivateData::onConnect(NimBLEServer* serverInst) {
 void WrapperPrivateData::onDisconnect(BLEServer* serverInst) {
     if (providerCallbacks != nullptr) {
         providerCallbacks->onConnectionEvent();
+    }
+}
+
+void WrapperPrivateData::onSubscribe(NimBLECharacteristic* pCharacteristic,
+                                     ble_gap_conn_desc* desc,
+                                     uint16_t subValue) {
+    if ((providerCallbacks != nullptr) && (subValue == 1)) {
+        providerCallbacks->onDownloadRequest();
     }
 }
 
