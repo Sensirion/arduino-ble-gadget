@@ -76,7 +76,7 @@ DownloadPacket DataProvider::_buildDownloadPacket() {
     int startSampleHistoryIdx = oldestSampleHistoryIdx + numberOfSentSamples;
 
     for (int i = 0; i < _sampleConfig.sampleCountPerPacket; ++i) {
-        if (numberOfSentSamples + i > _numberOfSamplesToDownload) {
+        if ((numberOfSentSamples + i) > _numberOfSamplesToDownload) {
             return packet;
         }
         int currentSampleHistoryIdx =
