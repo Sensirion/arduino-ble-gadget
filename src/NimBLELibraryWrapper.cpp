@@ -58,7 +58,7 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
             SAMPLE_HISTORY_INTERVAL_UUID) == 0) {
         std::string value = characteristic->getValue();
         uint32_t sampleIntervalMs =
-            value[0] + (value[1] << 8) + (value[2] << 16) + (value[3] << 24);
+            value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
         if (providerCallbacks != nullptr) {
             providerCallbacks->onHistoryIntervalChange(sampleIntervalMs);
         }
