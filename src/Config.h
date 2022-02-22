@@ -48,7 +48,10 @@ enum DataType {
     T_RH_VOC_NOX_PM25,
     T_RH_HCHO,
     T_RH_CO2_VOC_PM25_HCHO,
-    T_RH_CO2_VOC_NOX_PM25
+    T_RH_CO2_VOC_NOX_PM25,
+    T_RH_CO2_PM25_V2,
+    T_RH_VOC_PM25_V2,
+    T_RH_CO2_VOC_PM25_HCHO_V2
     /* Add new DataType here. Don't forget to add corresponding
     SampleConfig in Config.cpp */
 };
