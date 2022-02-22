@@ -80,7 +80,7 @@ DownloadPacket DataProvider::_buildDownloadPacket() {
             return packet;
         }
         int currentSampleHistoryIdx =
-            startSampleHistoryIdx + i % _sampleHistory.sampleCapacity();
+            (startSampleHistoryIdx + i) % _sampleHistory.sampleCapacity();
 
         for (int j = 0; j < _sampleConfig.sampleSizeBytes; ++j) {
             int currentByteHistoryIdx =
