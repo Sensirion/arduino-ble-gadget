@@ -118,9 +118,8 @@ std::string DataProvider::_buildAdvertisementData() {
 
 DownloadHeader DataProvider::_buildDownloadHeader() {
     DownloadHeader header;
-    uint32_t age = static_cast<uint32_t>(std::round(
-        static_cast<double>(millis() - _latestHistoryTimeStamp) /
-        1000.0));
+    uint32_t age = static_cast<uint32_t>(
+        ((millis() - _latestHistoryTimeStamp) / 1000) + 1);
     header.setDownloadSampleType(_sampleConfig.downloadType);
     header.setIntervalMilliSeconds(_historyIntervalMilliSeconds);
     header.setAgeOfLatestSampleMilliSeconds(age);
@@ -145,8 +144,7 @@ DownloadPacket DataProvider::_buildDownloadPacket() {
 
 int DataProvider::_numberOfPacketsRequired(int numberOfSamples) const {
     return static_cast<int>(
-        std::ceil(static_cast<double>(numberOfSamples) /
-                  static_cast<double>(_sampleConfig.sampleCountPerPacket)));
+        numberOfSamples / _sampleConfig.sampleCountPerPacket + 1);
 }
 
 void DataProvider::onHistoryIntervalChange(int interval) {
