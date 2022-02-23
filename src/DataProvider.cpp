@@ -52,7 +52,9 @@ void DataProvider::commitSample() {
         _historyIntervalMilliSeconds) {
         _sampleHistory.putSample(_currentSample);
         _latestHistoryTimeStamp = currentTimeStamp;
-        if (!_isDownloading) {
+
+        if (_downloadState == INACTIVE) {
+            _latestHistoryTimeStampAtDownloadStart = currentTimeStamp;
             _BLELibrary.characteristicSetValue(
                 NUMBER_OF_SAMPLES_UUID,
                 _sampleHistory.numberOfSamplesInHistory());
@@ -66,23 +68,21 @@ void DataProvider::commitSample() {
 }
 
 void DataProvider::handleDownload() {
-    if (_isDownloading == false) {
+    if (_downloadState == INACTIVE) {
         return;
     }
 
     // Download Completed
-    if (_downloadSequenceIdx >=
-        _numberOfSamplePacketsToDownload + 1) { // +1 because of the header
-        _isDownloading = false;
+    if (_downloadState == COMPLETED) {
         _downloadSequenceIdx = 0;
         _numberOfSamplesToDownload = 0;
         _numberOfSamplePacketsToDownload = 0;
-        Serial.println("download completed");
+        _downloadState = INACTIVE;
         return;
     }
 
     // Start Download
-    if (_downloadSequenceIdx == 0) {
+    if (_downloadState == START) {
         _numberOfSamplesToDownload = _sampleHistory.numberOfSamplesInHistory();
         _numberOfSamplePacketsToDownload =
             _numberOfPacketsRequired(_numberOfSamplesToDownload);
@@ -92,16 +92,18 @@ void DataProvider::handleDownload() {
         _BLELibrary.characteristicSetValue(DOWNLOAD_PACKET_UUID,
                                            header.getDataArray().data(),
                                            header.getDataArray().size());
-        _BLELibrary.characteristicNotify(DOWNLOAD_PACKET_UUID);
-        ++_downloadSequenceIdx;
-
-    } else { // Continue Download
+        _downloadState = DOWNLOADING;
+    } else if (_downloadState == DOWNLOADING) { // Continue Download
         DownloadPacket packet = _buildDownloadPacket();
         _BLELibrary.characteristicSetValue(DOWNLOAD_PACKET_UUID,
                                            packet.getDataArray().data(),
                                            packet.getDataArray().size());
-        _BLELibrary.characteristicNotify(DOWNLOAD_PACKET_UUID);
-        ++_downloadSequenceIdx;
+    }
+    _BLELibrary.characteristicNotify(DOWNLOAD_PACKET_UUID);
+
+    ++_downloadSequenceIdx;
+    if (_downloadSequenceIdx >= _numberOfSamplePacketsToDownload + 1) {
+        _downloadState = COMPLETED;
     }
 }
 
@@ -119,7 +121,7 @@ std::string DataProvider::_buildAdvertisementData() {
 DownloadHeader DataProvider::_buildDownloadHeader() {
     DownloadHeader header;
     uint32_t age = static_cast<uint32_t>(
-        ((millis() - _latestHistoryTimeStamp) / 1000) + 1);
+        ((millis() - _latestHistoryTimeStampAtDownloadStart) / 1000));
     header.setDownloadSampleType(_sampleConfig.downloadType);
     header.setIntervalMilliSeconds(_historyIntervalMilliSeconds);
     header.setAgeOfLatestSampleMilliSeconds(age);
@@ -156,9 +158,9 @@ void DataProvider::onHistoryIntervalChange(int interval) {
 
 void DataProvider::onConnectionEvent() {
     _downloadSequenceIdx = 0;
-    _isDownloading = false;
+    _downloadState = INACTIVE;
 }
 
 void DataProvider::onDownloadRequest() {
-    _isDownloading = true;
+    _downloadState = START;
 }

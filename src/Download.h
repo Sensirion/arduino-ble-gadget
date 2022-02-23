@@ -51,4 +51,6 @@ class DownloadPacket: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
     void writeSampleByte(uint8_t byte, size_t positionInSampleData);
 };
 
+enum DownloadState { INACTIVE = 0, START = 1, DOWNLOADING = 2, COMPLETED = 3 };
+
 #endif /* _DOWNLOAD_H_ */

@@ -62,7 +62,8 @@ class DataProvider: public IProviderCallbacks {
     AdvertisementHeader _advertisementHeader;
     SampleHistoryRingBuffer _sampleHistory;
     int _sampleHistoryIndex;
-    int _isDownloading = false;
+    DownloadState _downloadState = INACTIVE;
+    // int _isDownloading = false;
     int _downloadSequenceIdx = 0; // first packet is the header
     int _numberOfSamplesToDownload = 0;
     int _numberOfSamplePacketsToDownload = 0;
@@ -70,6 +71,7 @@ class DataProvider: public IProviderCallbacks {
     SampleConfig _sampleConfig;
     uint64_t _historyIntervalMilliSeconds = 60000; // = 10 minutes
     uint64_t _latestHistoryTimeStamp = 0;
+    uint64_t _latestHistoryTimeStampAtDownloadStart = 0;
 
     // ProviderCallbacks
     void onHistoryIntervalChange(int interval) override;
