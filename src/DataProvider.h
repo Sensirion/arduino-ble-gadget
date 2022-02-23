@@ -69,6 +69,7 @@ class DataProvider: public IProviderCallbacks {
 
     SampleConfig _sampleConfig;
     uint64_t _historyIntervalMilliSeconds = 60000; // = 10 minutes
+    uint64_t _latestHistoryTimeStamp = 0;
 
     // ProviderCallbacks
     void onHistoryIntervalChange(int interval) override;

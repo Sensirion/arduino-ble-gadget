@@ -41,6 +41,7 @@ const static size_t SAMPLE_SIZE_BYTES = 12;
 class Sample: public ByteArray<SAMPLE_SIZE_BYTES> {
   public:
     void writeValue(uint16_t value, size_t position);
+    void setByte(uint8_t byte, size_t position);
 };
 
 #endif /* _SAMPLES_H_ */

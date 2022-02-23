@@ -38,26 +38,23 @@ const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
 
 // Logs Samples over time to be downloaded
 class SampleHistoryRingBuffer
-    : public ByteArray<SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES> {
+    : protected ByteArray<SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES> {
   public:
-    void addSample(const Sample& sample);
+    void putSample(const Sample& sample);
+    Sample getSample();
     void setSampleSize(size_t sampleSize);
-    size_t sampleCapacity() const;
-    int numberOfSamplesInBuffer() const;
-    int getSampleIndex() const;
-    int getOldestSampleIndex() const;
-    uint64_t latestHistoryTimeStamp = 0;
+    size_t sizeInSamples() const;
+    int numberOfSamplesInHistory() const;
+    bool isEmpty() const;
     void reset();
 
   private:
     void _writeSample(const Sample& sample);
-    // downloadIndex
-    // lastTimeStamp
-
-    // indicates arrayPosistion to be written to next
-    int _sampleIndex = 0;
-    bool _bufferIsWrapped = false;
-    size_t _sampleSize = 0;
+    Sample _fetchSample();
+    int _inSampleIndex = 0;
+    int _outSampleIndex = 0;
+    int _empty = true;
+    size_t _sampleSizeBytes = 0;
 };
 
 #endif /* _SAMPLE_HISTORY_RING_BUFFER_ */

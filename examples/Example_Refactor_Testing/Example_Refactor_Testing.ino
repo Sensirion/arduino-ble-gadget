@@ -7,7 +7,7 @@ DataProvider provider(lib);
 float mockTemp = 0;
 float mockHumi = 0;
 uint64_t lastCommitTimeMS = 0;
-uint64_t commitIntervalMS = 5000; 
+uint64_t commitIntervalMS = 2000; 
 
 void setup(){
     Serial.begin(115200);
