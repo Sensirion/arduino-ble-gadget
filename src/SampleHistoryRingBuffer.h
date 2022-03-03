@@ -41,19 +41,23 @@ class SampleHistoryRingBuffer
     : protected ByteArray<SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES> {
   public:
     void putSample(const Sample& sample);
-    Sample getSample();
     void setSampleSize(size_t sampleSize);
-    size_t sizeInSamples() const;
     int numberOfSamplesInHistory() const;
-    bool isEmpty() const;
+    bool isFull() const;
+    void startReadOut();
+    Sample readOutNextSample();
+    int readOutSamplesRemaining() const;
     void reset();
 
   private:
+    int _nextIndex(int index) const;
+    size_t _sizeInSamples() const;
     void _writeSample(const Sample& sample);
-    Sample _fetchSample();
-    int _inSampleIndex = 0;
-    int _outSampleIndex = 0;
-    int _empty = true;
+    Sample _readSample(int sampleIndex) const;
+    int _head = 0;
+    int _tail = 0;
+    int _sampleReadOutIndex = 0;
+
     size_t _sampleSizeBytes = 0;
 };
 

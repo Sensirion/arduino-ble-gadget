@@ -3,28 +3,14 @@
 
 void SampleHistoryRingBuffer::putSample(const Sample& sample) {
     // iterate outSampleIndex if overwriting
-    if (_empty) { // but not if it is the very first sample
-        _empty = false;
-    } else if (_inSampleIndex == _outSampleIndex) {
-        _outSampleIndex = (_outSampleIndex + 1) % sizeInSamples();
+    if (isFull()) {
+        _tail = _nextIndex(_tail);
     }
     // copy byte wise
     _writeSample(sample);
 
-    // iterate _inSampleIndex
-    _inSampleIndex = (_inSampleIndex + 1) % sizeInSamples();
-}
-
-Sample SampleHistoryRingBuffer::getSample() {
-    Sample sample = _fetchSample();
-
-    ++_outSampleIndex;
-    _outSampleIndex %= sizeInSamples();
-
-    if (_outSampleIndex == _inSampleIndex) {
-        _empty = true;
-    }
-    return sample;
+    // iterate _head
+    _head = _nextIndex(_head);
 }
 
 void SampleHistoryRingBuffer::setSampleSize(size_t sampleSize) {
@@ -32,44 +18,68 @@ void SampleHistoryRingBuffer::setSampleSize(size_t sampleSize) {
     reset();
 }
 
-size_t SampleHistoryRingBuffer::sizeInSamples() const {
-    return SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES / _sampleSizeBytes;
-}
-
 int SampleHistoryRingBuffer::numberOfSamplesInHistory() const {
-    if (_empty) {
-        return 0;
-    }
-
-    int diff = _inSampleIndex - _outSampleIndex;
-    if (diff > 0) {
+    int diff = _head - _tail;
+    if (diff >= 0) {
         return diff;
     } else {
-        return sizeInSamples() - diff;
+        return _sizeInSamples() + diff;
     }
 }
 
-bool SampleHistoryRingBuffer::isEmpty() const {
-    return _empty;
+bool SampleHistoryRingBuffer::isFull() const {
+    return _nextIndex(_head) == _tail;
+}
+
+void SampleHistoryRingBuffer::startReadOut() {
+    _sampleReadOutIndex = _tail;
+}
+
+Sample SampleHistoryRingBuffer::readOutNextSample() {
+    Sample sample = _readSample(_sampleReadOutIndex);
+    if (_sampleReadOutIndex != _head) {
+        _sampleReadOutIndex = _nextIndex(_sampleReadOutIndex);
+    }
+    return sample;
+}
+
+int SampleHistoryRingBuffer::readOutSamplesRemaining() const {
+    int diff = _head - _sampleReadOutIndex;
+    if (diff >= 0) {
+        return diff;
+    } else {
+        return _sizeInSamples() + diff;
+    }
 }
 
 void SampleHistoryRingBuffer::reset() {
-    _inSampleIndex = 0;
-    _outSampleIndex = 0;
-    _empty = true;
+    _head = 0;
+    _tail = 0;
+    _sampleReadOutIndex = 0;
+}
+
+int SampleHistoryRingBuffer::_nextIndex(int index) const {
+    return (index + 1) % _sizeInSamples();
+}
+
+size_t SampleHistoryRingBuffer::_sizeInSamples() const {
+    if (_sampleSizeBytes == 0) {
+        return 0;
+    } else {
+        return (SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES / _sampleSizeBytes);
+    }
 }
 
 void SampleHistoryRingBuffer::_writeSample(const Sample& sample) {
     for (int byteIndex = 0; byteIndex < _sampleSizeBytes; ++byteIndex) {
-        _data[_inSampleIndex * _sampleSizeBytes + byteIndex] =
-            sample.getByte(byteIndex);
+        _data[_head * _sampleSizeBytes + byteIndex] = sample.getByte(byteIndex);
     }
 }
 
-Sample SampleHistoryRingBuffer::_fetchSample() {
+Sample SampleHistoryRingBuffer::_readSample(int sampleIndex) const {
     Sample sample;
     for (int i = 0; i < _sampleSizeBytes; ++i) {
-        uint8_t byte = getByte((_outSampleIndex * _sampleSizeBytes) + i);
+        uint8_t byte = getByte((sampleIndex * _sampleSizeBytes) + i);
         sample.setByte(byte, i);
     }
     return sample;

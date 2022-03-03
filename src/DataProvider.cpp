@@ -84,6 +84,7 @@ void DataProvider::handleDownload() {
     // Start Download
     if (_downloadState == START) {
         _numberOfSamplesToDownload = _sampleHistory.numberOfSamplesInHistory();
+
         _numberOfSamplePacketsToDownload =
             _numberOfPacketsRequired(_numberOfSamplesToDownload);
         _BLELibrary.characteristicSetValue(NUMBER_OF_SAMPLES_UUID,
@@ -93,6 +94,8 @@ void DataProvider::handleDownload() {
                                            header.getDataArray().data(),
                                            header.getDataArray().size());
         _downloadState = DOWNLOADING;
+        _sampleHistory.startReadOut();
+
     } else if (_downloadState == DOWNLOADING) { // Continue Download
         DownloadPacket packet = _buildDownloadPacket();
         _BLELibrary.characteristicSetValue(DOWNLOAD_PACKET_UUID,
@@ -135,10 +138,10 @@ DownloadPacket DataProvider::_buildDownloadPacket() {
     packet.setDownloadSequenceNumber(_downloadSequenceIdx);
 
     for (int i = 0; i < _sampleConfig.sampleCountPerPacket; ++i) {
-        if (_sampleHistory.isEmpty()) {
+        if (_sampleHistory.readOutSamplesRemaining() == 0) {
             return packet;
         }
-        Sample sample = _sampleHistory.getSample();
+        Sample sample = _sampleHistory.readOutNextSample();
         packet.writeSample(sample, _sampleConfig.sampleSizeBytes, i);
     }
     return packet;
