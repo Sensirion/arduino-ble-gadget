@@ -39,7 +39,7 @@ void SampleHistoryRingBuffer::startReadOut() {
 Sample SampleHistoryRingBuffer::readOutNextSample(bool& allSamplesRead) {
     Sample sample = _readSample(_sampleReadOutIndex);
     if (!allSamplesRead) {
-        _nextIndex(_sampleReadOutIndex);
+        _sampleReadOutIndex = _nextIndex(_sampleReadOutIndex);
     }
     allSamplesRead = (_sampleReadOutIndex == _head);
     return sample;
