@@ -28,36 +28,15 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _NIM_BLE_LIBRARY_WRAPPER_H_
-#define _NIM_BLE_LIBRARY_WRAPPER_H_
+#ifndef _PROVIDER_CALLBACKS_H_
+#define _PROVIDER_CALLBACKS_H_
 
-#include "IBLELibraryWrapper.h"
-
-struct WrapperPrivateData;
-
-class NimBLELibraryWrapper: public IBLELibraryWrapper {
+class IProviderCallbacks {
   public:
-    NimBLELibraryWrapper();
-    NimBLELibraryWrapper(const NimBLELibraryWrapper& other) = delete;
-    NimBLELibraryWrapper& operator=(const NimBLELibraryWrapper& other) = delete;
-    virtual ~NimBLELibraryWrapper();
-    void init() override;
-    void setAdvertisingData(const std::string& data) override;
-    void startAdvertising() override;
-    void stopAdvertising() override;
-    std::string getDeviceAddress() override;
-    void characteristicSetValue(const char* uuid, const uint8_t* data,
-                                size_t size) override;
-    void characteristicSetValue(const char* uuid, int value) override;
-    std::string characteristicGetValue(const char* uuid) override;
-    void characteristicNotify(const char* uuid) override;
-    void setProviderCallbacks(IProviderCallbacks* providerCallbacks) override;
-
-  private:
-    void _deinit();
-    void _createDownloadService();
-    static WrapperPrivateData* _data;
-    static uint _numberOfInstances;
+    virtual ~IProviderCallbacks(){};
+    virtual void onDownloadRequest() = 0;
+    virtual void onConnectionEvent() = 0;
+    virtual void onHistoryIntervalChange(int interval) = 0;
 };
 
-#endif /* _NIM_BLE_LIBRARY_WRAPPER_H_ */
+#endif /* _PROVIDER_CALLBACKS_H_ */
