@@ -148,8 +148,12 @@ DownloadPacket DataProvider::_buildDownloadPacket() {
 }
 
 int DataProvider::_numberOfPacketsRequired(int numberOfSamples) const {
-    return static_cast<int>(
-        numberOfSamples / _sampleConfig.sampleCountPerPacket + 1);
+    int numberOfPacketsRequired =
+        numberOfSamples / _sampleConfig.sampleCountPerPacket;
+    if ((numberOfSamples % _sampleConfig.sampleCountPerPacket) != 0) {
+        ++numberOfPacketsRequired;
+    }
+    return numberOfPacketsRequired;
 }
 
 void DataProvider::onHistoryIntervalChange(int interval) {
