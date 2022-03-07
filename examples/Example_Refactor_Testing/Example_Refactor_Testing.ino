@@ -15,7 +15,7 @@ void setup(){
 }
 
 void loop(){
-    delay(10);
+    delay(10); // delay should be as low as possible
     uint64_t now = millis();
     if (now - lastCommitTimeMS >= commitIntervalMS) {
         provider.writeValueToCurrentSample(++mockTemp, Unit::T);
