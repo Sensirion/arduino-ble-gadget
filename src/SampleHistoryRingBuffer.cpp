@@ -35,21 +35,14 @@ void SampleHistoryRingBuffer::startReadOut() {
     _sampleReadOutIndex = _tail;
 }
 
-Sample SampleHistoryRingBuffer::readOutNextSample() {
+// May give out invalid sample if called on an empty sample history
+Sample SampleHistoryRingBuffer::readOutNextSample(bool& allSamplesRead) {
     Sample sample = _readSample(_sampleReadOutIndex);
-    if (_sampleReadOutIndex != _head) {
-        _sampleReadOutIndex = _nextIndex(_sampleReadOutIndex);
+    if (!allSamplesRead) {
+        _nextIndex(_sampleReadOutIndex);
     }
+    allSamplesRead = (_sampleReadOutIndex == _head);
     return sample;
-}
-
-int SampleHistoryRingBuffer::readOutSamplesRemaining() const {
-    int diff = _head - _sampleReadOutIndex;
-    if (diff >= 0) {
-        return diff;
-    } else {
-        return _sizeInSamples() + diff;
-    }
 }
 
 void SampleHistoryRingBuffer::reset() {

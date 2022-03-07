@@ -136,12 +136,10 @@ DownloadHeader DataProvider::_buildDownloadHeader() {
 DownloadPacket DataProvider::_buildDownloadPacket() {
     DownloadPacket packet;
     packet.setDownloadSequenceNumber(_downloadSequenceIdx);
-
-    for (int i = 0; i < _sampleConfig.sampleCountPerPacket; ++i) {
-        if (_sampleHistory.readOutSamplesRemaining() == 0) {
-            return packet;
-        }
-        Sample sample = _sampleHistory.readOutNextSample();
+    bool allSamplesRead = false;
+    for (int i = 0; i < _sampleConfig.sampleCountPerPacket && !allSamplesRead;
+         ++i) {
+        Sample sample = _sampleHistory.readOutNextSample(allSamplesRead);
         packet.writeSample(sample, _sampleConfig.sampleSizeBytes, i);
     }
     return packet;

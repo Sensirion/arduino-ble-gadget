@@ -45,8 +45,7 @@ class SampleHistoryRingBuffer
     int numberOfSamplesInHistory() const;
     bool isFull() const;
     void startReadOut();
-    Sample readOutNextSample();
-    int readOutSamplesRemaining() const;
+    Sample readOutNextSample(bool& allSamplesRead);
     void reset();
 
   private:
