@@ -45,6 +45,12 @@ static const char* const NUMBER_OF_SAMPLES_UUID =
 static const char* const DOWNLOAD_PACKET_UUID =
     "00008004-b38d-4985-720e-0f993a68ee41";
 
+static const char* const SETTINGS_SERVICE_UUID =
+    "00008100-b38d-4985-720e-0f993a68ee41";
+static const char* const WIFI_SSID_UUID =
+    "00008171-b38d-4985-720e-0f993a68ee41";
+static const char* const WIFI_PWD_UUID = "00008172-b38d-4985-720e-0f993a68ee41";
+
 // abstract class
 class IBLELibraryWrapper {
   public:
