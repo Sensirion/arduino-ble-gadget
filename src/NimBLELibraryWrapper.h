@@ -56,6 +56,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
   private:
     void _deinit();
     void _createDownloadService();
+    void _createSettingsService();
     static WrapperPrivateData* _data;
     static uint _numberOfInstances;
 };

@@ -12,13 +12,17 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
     // BLEServer
     NimBLEServer* pBLEServer;
 
-    // BLEDownloadService
+    // BLEServices
     NimBLEService* pBLEDownloadService;
+    NimBLEService* pBLESettingsService;
 
     // BLECharacteristics
     NimBLECharacteristic* pTransferChararacteristic;
     NimBLECharacteristic* pNumberOfSamplesCharacteristic;
     NimBLECharacteristic* pSampleHistoryIntervalCharacteristic;
+
+    NimBLECharacteristic* pWifiSsidCharacteristic;
+    NimBLECharacteristic* pWifiPasswordCharacteristic;
 
     // BLEServerCallbacks
     void onConnect(BLEServer* serverInst);
@@ -106,8 +110,9 @@ void NimBLELibraryWrapper::init() {
         NimBLEDevice::createServer(); // NimBLEDevice has ownership
     _data->pBLEServer->setCallbacks(_data);
 
-    // Create Dwownload Service
+    // Create Services
     _createDownloadService();
+    _createSettingsService();
 }
 
 void NimBLELibraryWrapper::setAdvertisingData(const std::string& data) {
@@ -175,4 +180,22 @@ void NimBLELibraryWrapper::_createDownloadService() {
     _data->pTransferChararacteristic->setCallbacks(_data);
 
     _data->pBLEDownloadService->start();
+}
+
+void NimBLELibraryWrapper::_createSettingsService() {
+    // Create Service
+    _data->pBLESettingsService = _data->pBLEServer->createService(SETTINGS_SERVICE_UUID);
+
+    // Create Characteristics
+    if (true) {// place holder to enable wifi settings
+        _data->pWifiSsidCharacteristic = _data->pBLESettingsService->createCharacteristic(WIFI_SSID_UUID, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE);
+        _data->pWifiSsidCharacteristic->setValue("ssid placeholder");
+        _data->pWifiSsidCharacteristic->setCallbacks(_data);
+
+        _data->pWifiPasswordCharacteristic = _data->pBLESettingsService->createCharacteristic(WIFI_PWD_UUID, NIMBLE_PROPERTY::WRITE);
+        _data->pWifiPasswordCharacteristic->setValue("n/a");
+        _data->pWifiPasswordCharacteristic->setCallbacks(_data);
+    }
+
+    _data->pBLESettingsService->start();
 }
