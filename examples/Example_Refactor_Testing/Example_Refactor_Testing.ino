@@ -1,7 +1,7 @@
 #include "DataProvider.h"
 #include "NimBLELibraryWrapper.h"
 
-NimBLELibraryWrapper lib;
+NimBLELibraryWrapper lib(true);
 DataProvider provider(lib);
 
 float mockTemp = 0;

@@ -37,7 +37,7 @@ struct WrapperPrivateData;
 
 class NimBLELibraryWrapper: public IBLELibraryWrapper {
   public:
-    NimBLELibraryWrapper();
+    NimBLELibraryWrapper(bool enableWifiSettings = false);
     NimBLELibraryWrapper(const NimBLELibraryWrapper& other) = delete;
     NimBLELibraryWrapper& operator=(const NimBLELibraryWrapper& other) = delete;
     virtual ~NimBLELibraryWrapper();
@@ -56,6 +56,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
   private:
     void _deinit();
     void _createDownloadService();
+    void _createSettingsService();
     static WrapperPrivateData* _data;
     static uint _numberOfInstances;
 };

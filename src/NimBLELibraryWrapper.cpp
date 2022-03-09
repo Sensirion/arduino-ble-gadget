@@ -8,17 +8,22 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
                            BLEServerCallbacks {
     NimBLEAdvertising* pNimBLEAdvertising;
     bool BLEDeviceRunning = false;
+    bool wifiSettingsEnabled;
 
     // BLEServer
     NimBLEServer* pBLEServer;
 
-    // BLEDownloadService
+    // BLEServices
     NimBLEService* pBLEDownloadService;
+    NimBLEService* pBLESettingsService;
 
     // BLECharacteristics
     NimBLECharacteristic* pTransferChararacteristic;
     NimBLECharacteristic* pNumberOfSamplesCharacteristic;
     NimBLECharacteristic* pSampleHistoryIntervalCharacteristic;
+
+    NimBLECharacteristic* pWifiSsidCharacteristic;
+    NimBLECharacteristic* pWifiPasswordCharacteristic;
 
     // BLEServerCallbacks
     void onConnect(BLEServer* serverInst);
@@ -62,15 +67,24 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
         if (providerCallbacks != nullptr) {
             providerCallbacks->onHistoryIntervalChange(sampleIntervalMs);
         }
+    } else if (wifiSettingsEnabled &&
+               characteristic->getUUID().toString().compare(WIFI_SSID_UUID) ==
+                   0) {
+        providerCallbacks->onWifiSsidChange(characteristic->getValue());
+    } else if (wifiSettingsEnabled &&
+               characteristic->getUUID().toString().compare(WIFI_PWD_UUID) ==
+                   0) {
+        providerCallbacks->onWifiPasswordChange(characteristic->getValue());
     }
 }
 
 WrapperPrivateData* NimBLELibraryWrapper::_data = nullptr;
 
-NimBLELibraryWrapper::NimBLELibraryWrapper() {
+NimBLELibraryWrapper::NimBLELibraryWrapper(bool enableWifiSettings) {
     if (NimBLELibraryWrapper::_numberOfInstances == 0) {
         _data = new WrapperPrivateData();
         ++NimBLELibraryWrapper::_numberOfInstances;
+        _data->wifiSettingsEnabled = enableWifiSettings;
     }
 }
 
@@ -106,8 +120,11 @@ void NimBLELibraryWrapper::init() {
         NimBLEDevice::createServer(); // NimBLEDevice has ownership
     _data->pBLEServer->setCallbacks(_data);
 
-    // Create Dwownload Service
+    // Create Services
     _createDownloadService();
+    if (_data->wifiSettingsEnabled) {
+        _createSettingsService();
+    }
 }
 
 void NimBLELibraryWrapper::setAdvertisingData(const std::string& data) {
@@ -175,4 +192,25 @@ void NimBLELibraryWrapper::_createDownloadService() {
     _data->pTransferChararacteristic->setCallbacks(_data);
 
     _data->pBLEDownloadService->start();
+}
+
+void NimBLELibraryWrapper::_createSettingsService() {
+    // Create Service
+    _data->pBLESettingsService =
+        _data->pBLEServer->createService(SETTINGS_SERVICE_UUID);
+
+    // Create Characteristics
+    _data->pWifiSsidCharacteristic =
+        _data->pBLESettingsService->createCharacteristic(
+            WIFI_SSID_UUID, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE);
+    _data->pWifiSsidCharacteristic->setValue("ssid placeholder");
+    _data->pWifiSsidCharacteristic->setCallbacks(_data);
+
+    _data->pWifiPasswordCharacteristic =
+        _data->pBLESettingsService->createCharacteristic(
+            WIFI_PWD_UUID, NIMBLE_PROPERTY::WRITE);
+    _data->pWifiPasswordCharacteristic->setValue("n/a");
+    _data->pWifiPasswordCharacteristic->setCallbacks(_data);
+
+    _data->pBLESettingsService->start();
 }
