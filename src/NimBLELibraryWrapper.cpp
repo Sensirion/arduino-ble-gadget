@@ -8,6 +8,7 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
                            BLEServerCallbacks {
     NimBLEAdvertising* pNimBLEAdvertising;
     bool BLEDeviceRunning = false;
+    bool wifiSettingsEnabled;
 
     // BLEServer
     NimBLEServer* pBLEServer;
@@ -71,10 +72,11 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
 
 WrapperPrivateData* NimBLELibraryWrapper::_data = nullptr;
 
-NimBLELibraryWrapper::NimBLELibraryWrapper() {
+NimBLELibraryWrapper::NimBLELibraryWrapper(bool enableWifiSettings) {
     if (NimBLELibraryWrapper::_numberOfInstances == 0) {
         _data = new WrapperPrivateData();
         ++NimBLELibraryWrapper::_numberOfInstances;
+        _data->wifiSettingsEnabled = enableWifiSettings;
     }
 }
 
@@ -112,7 +114,9 @@ void NimBLELibraryWrapper::init() {
 
     // Create Services
     _createDownloadService();
-    _createSettingsService();
+    if (_data->wifiSettingsEnabled) {
+        _createSettingsService();
+    }
 }
 
 void NimBLELibraryWrapper::setAdvertisingData(const std::string& data) {
@@ -184,18 +188,21 @@ void NimBLELibraryWrapper::_createDownloadService() {
 
 void NimBLELibraryWrapper::_createSettingsService() {
     // Create Service
-    _data->pBLESettingsService = _data->pBLEServer->createService(SETTINGS_SERVICE_UUID);
+    _data->pBLESettingsService =
+        _data->pBLEServer->createService(SETTINGS_SERVICE_UUID);
 
     // Create Characteristics
-    if (true) {// place holder to enable wifi settings
-        _data->pWifiSsidCharacteristic = _data->pBLESettingsService->createCharacteristic(WIFI_SSID_UUID, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE);
-        _data->pWifiSsidCharacteristic->setValue("ssid placeholder");
-        _data->pWifiSsidCharacteristic->setCallbacks(_data);
+    _data->pWifiSsidCharacteristic =
+        _data->pBLESettingsService->createCharacteristic(
+            WIFI_SSID_UUID, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE);
+    _data->pWifiSsidCharacteristic->setValue("ssid placeholder");
+    _data->pWifiSsidCharacteristic->setCallbacks(_data);
 
-        _data->pWifiPasswordCharacteristic = _data->pBLESettingsService->createCharacteristic(WIFI_PWD_UUID, NIMBLE_PROPERTY::WRITE);
-        _data->pWifiPasswordCharacteristic->setValue("n/a");
-        _data->pWifiPasswordCharacteristic->setCallbacks(_data);
-    }
+    _data->pWifiPasswordCharacteristic =
+        _data->pBLESettingsService->createCharacteristic(
+            WIFI_PWD_UUID, NIMBLE_PROPERTY::WRITE);
+    _data->pWifiPasswordCharacteristic->setValue("n/a");
+    _data->pWifiPasswordCharacteristic->setCallbacks(_data);
 
     _data->pBLESettingsService->start();
 }
