@@ -54,6 +54,7 @@ class DataProvider: public IProviderCallbacks {
     void commitSample();
     void handleDownload();
     void setSampleConfig(DataType dataType);
+    String getDeviceIdString() const;
 
   private:
     std::string _buildAdvertisementData();

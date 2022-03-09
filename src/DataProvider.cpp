@@ -115,6 +115,14 @@ void DataProvider::setSampleConfig(DataType dataType) {
     _sampleHistory.setSampleSize(_sampleConfig.sampleSizeBytes);
 }
 
+String DataProvider::getDeviceIdString() const {
+    char cDevId[6];
+    std::string macAddress = _BLELibrary.getDeviceAddress();
+    snprintf(cDevId, sizeof(cDevId), "%s:%s", macAddress.substr(12, 14).c_str(),
+             macAddress.substr(15, 17).c_str());
+    return cDevId;
+}
+
 std::string DataProvider::_buildAdvertisementData() {
     _advertisementHeader.writeSampleType(_sampleConfig.sampleType);
     std::string data = _advertisementHeader.getDataString();
