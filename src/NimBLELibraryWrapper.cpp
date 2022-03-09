@@ -67,6 +67,14 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
         if (providerCallbacks != nullptr) {
             providerCallbacks->onHistoryIntervalChange(sampleIntervalMs);
         }
+    } else if (wifiSettingsEnabled &&
+               characteristic->getUUID().toString().compare(WIFI_SSID_UUID) ==
+                   0) {
+        providerCallbacks->onWifiSsidChange(characteristic->getValue());
+    } else if (wifiSettingsEnabled &&
+               characteristic->getUUID().toString().compare(WIFI_PWD_UUID) ==
+                   0) {
+        providerCallbacks->onWifiPasswordChange(characteristic->getValue());
     }
 }
 

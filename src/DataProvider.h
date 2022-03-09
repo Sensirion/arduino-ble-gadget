@@ -77,6 +77,8 @@ class DataProvider: public IProviderCallbacks {
     void onHistoryIntervalChange(int interval) override;
     void onConnectionEvent() override;
     void onDownloadRequest() override;
+    void onWifiSsidChange(std::string ssid) override;
+    void onWifiPasswordChange(std::string pwd) override;
 };
 
 #endif /* _DATA_PROVIDER_H_ */
