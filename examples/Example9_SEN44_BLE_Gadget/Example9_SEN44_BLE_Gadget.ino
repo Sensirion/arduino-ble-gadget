@@ -12,8 +12,8 @@
 SensirionI2CSen44 sen44;
 
 // GadgetBle workflow
-static int64_t lastMmntTime = 0;
-static int mmntIntervalMs = 1000;
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 1000;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_VOC_PM25);
 
@@ -113,7 +113,7 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - lastMmntTime >= mmntIntervalMs) {
+  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
     measure_and_report();
   }
 
@@ -174,5 +174,5 @@ void measure_and_report() {
     provider.writeValueToCurrentSample(massConcentrationPm2p5, Unit::PM2P5);
     
     provider.commitSample();
-    lastMmntTime = millis();
+    lastMeasurementTimeMs = millis();
 }

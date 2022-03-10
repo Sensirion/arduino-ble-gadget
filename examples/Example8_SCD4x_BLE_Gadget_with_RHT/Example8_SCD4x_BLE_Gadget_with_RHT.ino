@@ -9,8 +9,8 @@
 const int16_t SCD_ADDRESS = 0x62;
 
 // GadgetBle workflow
-static int64_t lastMmntTime = 0;
-static int mmntIntervalMs = 5000;
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 5000;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_CO2);
 
@@ -46,7 +46,7 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - lastMmntTime >= mmntIntervalMs) {
+  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
     measure_and_report();
   }
 
@@ -95,5 +95,5 @@ void measure_and_report() {
 
   provider.commitSample();
 
-  lastMmntTime = millis();
+  lastMeasurementTimeMs = millis();
 }

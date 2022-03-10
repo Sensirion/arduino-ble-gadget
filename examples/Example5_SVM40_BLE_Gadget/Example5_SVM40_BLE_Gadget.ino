@@ -13,8 +13,8 @@ const int16_t SVM40_ADDRESS = 0x6A;
 static int temperature_offset = -5;
 
 // GadgetBle workflow
-static int64_t lastMmntTime = 0;
-static int mmntInterval = 1000;
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 1000;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_VOC);
 
@@ -129,7 +129,7 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - lastMmntTime >= mmntInterval) {
+  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
     measure_and_report();
   }
 
@@ -180,7 +180,7 @@ void measure_and_report() {
   provider.writeValueToCurrentSample(float(temperature) / 200, Unit::T);
 
   provider.commitSample();
-  lastMmntTime = millis();
+  lastMeasurementTimeMs = millis();
 }
 
 // calculate CRC according to datasheet

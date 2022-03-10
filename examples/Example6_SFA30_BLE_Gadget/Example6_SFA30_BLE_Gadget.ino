@@ -10,8 +10,8 @@
 const int16_t SFA_ADDRESS = 0x5D;
 
 // GadgetBle workflow
-static int64_t lastMmntTime = 0;
-static int mmntInterval = 1000;
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 1000;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_HCHO);
 
@@ -44,7 +44,7 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - lastMmntTime >= mmntInterval) {
+  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
     measure_and_report();
   }
 
@@ -95,5 +95,5 @@ void measure_and_report() {
   provider.writeValueToCurrentSample(temperature, Unit::T);
 
   provider.commitSample();
-  lastMmntTime = millis();
+  lastMeasurementTimeMs = millis();
 }

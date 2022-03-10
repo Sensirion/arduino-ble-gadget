@@ -7,8 +7,8 @@
 #include "DataProvider.h"
 #include "NimBLELibraryWrapper.h"
 
-static int64_t lastMmntTime = 0;
-static int startCheckingAfterMs = 1900;
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 1900;
 
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_CO2);
@@ -32,7 +32,7 @@ void setup() {
 void loop() {
   float result[3] = {0};
 
-  if (millis() - lastMmntTime >= startCheckingAfterMs) {
+  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
 
     if (scd30.isAvailable()) {
       scd30.getCarbonDioxideConcentration(result);
@@ -42,7 +42,7 @@ void loop() {
       provider.writeValueToCurrentSample(result[2], Unit::RH);
 
       provider.commitSample();
-      lastMmntTime = millis();
+      lastMeasurementTimeMs = millis();
 
       // Provide the sensor values for Tools -> Serial Monitor or Serial Plotter
       Serial.print("CO2[ppm]:");
