@@ -1,7 +1,6 @@
 // This code is based on Sensirion's Arduino Snippets
 // Check https://github.com/Sensirion/arduino-snippets for the most recent version.
 
-#include "esp_timer.h"
 #include "DataProvider.h"
 #include "NimBLELibraryWrapper.h"
 #include <Wire.h>
@@ -11,7 +10,7 @@ const int16_t SCD_ADDRESS = 0x62;
 
 // GadgetBle workflow
 static int64_t lastMmntTime = 0;
-static int mmntIntervalUs = 5000000;
+static int mmntIntervalMs = 5000;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_CO2);
 
@@ -47,7 +46,7 @@ void setup() {
 }
 
 void loop() {
-  if (esp_timer_get_time() - lastMmntTime >= mmntIntervalUs) {
+  if (millis() - lastMmntTime >= mmntIntervalMs) {
     measure_and_report();
   }
 
@@ -96,5 +95,5 @@ void measure_and_report() {
 
   provider.commitSample();
 
-  lastMmntTime = esp_timer_get_time();
+  lastMmntTime = millis();
 }

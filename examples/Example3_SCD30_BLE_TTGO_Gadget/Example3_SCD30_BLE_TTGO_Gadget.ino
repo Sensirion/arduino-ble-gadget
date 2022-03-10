@@ -1,4 +1,3 @@
-#include "esp_timer.h"
 #include <Wire.h>
 
 // Go to TTGO T-Display's Github Repository
@@ -19,7 +18,7 @@
 #include "NimBLELibraryWrapper.h"
 
 static int64_t lastMmntTime = 0;
-static int startCheckingAfterUs = 1900000;
+static int startCheckingAfterMs = 1900;
 
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_CO2_ALT);
@@ -124,7 +123,7 @@ void setup() {
 void loop() {
   float result[3] = {0};
 
-  if (esp_timer_get_time() - lastMmntTime >= startCheckingAfterUs) {
+  if (millis() - lastMmntTime >= startCheckingAfterMs) {
 
     if (scd30.isAvailable()) {
       scd30.getCarbonDioxideConcentration(result);
@@ -134,7 +133,7 @@ void loop() {
       provider.writeValueToCurrentSample(result[2], Unit::RH);
 
       provider.commitSample();
-      lastMmntTime = esp_timer_get_time();
+      lastMmntTime = millis();
 
       // Provide the sensor values for Tools -> Serial Monitor or Serial Plotter
       Serial.print("CO2[ppm]:");

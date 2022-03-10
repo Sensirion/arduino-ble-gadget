@@ -1,7 +1,6 @@
 // This code is based on Sensirion's Arduino Snippets
 // Check https://github.com/Sensirion/arduino-snippets for the most recent version.
 
-#include "esp_timer.h"
 #include "DataProvider.h"
 #include "NimBLELibraryWrapper.h"
 
@@ -15,7 +14,7 @@ static int temperature_offset = -5;
 
 // GadgetBle workflow
 static int64_t lastMmntTime = 0;
-static int mmntInterval = 1000000;
+static int mmntInterval = 1000;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_VOC);
 
@@ -130,7 +129,7 @@ void setup() {
 }
 
 void loop() {
-  if (esp_timer_get_time() - lastMmntTime >= mmntInterval) {
+  if (millis() - lastMmntTime >= mmntInterval) {
     measure_and_report();
   }
 
@@ -181,7 +180,7 @@ void measure_and_report() {
   provider.writeValueToCurrentSample(float(temperature) / 200, Unit::T);
 
   provider.commitSample();
-  lastMmntTime = esp_timer_get_time();
+  lastMmntTime = millis();
 }
 
 // calculate CRC according to datasheet

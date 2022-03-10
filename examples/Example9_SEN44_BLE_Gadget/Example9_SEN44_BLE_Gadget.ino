@@ -6,7 +6,6 @@
 #include <SensirionI2CSen44.h>
 #include <Wire.h>
 
-#include "esp_timer.h"
 #include "DataProvider.h"
 #include "NimBLELibraryWrapper.h"
 
@@ -14,7 +13,7 @@ SensirionI2CSen44 sen44;
 
 // GadgetBle workflow
 static int64_t lastMmntTime = 0;
-static int mmntIntervalUs = 1000000;
+static int mmntIntervalMs = 1000;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_VOC_PM25);
 
@@ -114,7 +113,7 @@ void setup() {
 }
 
 void loop() {
-  if (esp_timer_get_time() - lastMmntTime >= mmntIntervalUs) {
+  if (millis() - lastMmntTime >= mmntIntervalMs) {
     measure_and_report();
   }
 
@@ -175,5 +174,5 @@ void measure_and_report() {
     provider.writeValueToCurrentSample(massConcentrationPm2p5, Unit::PM2P5);
     
     provider.commitSample();
-    lastMmntTime = esp_timer_get_time();
+    lastMmntTime = millis();
 }
