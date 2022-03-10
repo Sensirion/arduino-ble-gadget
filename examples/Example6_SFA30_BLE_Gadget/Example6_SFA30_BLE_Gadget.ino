@@ -2,7 +2,8 @@
 // Check https://github.com/Sensirion/arduino-snippets for the most recent version.
 
 #include "esp_timer.h"
-#include "Sensirion_GadgetBle_Lib.h"
+#include "DataProvider.h"
+#include "NimBLELibraryWrapper.h"
 
 #include <Wire.h>
 
@@ -12,7 +13,8 @@ const int16_t SFA_ADDRESS = 0x5D;
 // GadgetBle workflow
 static int64_t lastMmntTime = 0;
 static int mmntInterval = 1000000;
-GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_HCHO);
+NimBLELibraryWrapper lib;
+DataProvider provider(lib, DataType::T_RH_HCHO);
 
 void setup() {
   Serial.begin(115200);
@@ -22,9 +24,9 @@ void setup() {
   while(!Serial);
 
   // Initialize the GadgetBle Library
-  gadgetBle.begin();
+  provider.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
-  Serial.println(gadgetBle.getDeviceIdString());
+  Serial.println(provider.getDeviceIdString());
 
   // init I2C
   Wire.begin();
@@ -47,7 +49,7 @@ void loop() {
     measure_and_report();
   }
 
-  gadgetBle.handleEvents();
+  provider.handleDownload();
   delay(3);
 }
 
@@ -89,10 +91,10 @@ void measure_and_report() {
   Serial.print(humidity);
   Serial.println();
 
-  gadgetBle.writeHCHO(hcho);
-  gadgetBle.writeHumidity(humidity);
-  gadgetBle.writeTemperature(temperature);
+  provider.writeValueToCurrentSample(hcho, Unit::HCHO);
+  provider.writeValueToCurrentSample(humidity, Unit::RH);
+  provider.writeValueToCurrentSample(temperature, Unit::T);
 
-  gadgetBle.commit();
+  provider.commitSample();
   lastMmntTime = esp_timer_get_time();
 }

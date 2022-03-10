@@ -5,21 +5,23 @@
 //  => https://github.com/Seeed-Studio/Seeed_SCD30/releases/latest
 #include "SCD30.h"
 
-#include "Sensirion_GadgetBle_Lib.h"
+#include "DataProvider.h"
+#include "NimBLELibraryWrapper.h"
 
 static int64_t lastMmntTime = 0;
 static int startCheckingAfterUs = 1900000;
 
-GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_CO2);
+NimBLELibraryWrapper lib;
+DataProvider provider(lib, DataType::T_RH_CO2);
 
 void setup() {
   Serial.begin(115200);
   delay(100);
 
   // Initialize the GadgetBle Library
-  gadgetBle.begin();
+  provider.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
-  Serial.println(gadgetBle.getDeviceIdString());
+  Serial.println(provider.getDeviceIdString());
 
   // Initialize the SCD30 driver
   Wire.begin();
@@ -36,11 +38,11 @@ void loop() {
     if (scd30.isAvailable()) {
       scd30.getCarbonDioxideConcentration(result);
 
-      gadgetBle.writeCO2(result[0]);
-      gadgetBle.writeTemperature(result[1]);
-      gadgetBle.writeHumidity(result[2]);
+      provider.writeValueToCurrentSample(result[0], Unit::CO2);
+      provider.writeValueToCurrentSample(result[1], Unit::T);
+      provider.writeValueToCurrentSample(result[2], Unit::RH);
 
-      gadgetBle.commit();
+      provider.commitSample();
       lastMmntTime = esp_timer_get_time();
 
       // Provide the sensor values for Tools -> Serial Monitor or Serial Plotter
@@ -55,6 +57,6 @@ void loop() {
     }
   }
 
-  gadgetBle.handleEvents();
+  provider.handleDownload();
   delay(3);
 }

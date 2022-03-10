@@ -11,13 +11,18 @@
 // Download the SeeedStudio SCD30 Arduino driver here:
 //  => https://github.com/Seeed-Studio/Seeed_SCD30/releases/latest
 #include "SCD30.h"
+#include "resources/fonts/SensirionSimple25pt7b.h"
+#include "resources/fonts/ArchivoNarrow_Regular10pt7b.h"
+#include "resources/fonts/ArchivoNarrow_Regular50pt7b.h"
 
-#include "Sensirion_GadgetBle_Lib.h"
+#include "DataProvider.h"
+#include "NimBLELibraryWrapper.h"
 
 static int64_t lastMmntTime = 0;
 static int startCheckingAfterUs = 1900000;
 
-GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_CO2_ALT);
+NimBLELibraryWrapper lib;
+DataProvider provider(lib, DataType::T_RH_CO2_ALT);
 
 // Display related
 #define SENSIRION_GREEN 0x6E66
@@ -70,7 +75,7 @@ void displayCo2(uint16_t co2) {
   tft.drawString("CO2", 10, 125);
 
   tft.setTextDatum(8); // bottom right
-  tft.drawString(gadgetBle.getDeviceIdString(), 230, 125);
+  tft.drawString(provider.getDeviceIdString(), 230, 125);
 
   // Draw CO2 number
   if (co2 >= 1600 ) {
@@ -100,9 +105,9 @@ void setup() {
   delay(100);
 
   // Initialize the GadgetBle Library
-  gadgetBle.begin();
+  provider.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
-  Serial.println(gadgetBle.getDeviceIdString());
+  Serial.println(provider.getDeviceIdString());
 
   // Initialize the SCD30 driver
   Wire.begin();
@@ -124,11 +129,11 @@ void loop() {
     if (scd30.isAvailable()) {
       scd30.getCarbonDioxideConcentration(result);
 
-      gadgetBle.writeCO2(result[0]);
-      gadgetBle.writeTemperature(result[1]);
-      gadgetBle.writeHumidity(result[2]);
+      provider.writeValueToCurrentSample(result[0], Unit::CO2);
+      provider.writeValueToCurrentSample(result[1], Unit::T);
+      provider.writeValueToCurrentSample(result[2], Unit::RH);
 
-      gadgetBle.commit();
+      provider.commitSample();
       lastMmntTime = esp_timer_get_time();
 
       // Provide the sensor values for Tools -> Serial Monitor or Serial Plotter
@@ -146,6 +151,6 @@ void loop() {
     }
   }
 
-  gadgetBle.handleEvents();
+  provider.handleDownload();
   delay(3);
 }
