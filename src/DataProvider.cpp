@@ -116,6 +116,7 @@ void DataProvider::setSampleConfig(DataType dataType) {
 }
 
 std::string DataProvider::_buildAdvertisementData() {
+    _advertisementHeader.writeSampleType(_sampleConfig.sampleType);
     std::string data = _advertisementHeader.getDataString();
     data.append(_currentSample.getDataString());
     return data;
