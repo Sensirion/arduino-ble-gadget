@@ -33,7 +33,6 @@
 #define _SAMPLES_H_
 
 #include "ByteArray.h"
-#include <Arduino.h>
 
 const static size_t SAMPLE_SIZE_BYTES = 12;
 

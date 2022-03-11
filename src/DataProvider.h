@@ -37,7 +37,6 @@
 #include "IBLELibraryWrapper.h"
 #include "IProviderCallbacks.h"
 #include "IWifiLibraryWrapper.h"
-#include "Sample.h"
 #include "SampleHistoryRingBuffer.h"
 
 class DataProvider: public IProviderCallbacks {
