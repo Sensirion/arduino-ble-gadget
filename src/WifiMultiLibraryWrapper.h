@@ -36,13 +36,13 @@
 
 class WifiMultiLibraryWrapper: public IWifiLibraryWrapper {
   public:
-    void setSsid(std::string ssid) override;
-    void connect(std::string password) override;
+    void setSsid(String ssid) override;
+    void connect(String password) override;
     bool isConnected() override;
-    std::string localIP() override;
+    String localIP() override;
 
   private:
-    std::string _ssid = "";
+    String _ssid = "";
     WiFiMulti wiFiMulti;
 };
 

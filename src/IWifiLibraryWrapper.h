@@ -31,14 +31,14 @@
 #ifndef _I_PROVIDER_CALLBACKS_H_
 #define _I_PROVIDER_CALLBACKS_H_
 
-#include <string>
+#include <Arduino.h>
 
 class IWifiLibraryWrapper {
   public:
-    virtual void setSsid(std::string ssid) = 0;
-    virtual void connect(std::string password) = 0;
+    virtual void setSsid(String ssid) = 0;
+    virtual void connect(String password) = 0;
     virtual bool isConnected() = 0;
-    virtual std::string localIP() = 0;
+    virtual String localIP() = 0;
 };
 
 #endif /* _I_PROVIDER_CALLBACKS_H_ */
