@@ -36,15 +36,18 @@
 #include "Download.h"
 #include "IBLELibraryWrapper.h"
 #include "IProviderCallbacks.h"
+#include "IWifiLibraryWrapper.h"
 #include "Sample.h"
 #include "SampleHistoryRingBuffer.h"
 
 class DataProvider: public IProviderCallbacks {
   public:
     explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
-                          DataType dataType = T_RH_V3)
+                          DataType dataType = T_RH_V3,
+                          IWifiLibraryWrapper* pWifiLibrary = nullptr)
         : _BLELibrary(libraryWrapper),
-          _sampleConfig(sampleConfigSelector.at(dataType)){};
+          _sampleConfig(sampleConfigSelector.at(dataType)),
+          _pWifiLibaray(pWifiLibrary){};
     ~DataProvider(){};
     void begin();
     void writeValueToCurrentSample(float value, Unit unit);
@@ -63,7 +66,6 @@ class DataProvider: public IProviderCallbacks {
     SampleHistoryRingBuffer _sampleHistory;
     int _sampleHistoryIndex;
     DownloadState _downloadState = INACTIVE;
-    // int _isDownloading = false;
     int _downloadSequenceIdx = 0; // first packet is the header
     int _numberOfSamplesToDownload = 0;
     int _numberOfSamplePacketsToDownload = 0;
@@ -72,6 +74,7 @@ class DataProvider: public IProviderCallbacks {
     uint64_t _historyIntervalMilliSeconds = 60000; // = 10 minutes
     uint64_t _latestHistoryTimeStamp = 0;
     uint64_t _latestHistoryTimeStampAtDownloadStart = 0;
+    IWifiLibraryWrapper* _pWifiLibaray;
 
     // ProviderCallbacks
     void onHistoryIntervalChange(int interval) override;
