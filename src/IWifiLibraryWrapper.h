@@ -28,8 +28,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _I_PROVIDER_CALLBACKS_H_
-#define _I_PROVIDER_CALLBACKS_H_
+#ifndef _I_WIFI_LIBRARY_WRAPPER_H_
+#define _I_WIFI_LIBRARY_WRAPPER_H_
 
 #include <Arduino.h>
 
@@ -41,4 +41,4 @@ class IWifiLibraryWrapper {
     virtual String localIP() = 0;
 };
 
-#endif /* _I_PROVIDER_CALLBACKS_H_ */
+#endif /* _I_WIFI_LIBRARY_WRAPPER_H_ */
