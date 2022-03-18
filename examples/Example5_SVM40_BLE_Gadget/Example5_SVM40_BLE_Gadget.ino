@@ -1,8 +1,8 @@
 // This code is based on Sensirion's Arduino Snippets
 // Check https://github.com/Sensirion/arduino-snippets for the most recent version.
 
-#include "esp_timer.h"
-#include "Sensirion_GadgetBle_Lib.h"
+#include "DataProvider.h"
+#include "NimBLELibraryWrapper.h"
 
 #include <Wire.h>
 
@@ -13,9 +13,10 @@ const int16_t SVM40_ADDRESS = 0x6A;
 static int temperature_offset = -5;
 
 // GadgetBle workflow
-static int64_t lastMmntTime = 0;
-static int mmntInterval = 1000000;
-GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_VOC);
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 1000;
+NimBLELibraryWrapper lib;
+DataProvider provider(lib, DataType::T_RH_VOC);
 
 void setup() {
   int16_t t_offset;
@@ -28,9 +29,9 @@ void setup() {
   while (!Serial);
 
   // Initialize the GadgetBle Library
-  gadgetBle.begin();
+  provider.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
-  Serial.println(gadgetBle.getDeviceIdString());
+  Serial.println(provider.getDeviceIdString());
 
   // output format
   Serial.println("VOC_Index\tRH\tT");
@@ -128,11 +129,11 @@ void setup() {
 }
 
 void loop() {
-  if (esp_timer_get_time() - lastMmntTime >= mmntInterval) {
+  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
     measure_and_report();
   }
 
-  gadgetBle.handleEvents();
+  provider.handleDownload();
   delay(3);
 }
 
@@ -174,12 +175,12 @@ void measure_and_report() {
   Serial.print(String(float(temperature) / 200));
   Serial.println();
 
-  gadgetBle.writeVOC(float(voc) / 10);
-  gadgetBle.writeHumidity(float(humidity) / 100);
-  gadgetBle.writeTemperature(float(temperature) / 200);
+  provider.writeValueToCurrentSample(float(voc) / 10, Unit::VOC);
+  provider.writeValueToCurrentSample(float(humidity) / 100, Unit::RH);
+  provider.writeValueToCurrentSample(float(temperature) / 200, Unit::T);
 
-  gadgetBle.commit();
-  lastMmntTime = esp_timer_get_time();
+  provider.commitSample();
+  lastMeasurementTimeMs = millis();
 }
 
 // calculate CRC according to datasheet

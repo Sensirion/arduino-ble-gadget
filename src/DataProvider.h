@@ -37,7 +37,6 @@
 #include "IBLELibraryWrapper.h"
 #include "IProviderCallbacks.h"
 #include "IWifiLibraryWrapper.h"
-#include "Sample.h"
 #include "SampleHistoryRingBuffer.h"
 
 class DataProvider: public IProviderCallbacks {
@@ -54,6 +53,7 @@ class DataProvider: public IProviderCallbacks {
     void commitSample();
     void handleDownload();
     void setSampleConfig(DataType dataType);
+    String getDeviceIdString() const;
 
   private:
     std::string _buildAdvertisementData();

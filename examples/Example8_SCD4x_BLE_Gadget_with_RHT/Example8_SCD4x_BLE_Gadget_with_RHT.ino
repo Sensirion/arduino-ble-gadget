@@ -1,18 +1,18 @@
 // This code is based on Sensirion's Arduino Snippets
 // Check https://github.com/Sensirion/arduino-snippets for the most recent version.
 
-#include "esp_timer.h"
-#include "Sensirion_GadgetBle_Lib.h"
-
+#include "DataProvider.h"
+#include "NimBLELibraryWrapper.h"
 #include <Wire.h>
 
 // SCD41
 const int16_t SCD_ADDRESS = 0x62;
 
 // GadgetBle workflow
-static int64_t lastMmntTime = 0;
-static int mmntIntervalUs = 5000000;
-GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_CO2);
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 5000;
+NimBLELibraryWrapper lib;
+DataProvider provider(lib, DataType::T_RH_CO2);
 
 void setup() {
   Serial.begin(115200);
@@ -22,9 +22,9 @@ void setup() {
   while(!Serial);
 
   // Initialize the GadgetBle Library
-  gadgetBle.begin();
+  provider.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
-  Serial.println(gadgetBle.getDeviceIdString());
+  Serial.println(provider.getDeviceIdString());
 
   // output format
   Serial.println("CO2(ppm)\tTemperature(degC)\tRelativeHumidity(percent)");
@@ -46,11 +46,11 @@ void setup() {
 }
 
 void loop() {
-  if (esp_timer_get_time() - lastMmntTime >= mmntIntervalUs) {
+  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
     measure_and_report();
   }
 
-  gadgetBle.handleEvents();
+  provider.handleDownload();
   delay(3);
 }
 
@@ -89,10 +89,11 @@ void measure_and_report() {
   Serial.print(humidity);
   Serial.println();
 
-  gadgetBle.writeCO2(co2);
-  gadgetBle.writeTemperature(temperature);
-  gadgetBle.writeHumidity(humidity);
+  provider.writeValueToCurrentSample(co2, Unit::CO2);
+  provider.writeValueToCurrentSample(temperature, Unit::T);
+  provider.writeValueToCurrentSample(humidity, Unit::RH);
 
-  gadgetBle.commit();
-  lastMmntTime = esp_timer_get_time();
+  provider.commitSample();
+
+  lastMeasurementTimeMs = millis();
 }

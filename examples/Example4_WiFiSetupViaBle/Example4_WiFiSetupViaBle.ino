@@ -1,38 +1,23 @@
-#include "Sensirion_GadgetBle_Lib.h"
-#include <WiFi.h>
-#include <WiFiMulti.h>
+#include "DataProvider.h"
+#include "NimBLELibraryWrapper.h"
+#include "WifiMultiLibraryWrapper.h"
 // NOTE: The WiFi library requires quite some space on the ESP32's memory.
 // Make sure to decrease the SAMPLE_BUFFER_SIZE_BYTES, to make it fit.
 // In sensirion-gadgetble-lib/src/Sensirion_GadgetBle_Lib.h, set the 
 // static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000;
 
-GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_CO2_ALT);
-
-WiFiMulti WiFiMulti;
-
-void onWifiSettingsChanged(std::string ssid, std::string password) {
-  Serial.print("WifiSetup: SSID = ");
-  Serial.print(ssid.c_str());
-  Serial.print(", Password = ");
-  Serial.println(password.c_str());
-
-  WiFiMulti.addAP(ssid.c_str(), password.c_str());
-}
+NimBLELibraryWrapper lib(true);
+WifiMultiLibraryWrapper wifi;
+DataProvider provider(lib, DataType::T_RH_CO2_ALT, &wifi);
 
 void setup() {
   Serial.begin(115200);
   delay(100);
 
-  // Initialize the GadgetBle Library
-  gadgetBle.enableWifiSetupSettings(onWifiSettingsChanged);
-  gadgetBle.setCurrentWifiSsid("");
-
   // Start the GadgetBle Library
-  gadgetBle.begin();
+  provider.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
-  Serial.println(gadgetBle.getDeviceIdString());
-
-  WiFiMulti.addAP("defaultSSID", "defaultPwd");
+  Serial.println(provider.getDeviceIdString());
 }
 
 uint16_t t = 0;
@@ -45,21 +30,21 @@ static int measurementIntervalMs = 1000;
 void loop() {
   if (esp_timer_get_time() - lastMmntTime >= measurementIntervalMs * 1000) {
     Serial.println("Measurement");
-    gadgetBle.writeTemperature(++t % 50);
-    gadgetBle.writeHumidity(++rh % 100);
-    gadgetBle.writeCO2(++co2 % 1000);
-    gadgetBle.commit();
+    provider.writeValueToCurrentSample(++t % 50, Unit::T);
+    provider.writeValueToCurrentSample(++rh % 100, Unit::RH);
+    provider.writeValueToCurrentSample(++co2 % 1000, Unit::CO2);
+    provider.commitSample();
     lastMmntTime = esp_timer_get_time();
 
     
-    if (WiFiMulti.run() != WL_CONNECTED) {
+    if (wifi.isConnected() == false) {
       Serial.println("WiFi not connected");
     } else {
       Serial.print("WiFi connected - IP = ");
-      Serial.println(WiFi.localIP()); 
+      Serial.println(wifi.localIP());
     }
   }
 
-  gadgetBle.handleEvents();
+  provider.handleDownload();
   delay(3);
 }
