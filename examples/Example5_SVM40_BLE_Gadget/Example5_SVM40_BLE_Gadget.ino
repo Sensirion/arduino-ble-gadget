@@ -31,9 +31,6 @@ void setup() {
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
   Serial.println(gadgetBle.getDeviceIdString());
 
-  // output format
-  Serial.println("VOC_Index\tRH\tT");
-
   // init I2C
   Wire.begin();
 
@@ -65,8 +62,11 @@ void setup() {
   svm40.getTemperatureOffsetForRhtMeasurements(t_offset);
   
   Serial.print("New T Offset: ");
-  Serial.print(t_offset/200);
+  Serial.println(t_offset/200);
   Serial.println();
+
+  // output format
+  Serial.println("VOC_Index\tRH\tT");
 
   // Start continous measurement
   // each second there will be new measurement values
