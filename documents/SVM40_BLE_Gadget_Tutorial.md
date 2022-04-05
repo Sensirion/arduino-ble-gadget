@@ -14,9 +14,8 @@ The tutorial is structured in 3 parts
 
 To complete this tutorial, you'll need
 
-* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
-  available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
-* [Sensirions SEK-SVM40](https://www.sensirion.com/en/environmental-sensors/evaluation-kit-sek-svm40/) (available [here](https://www.digikey.com/en/products/detail/sensirion-ag/SEK-SVM40/12820417?s=N4IgTCBcDaIMoDUCyAWADCAugXyA)
+* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
+* [Sensirions SEK-SVM40](https://sensirion.com/products/catalog/SEK-SVM4x/) (available [here](https://www.digikey.com/en/products/detail/sensirion-ag/SEK-SVM40/12820417?s=N4IgTCBcDaIMoDUCyAWADCAugXyA))
 * USB cable to connect the ESP32 DevKitC module to your computer
 
 Connect the SEK-SVM40 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
