@@ -49,8 +49,9 @@ The following instructions originate from [here](https://github.com/espressif/ar
 We'll be installing one library. Click the link below and download the newest .zip release packages
 
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
+* The [Sensirion I2C SVM40 Arduino Library](https://github.com/Sensirion/arduino-i2c-svm40)
 
-For the downloaded .zip file: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the downloaded .zip file.
+For each of the downloaded .zip files: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the downloaded .zip file.
 
 <img src="images/Arduino-import-zip-lib.png" width="500">
 
