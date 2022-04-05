@@ -31,7 +31,7 @@ Download the **Sensirion MyAmbience CO2** App to monitor your gadget, plot the s
 ## Getting Started
 
 1. Download Arduino IDE and setup the environment for ESP32 platform
-	* Follow [this guide](https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/boards_manager.md)
+	* Follow [this guide](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html#installing-using-arduino-ide)
 	* Detailed Instructions for advanced users: [Arduino-ESP32](https://github.com/espressif/arduino-esp32)
 2. Connect your ESP32 DevKit to your computer and launch the Arduino IDE
 3. In the Arduino IDE, make sure you have the `ESP32 Dev Module` selected and the PSRAM `Disabled`
