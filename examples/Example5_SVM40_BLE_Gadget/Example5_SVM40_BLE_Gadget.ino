@@ -3,14 +3,13 @@
 
 #include "esp_timer.h"
 #include "Sensirion_GadgetBle_Lib.h"
-
+#include <SensirionI2CSvm40.h>
 #include <Wire.h>
 
-// SVM40
-const int16_t SVM40_ADDRESS = 0x6A;
+SensirionI2CSvm40 svm40;
 
 // Temperature offset in degC
-static int temperature_offset = -5;
+static int temperature_offset = -1;
 
 // GadgetBle workflow
 static int64_t lastMmntTime = 0;
@@ -18,14 +17,14 @@ static int mmntInterval = 1000000;
 GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_VOC);
 
 void setup() {
-  int16_t t_offset;
-  uint8_t data[3], counter;
 
   Serial.begin(115200);
   // wait for serial connection from PC
-  // comment the following line if you'd like the output
+  // comment the following lines if you'd like the output
   // without waiting for the interface being ready
-  while (!Serial);
+  while (!Serial) {
+      delay(100);
+  }
 
   // Initialize the GadgetBle Library
   gadgetBle.begin();
@@ -38,93 +37,45 @@ void setup() {
   // init I2C
   Wire.begin();
 
+  uint16_t error;
+  char errorMessage[256];
+
+  svm40.begin(Wire);
+
   // wait until sensors startup, > 1 ms according to datasheet
   delay(100);
 
+  int16_t t_offset;
+  
   // read t offset from flash memory
-  Wire.beginTransmission(SVM40_ADDRESS);
-  Wire.write(0x60);
-  Wire.write(0x14);
-  Wire.endTransmission();
-
-  // wait 10 ms to allow the sensor to fill the internal buffer
-  delay(10);
-
-  // read offset data, after two bytes a CRC follows
-  Wire.requestFrom(SVM40_ADDRESS, 3);
-  counter = 0;
-  while (Wire.available()) {
-    data[counter++] = Wire.read();
-  }
-
-  t_offset = (uint16_t)data[0] << 8 | data[1];
-
-  // print value, as all temperature values, this one is also scaled by 200
+  svm40.getTemperatureOffsetForRhtMeasurements(t_offset);
+  
+  // print value
   Serial.print("Default T Offset: ");
-  Serial.print(String(float(t_offset) / 200));
+  Serial.print(t_offset/200);
   Serial.println();
 
   // set t offset to new value (degC) and scale it accordingly by a factor of 200
   t_offset = temperature_offset * 200;
 
-  // prepare buffer with t offset data
-  // calculate CRC for each 2 bytes of data
-  data[0] = (t_offset & 0xff00) >> 8;
-  data[1] = t_offset & 0x00ff;
-  data[2] = CalcCrc(data);
-
   // send new value for t offset to sensor (will be hold in RAM, not persistent)
-  Wire.beginTransmission(SVM40_ADDRESS);
-  Wire.write(0x60);
-  Wire.write(0x14);
-  Wire.write(data[0]);
-  Wire.write(data[1]);
-  Wire.write(data[2]);
-  Wire.endTransmission();
-
-  // wait 10 ms to allow the sensor to fill the internal buffer
-  delay(10);
-
-  // now send command to save parameter in the flash (NVM memory) of the sensor to have persistence
-  Wire.beginTransmission(SVM40_ADDRESS);
-  Wire.write(0x60);
-  Wire.write(0x02);
-  Wire.endTransmission();
-
-  // wait 20 ms to allow the sensor to write the data into the flash
-  delay(20);
+  svm40.setTemperatureOffsetForRhtMeasurements(t_offset);
 
   // repeat read offset data to make sure that the values are applied correctly
-  Wire.beginTransmission(SVM40_ADDRESS);
-  Wire.write(0x60);
-  Wire.write(0x14);
-  Wire.endTransmission();
-
-  // wait 10 ms to allow the sensor to fill the internal buffer
-  delay(10);
-
-  // read offset data, after two bytes a CRC follows
-  Wire.requestFrom(SVM40_ADDRESS, 3);
-  counter = 0;
-  while (Wire.available()) {
-    data[counter++] = Wire.read();
-  }
-
-  t_offset = (uint16_t)data[0] << 8 | data[1];
-
+  svm40.getTemperatureOffsetForRhtMeasurements(t_offset);
+  
   Serial.print("New T Offset: ");
-  Serial.print(String(float(t_offset) / 200));
+  Serial.print(t_offset/200);
   Serial.println();
 
-  // start up sensor, sensor will go to continous measurement mode
+  // Start continous measurement
   // each second there will be new measurement values
-  Wire.beginTransmission(SVM40_ADDRESS);
-  Wire.write(0x00);
-  Wire.write(0x10);
-  Wire.endTransmission();
-
-  // wait until sensors is ready, fan is initialized
-  delay(2000);
+  error = svm40.startContinuousMeasurement();
+  if (error) {
+      Serial.print("Error trying to execute startContinuousMeasurement(): ");
+      errorToString(error, errorMessage, 256);
+      Serial.println(errorMessage);
+  }
 }
 
 void loop() {
@@ -137,63 +88,38 @@ void loop() {
 }
 
 void measure_and_report() {
-  int16_t voc, humidity, temperature;
-  uint8_t data[9], counter;
+  uint16_t error;
+  char errorMessage[256];
 
-  // read measurement data
-  Wire.beginTransmission(SVM40_ADDRESS);
-  Wire.write(0x03);
-  Wire.write(0xA6);
-  Wire.endTransmission();
-
+  int16_t vocIndex;
+  int16_t humidity;
+  int16_t temperature;
+  
   // wait 10 ms to allow the sensor to fill the internal buffer
   delay(10);
-
-  // read measurement data sen44, after two bytes a CRC follows
-  Wire.requestFrom(SVM40_ADDRESS, 9);
-  counter = 0;
-  while (Wire.available()) {
-    data[counter++] = Wire.read();
-  }
 
   // VOC level is a signed int and scaled by a factor of 10 and needs to be divided by 10
   // VOC raw value is an uint16_t and has no scaling
   // humidity is a signed int and scaled by 100 and need to be divided by 100
   // temperature is a signed int and scaled by 200 and need to be divided by 200
-  voc = (uint16_t)data[0] << 8 | data[1];
-  humidity = (uint16_t)data[3] << 8 | data[4];
-  temperature = (uint16_t)data[6] << 8 | data[7];
+  error = svm40.readMeasuredValuesAsIntegers(vocIndex, humidity, temperature);
+  if (error) {
+      Serial.print(
+          "Error trying to execute readMeasuredValuesAsIntegers(): ");
+      errorToString(error, errorMessage, 256);
+      Serial.println(errorMessage);
+  } else {
+      Serial.print(vocIndex / 10.0);
+      Serial.print("\t");
+      Serial.print(humidity / 100.0);
+      Serial.print("\t");
+      Serial.println(temperature / 200.0);
+  }
 
-  Serial.print("VOC_Index:");
-  Serial.print(String(float(voc) / 10));
-  Serial.print("\t");
-  Serial.print("RH:");
-  Serial.print(String(float(humidity) / 100));
-  Serial.print("\t");
-  Serial.print("T:");
-  Serial.print(String(float(temperature) / 200));
-  Serial.println();
-
-  gadgetBle.writeVOC(float(voc) / 10);
-  gadgetBle.writeHumidity(float(humidity) / 100);
-  gadgetBle.writeTemperature(float(temperature) / 200);
+  gadgetBle.writeVOC(vocIndex / 10.0);
+  gadgetBle.writeHumidity(humidity / 100.0);
+  gadgetBle.writeTemperature(temperature / 200.0);
 
   gadgetBle.commit();
   lastMmntTime = esp_timer_get_time();
-}
-
-// calculate CRC according to datasheet
-uint8_t CalcCrc(uint8_t data[2]) {
-  uint8_t crc = 0xFF;
-  for (int i = 0; i < 2; i++) {
-    crc ^= data[i];
-    for (uint8_t bit = 8; bit > 0; --bit) {
-      if (crc & 0x80) {
-        crc = (crc << 1) ^ 0x31u;
-      } else {
-        crc = (crc << 1);
-      }
-    }
-  }
-  return crc;
 }
