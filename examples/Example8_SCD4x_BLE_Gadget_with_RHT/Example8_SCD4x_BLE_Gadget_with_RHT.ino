@@ -25,9 +25,6 @@ void setup() {
   gadgetBle.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
   Serial.println(gadgetBle.getDeviceIdString());
-
-  // output format
-  Serial.println("CO2(ppm)\tTemperature(degC)\tRelativeHumidity(percent)");
   
   // init I2C
   Wire.begin();
@@ -54,6 +51,7 @@ void setup() {
   }
 
   Serial.println("Waiting for first measurement... (5 sec)");
+  Serial.println("CO2(ppm)\tTemperature(degC)\tRelativeHumidity(percent)");
   delay(5000);
 }
 
