@@ -16,9 +16,8 @@ The tutorial is structured in 3 parts
 
 To complete this tutorial, you'll need
 
-* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
-  available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
-* [Sensirions SEK-SCD41](https://www.sensirion.com/my-scd-ek)
+* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
+* [Sensirions SEK-SCD41](https://developer.sensirion.com/sensirion-products/scd4x-co2-sensors/)
 * USB cable to connect the ESP32 DevKitC module to your computer
 
 Connect the SEK-SCD41 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
@@ -52,6 +51,8 @@ The following instructions originate from [here](https://github.com/espressif/ar
 We'll be installing one library. Click the link below and download the newest .zip release packages
 
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
+* The [Sensirion I2C SCD4x Arduino Library](https://github.com/Sensirion/arduino-i2c-scd4x)
+
 
 For the downloaded .zip file: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the
 downloaded .zip file.
