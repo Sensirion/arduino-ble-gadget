@@ -36,6 +36,9 @@ void setup() {
   
   // init I2C
   sfa3x.begin(Wire);
+
+  // stop a potentially ongoing measurement
+  sfa3x.stopMeasurement()
  
   // start SFA measurement in periodic mode
   error = sfa3x.startContinuousMeasurement();
