@@ -68,27 +68,27 @@ void measure_and_report() {
   uint16_t error;
   char errorMessage[256];
   error = sfa3x.readMeasuredValues(hcho_raw, humidity_raw, temperature_raw);
+
   if (error) {
       Serial.print("Error trying to execute readMeasuredValues(): ");
       errorToString(error, errorMessage, 256);
       Serial.println(errorMessage);
-  } else {
-
-    // Applying scale factors before printing measured values
-    Serial.print(hcho_raw/5.0);
-    Serial.print("\t");
-    Serial.print(temperature_raw/200.0);
-    Serial.print("\t");
-    Serial.print(humidity_raw/100.0);
-    Serial.println();
-  
-    gadgetBle.writeHCHO(hcho_raw/5.0);
-    gadgetBle.writeHumidity(humidity_raw/100.0);
-    gadgetBle.writeTemperature(temperature_raw/200.0);
-  
-    gadgetBle.commit();
+      return;
   }
-  
+
+  // Applying scale factors before printing measured values
+  Serial.print(hcho_raw/5.0);
+  Serial.print("\t");
+  Serial.print(temperature_raw/200.0);
+  Serial.print("\t");
+  Serial.print(humidity_raw/100.0);
+  Serial.println();
+
+  gadgetBle.writeHCHO(hcho_raw/5.0);
+  gadgetBle.writeHumidity(humidity_raw/100.0);
+  gadgetBle.writeTemperature(temperature_raw/200.0);
+
+  gadgetBle.commit();
   
   lastMmntTime = esp_timer_get_time();
 }
