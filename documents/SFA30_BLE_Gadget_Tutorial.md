@@ -36,7 +36,7 @@ accordingly.
 
 The following instructions originate from [here](https://github.com/espressif/arduino-esp32)
 
-1. Install the current version of the [Arduino IDE](http://www.arduino.cc/en/main/software).
+1. Install the current version of the [Arduino IDE](https://www.arduino.cc/en/software).
 2. Start the Arduino IDE and open the Preferences window.
 3. Enter the following link into the *Additional Board Manager URLs* field. You can add multiple URLs, separating them with commas.
 	* `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
@@ -46,7 +46,7 @@ The following instructions originate from [here](https://github.com/espressif/ar
 
 ### Setup the requried libraries
 
-We'll be installing one library. Click the link below and download the newest .zip release packages
+We'll be installing following libraries. Click the link below and download the newest .zip release packages
 
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
 * The [Sensirion I2C SFA3X Arduino Library](https://github.com/Sensirion/arduino-i2c-sfa3x)
