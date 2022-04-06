@@ -68,6 +68,7 @@ void measure_and_report() {
   uint16_t error;
   char errorMessage[256];
   error = sfa3x.readMeasuredValues(hcho_raw, humidity_raw, temperature_raw);
+  lastMmntTime = esp_timer_get_time();
 
   if (error) {
       Serial.print("Error trying to execute readMeasuredValues(): ");
@@ -89,6 +90,4 @@ void measure_and_report() {
   gadgetBle.writeTemperature(temperature_raw/200.0);
 
   gadgetBle.commit();
-  
-  lastMmntTime = esp_timer_get_time();
 }
