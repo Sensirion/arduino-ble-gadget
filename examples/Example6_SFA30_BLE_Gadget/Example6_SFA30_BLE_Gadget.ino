@@ -77,9 +77,9 @@ void measure_and_report() {
     // Applying scale factors before printing measured values
     Serial.print(hcho_raw/5.0);
     Serial.print("\t");
-    Serial.print(temperature_raw/100.0);
+    Serial.print(temperature_raw/200.0);
     Serial.print("\t");
-    Serial.print(humidity_raw/200.0);
+    Serial.print(humidity_raw/100.0);
     Serial.println();
   
     gadgetBle.writeHCHO(hcho_raw/5.0);
