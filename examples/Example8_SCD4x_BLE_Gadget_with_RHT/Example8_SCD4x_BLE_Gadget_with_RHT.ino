@@ -74,27 +74,28 @@ void measure_and_report() {
   float humidity;
 
   error = scd4x.readMeasurement(co2, temperature, humidity);
+  lastMmntTime = esp_timer_get_time();
 
   if (error) {
     Serial.print("Error trying to execute readMeasurement(): ");
     errorToString(error, errorMessage, 256);
     Serial.println(errorMessage);
-
-  } else if (co2 == 0) {
-    Serial.println("Invalid sample detected, skipping.");
-
-  } else {
-    Serial.print(co2);
-    Serial.print("\t");
-    Serial.print(temperature);
-    Serial.print("\t");
-    Serial.println(humidity);
-
-    gadgetBle.writeCO2(co2);
-    gadgetBle.writeTemperature(temperature);
-    gadgetBle.writeHumidity(humidity);
-    gadgetBle.commit();
+    return;
   }
-  
-  lastMmntTime = esp_timer_get_time();
+
+  if (co2 == 0) {
+    Serial.println("Invalid sample detected, skipping.");
+    return;
+  }
+
+  Serial.print(co2);
+  Serial.print("\t");
+  Serial.print(temperature);
+  Serial.print("\t");
+  Serial.println(humidity);
+
+  gadgetBle.writeCO2(co2);
+  gadgetBle.writeTemperature(temperature);
+  gadgetBle.writeHumidity(humidity);
+  gadgetBle.commit();
 }
