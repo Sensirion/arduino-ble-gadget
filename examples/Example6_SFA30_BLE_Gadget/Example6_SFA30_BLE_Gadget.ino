@@ -18,7 +18,9 @@ void setup() {
   // wait for serial connection from PC
   // comment the following line if you'd like the output
   // without waiting for the interface being ready
-  while(!Serial);
+  while(!Serial){
+    delay(100);
+  }
 
   // Initialize the GadgetBle Library
   gadgetBle.begin();
@@ -38,7 +40,7 @@ void setup() {
   sfa3x.begin(Wire);
 
   // stop a potentially ongoing measurement
-  sfa3x.stopMeasurement()
+  sfa3x.stopMeasurement();
  
   // start SFA measurement in periodic mode
   error = sfa3x.startContinuousMeasurement();
