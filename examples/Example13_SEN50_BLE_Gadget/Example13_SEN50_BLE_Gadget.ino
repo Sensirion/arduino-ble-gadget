@@ -92,7 +92,6 @@ void setup() {
     provider.begin();
     Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
     Serial.println(provider.getDeviceIdString());
-
     Wire.begin();
 
     uint16_t error;
@@ -122,7 +121,7 @@ void setup() {
 }
 
 void loop() {
-    if (esp_timer_get_time() - lastMmntTime >= mmntIntervalUs) {
+    if (millis() - lastMmntTime >= mmntIntervalUs) {
         measure_and_report();
     }
 
@@ -171,5 +170,5 @@ void measure_and_report() {
     provider.writeValueToCurrentSample(massConcentrationPm4p0, Unit::PM4P0);
     provider.writeValueToCurrentSample(massConcentrationPm10p0, Unit::PM10);
     provider.commitSample();
-    lastMmntTime = esp_timer_get_time();
+    lastMmntTime = millis();
 }
