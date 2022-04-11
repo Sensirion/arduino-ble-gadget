@@ -62,9 +62,11 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
         T_RH_HCHO,
         T_RH_CO2_VOC_PM25_HCHO,
         T_RH_CO2_VOC_PM25_HCHO_V2,
-        T_RH_CO2_VOC_NOX_PM25
+        T_RH_CO2_VOC_NOX_PM25,
+        PM10_PM25_PM40_PM100,
+        CO2_DataType,
     };
-    enum Unit { T, RH, VOC, NOX, CO2, PM2P5, HCHO };
+    enum Unit { T, RH, VOC, NOX, CO2, PM1P0, PM2P5, PM4P0, PM10, HCHO };
     struct UnitEnc {
         int offset;
         t_converter converterFct;
@@ -89,7 +91,10 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     void writeCO2(float co2);
     void writeVOC(float voc);
     void writeNOx(float nox);
+    void writePM1p0(float pm1p0);
     void writePM2p5(float pm2p5);
+    void writePM4p0(float pm4p0);
+    void writePM10p0(float pm10);
     void writeHCHO(float hcho);
     void commit();
     void handleEvents();
@@ -113,7 +118,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     uint16_t _convertHumidityV1(float value);
     uint16_t _convertHumidityV2(float value);
     uint16_t _convertPM2p5V1(float value);
-    uint16_t _convertPM2p5V2(float value);
+    uint16_t _convertPMV2(float value);
     uint16_t _convertHCHOV1(float value);
 
     DataType _dataType;

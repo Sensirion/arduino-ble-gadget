@@ -187,7 +187,7 @@ void GadgetBle::setDataType(DataType dataType) {
                  {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
                  {Unit::VOC, {4, &GadgetBle::_convertSimple}},
                  {Unit::NOX, {6, &GadgetBle::_convertSimple}},
-                 {Unit::PM2P5, {8, &GadgetBle::_convertPM2p5V2}}},
+                 {Unit::PM2P5, {8, &GadgetBle::_convertPMV2}}},
             };
             break;
         case T_RH_CO2_VOC_NOX_PM25:
@@ -203,7 +203,7 @@ void GadgetBle::setDataType(DataType dataType) {
                  {Unit::CO2, {4, &GadgetBle::_convertSimple}},
                  {Unit::VOC, {6, &GadgetBle::_convertSimple}},
                  {Unit::NOX, {8, &GadgetBle::_convertSimple}},
-                 {Unit::PM2P5, {10, &GadgetBle::_convertPM2p5V2}}},
+                 {Unit::PM2P5, {10, &GadgetBle::_convertPMV2}}},
             };
             break;
         case T_RH_CO2_PM25_V2:
@@ -217,7 +217,7 @@ void GadgetBle::setDataType(DataType dataType) {
                 {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
                  {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
                  {Unit::CO2, {4, &GadgetBle::_convertSimple}},
-                 {Unit::PM2P5, {6, &GadgetBle::_convertPM2p5V2}}},
+                 {Unit::PM2P5, {6, &GadgetBle::_convertPMV2}}},
             };
             break;
         case T_RH_VOC_PM25_V2:
@@ -231,7 +231,7 @@ void GadgetBle::setDataType(DataType dataType) {
                 {{Unit::T, {0, &GadgetBle::_convertTemperatureV1}}, // unitEnc
                  {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
                  {Unit::VOC, {4, &GadgetBle::_convertSimple}},
-                 {Unit::PM2P5, {6, &GadgetBle::_convertPM2p5V2}}},
+                 {Unit::PM2P5, {6, &GadgetBle::_convertPMV2}}},
             };
             break;
         case T_RH_CO2_VOC_PM25_HCHO_V2:
@@ -246,8 +246,33 @@ void GadgetBle::setDataType(DataType dataType) {
                  {Unit::RH, {2, &GadgetBle::_convertHumidityV1}},
                  {Unit::CO2, {4, &GadgetBle::_convertSimple}},
                  {Unit::VOC, {6, &GadgetBle::_convertSimple}},
-                 {Unit::PM2P5, {8, &GadgetBle::_convertPM2p5V2}},
+                 {Unit::PM2P5, {8, &GadgetBle::_convertPMV2}},
                  {Unit::HCHO, {10, &GadgetBle::_convertHCHOV1}}},
+            };
+            break;
+        case PM10_PM25_PM40_PM100:
+            _sampleType = {
+                DataType::PM10_PM25_PM40_PM100, // datatype
+                0,                              // advertisementType
+                34,                             // advSampleType
+                33,                             // dlSampleType
+                8,                              // sampleSize
+                1,                              // sampleCntPerPacket
+                {{Unit::PM1P0, {0, &GadgetBle::_convertPMV2}}, // unitEnc
+                 {Unit::PM2P5, {2, &GadgetBle::_convertPMV2}},
+                 {Unit::PM4P0, {4, &GadgetBle::_convertPMV2}},
+                 {Unit::PM10, {6, &GadgetBle::_convertPMV2}}},
+            };
+            break;
+        case CO2_DataType:
+            _sampleType = {
+                DataType::CO2_DataType, // datatype
+                0,                      // advertisementType
+                36,                     // advSampleType
+                35,                     // dlSampleType
+                2,                      // sampleSize
+                1,                      // sampleCntPerPacket
+                {{Unit::CO2, {0, &GadgetBle::_convertSimple}}}, // unitEnc
             };
             break;
         default:
@@ -289,8 +314,20 @@ void GadgetBle::writeNOx(float value) {
     _writeValue(value, Unit::NOX);
 }
 
+void GadgetBle::writePM1p0(float value) {
+    _writeValue(value, Unit::PM1P0);
+}
+
 void GadgetBle::writePM2p5(float value) {
     _writeValue(value, Unit::PM2P5);
+}
+
+void GadgetBle::writePM4p0(float value) {
+    _writeValue(value, Unit::PM4P0);
+}
+
+void GadgetBle::writePM10p0(float value) {
+    _writeValue(value, Unit::PM10);
 }
 
 void GadgetBle::writeHCHO(float value) {
@@ -517,7 +554,7 @@ uint16_t GadgetBle::_convertPM2p5V1(float value) {
     return static_cast<uint16_t>(((value / 1000) * 65535) + 0.5f);
 }
 
-uint16_t GadgetBle::_convertPM2p5V2(float value) {
+uint16_t GadgetBle::_convertPMV2(float value) {
     return static_cast<uint16_t>((value * 10) + 0.5f);
 }
 

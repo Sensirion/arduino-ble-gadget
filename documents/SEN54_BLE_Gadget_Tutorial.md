@@ -50,7 +50,7 @@ accordingly.
 
 The following instructions originate from [here](https://github.com/espressif/arduino-esp32)
 
-1. Install the current version of the [Arduino IDE](http://www.arduino.cc/en/main/software).
+1. Install the current version of the [Arduino IDE](https://www.arduino.cc/en/software).
 2. Start the Arduino IDE and open the Preferences window.
 3. Enter the following link into the *Additional Board Manager URLs* field. You can add multiple URLs, separating them
    with commas.
@@ -77,7 +77,7 @@ Restart the Arduino IDE.
 ### Launch the Gadget Firmware
 
 1. Open the Arduino IDE.
-2. Go to `File -> Examples -> Sensirion Gadget BLE Lib -> Example10_SEN54_BLE_Gadget_with_RHT`.
+2. Go to `File -> Examples -> Sensirion Gadget BLE Lib -> Example10_SEN54_BLE_Gadget`.
 3. Make sure the ESP32 is connected to your computer.
 4. Press the Upload button on the top left corner of the Arduino IDE.
 

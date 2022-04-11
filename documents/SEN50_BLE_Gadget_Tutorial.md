@@ -1,35 +1,47 @@
-# Tutorial: SCD4x BLE Gadget
+# Tutorial: SEN50 BLE Gadget
 
 ## Summary
 
-This tutorial enables you to setup a CO2-Monitor sending Temperature, Humidity and Carbon Dioxide (CO2) measurements via
-Bluetooth to nearby mobile phones. All steps necessary and links to the compatible app for the interaction with the
-created Gadget are provided here.
+This tutorial enables you to setup an Environmental-Air-Quality-Monitor sending Particulate Matter (PM 1.0, PM 2.5, PM 4.0, PM10) 
+measurements via Bluetooth to nearby mobile phones. All steps necessary and links to the
+compatible app for the interaction with the created Gadget are provided here.
 
 The tutorial is structured in 3 parts
 
 * **Hardware Setup**: Learn how to wire the sensor to the development board
 * **Software Setup**: Learn how to setup your computer to program the development board
-* **Monitor Setup**: Learn how to monitor your CO2 levels on your computer and via the *Sensirion MyAmbience* app
+* **Monitor Setup**: Learn how to monitor your environment on your computer and via the *Sensirion MyAmbience* app
 
 ## Hardware Setup
 
 To complete this tutorial, you'll need
 
 * [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
-* [Sensirions SEK-SCD41](https://developer.sensirion.com/sensirion-products/scd4x-co2-sensors/)
+* [Sensirion SEN50 Sensor Module](https://sensirion.com/my-sen-ek)
 * USB cable to connect the ESP32 DevKitC module to your computer
 
-Connect the SEK-SCD41 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
+Connect the SEN50 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
 different pin layout. If you're using different pins or have a different layout, you might have to adjust the code
 accordingly.
 
-* **VDD** of the SEK-SCD41 to the **3.3V** of the ESP32
-* **GND** of the SEK-SCD41 to the **GND** of the ESP32
-* **SCL** of the SEK-SCD41 to the **IO22** of the ESP32
-* **SDA** of the SEK-SCD41 to the **IO21** of the ESP32
+<img src="images/SEN5x_hardware_setup.jpeg" width="500">
 
-<img src="images/SCD4x_hardware_setup.png" width="500">
+| *SEN50* |   *Arduino*    | *Jumper Wire* |
+|---------|----------------|---------------|
+|   VCC   |       5V       |     Red       |
+|   GND   |       GND      |     Black     |
+|   SDA   |       SDA      |     Green     |
+|   SCL   |       SCL      |     Yellow    |
+|   SEL   |   GND for I2C  |     Blue      |
+
+| *Pin* | *Name* | *Description* | *Comments* |
+|-------|--------|---------------|------------|
+| 1     | VDD    | Supply Voltage | 5V ±10%
+| 2     | GND    | Ground |
+| 3     | SDA    | I2C: Serial data input / output | TTL 5V and LVTTL 3.3V compatible
+| 4     | SCL    | I2C: Serial clock input | TTL 5V and LVTTL 3.3V compatible
+| 5     | SEL    | Interface select | Pull to GND
+| 6     | NC     | Do not connect |
 
 ## Software Setup
 
@@ -48,11 +60,11 @@ The following instructions originate from [here](https://github.com/espressif/ar
 
 ### Setup the requried libraries
 
-We'll be installing one library. Click the link below and download the newest .zip release packages
+We'll be installing three libraries. Click the links below and download the newest .zip release packages
 
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
-* The [Sensirion I2C SCD4x Arduino Library](https://github.com/Sensirion/arduino-i2c-scd4x)
-
+* The [Sensirion I2C SEN5x Arduino Library](https://github.com/Sensirion/arduino-i2c-sen5x)
+* The [Sensirion Arduino Core Library](https://github.com/Sensirion/arduino-core)
 
 For the downloaded .zip file: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the
 downloaded .zip file.
@@ -64,7 +76,7 @@ Restart the Arduino IDE.
 ### Launch the Gadget Firmware
 
 1. Open the Arduino IDE.
-2. Go to `File -> Examples -> Sensirion Gadget BLE Lib -> Example8_SCD4x_BLE_Gadget_with_RHT`.
+2. Go to `File -> Examples -> Sensirion Gadget BLE Lib -> Example13_SEN50_BLE_Gadget`.
 3. Make sure the ESP32 is connected to your computer.
 4. Press the Upload button on the top left corner of the Arduino IDE.
 
@@ -74,16 +86,16 @@ Restart the Arduino IDE.
 
 ### Value plotting on your Computer
 
-To verify that everything is working fine, open the Serial Plotter, while your ESP32 ist still connected to your
-computer to see the sensor values measured by the SCD41 module:
+To verify that everything is working fine, open the Serial Monitor, while your ESP32 ist still connected to your
+computer to see the sensor values measured by the SEN50 module:
 
-1. Go to `Tools -> Serial Plotter`
+1. Go to `Tools -> Serial Monitor`
 2. Make sure on the bottom left corner `115200 baud` is selected, as depicted in the image below
 
-You should see the measured values plotted in the opened window. Alternatively you can choose `Tools -> Serial Monitor`
-to see the values in text form.
+You should see the measured values plotted in the opened window. Alternatively you can choose `Tools -> Serial Plotter`
+to see the values in a plot.
 
-### Monitor your Temperature, Humidity and CO2 levels via Mobile App
+### Monitor your Environment via Mobile App
 
 Download the **Sensirion MyAmbience** app to monitor your sensor signals, download history values and export and share
 the data with your friends.
@@ -94,5 +106,3 @@ the data with your friends.
 Note that on Android devices the Location services need to be enabled and the corresponding permissions granted to the
 application. This is required to allow the app to continuously scan for nearby Bluetooth devices. This is a requirement
 of the Android OS for Bluetooth scanning. The app itself does not use your location.
-
-<img src="images/SCD30_AppScreenshot.PNG" width="300">
