@@ -183,7 +183,7 @@ std::map<DataType, SampleConfig> sampleConfigSelector = {
                       {Unit::PM2P5,
                        {.unit = Unit::PM2P5,
                         .offset = 8,
-                        .converterFunction = &convertPM2p5V2}}}}},
+                        .converterFunction = &convertPMV2}}}}},
     {T_RH_HCHO,
      {.dataType = DataType::T_RH_HCHO,
       .downloadType = 13,
@@ -264,7 +264,7 @@ std::map<DataType, SampleConfig> sampleConfigSelector = {
                       {Unit::PM2P5,
                        {.unit = Unit::PM2P5,
                         .offset = 10,
-                        .converterFunction = &convertPM2p5V2}}}}},
+                        .converterFunction = &convertPMV2}}}}},
     {T_RH_CO2_PM25_V2,
      {.dataType = DataType::T_RH_CO2_PM25_V2,
       .downloadType = 27,
@@ -287,7 +287,7 @@ std::map<DataType, SampleConfig> sampleConfigSelector = {
                       {Unit::PM2P5,
                        {.unit = Unit::PM2P5,
                         .offset = 6,
-                        .converterFunction = &convertPM2p5V2}}}}},
+                        .converterFunction = &convertPMV2}}}}},
     {T_RH_VOC_PM25_V2,
      {.dataType = DataType::T_RH_VOC_PM25_V2,
       .downloadType = 29,
@@ -310,7 +310,7 @@ std::map<DataType, SampleConfig> sampleConfigSelector = {
                       {Unit::PM2P5,
                        {.unit = Unit::PM2P5,
                         .offset = 6,
-                        .converterFunction = &convertPM2p5V2}}}}},
+                        .converterFunction = &convertPMV2}}}}},
     {T_RH_CO2_VOC_PM25_HCHO_V2,
      {.dataType = DataType::T_RH_CO2_VOC_PM25_HCHO_V2,
       .downloadType = 30,
@@ -337,11 +337,45 @@ std::map<DataType, SampleConfig> sampleConfigSelector = {
                       {Unit::PM2P5,
                        {.unit = Unit::PM2P5,
                         .offset = 8,
-                        .converterFunction = &convertPM2p5V2}},
+                        .converterFunction = &convertPMV2}},
                       {Unit::HCHO,
                        {.unit = Unit::HCHO,
                         .offset = 10,
-                        .converterFunction = &convertHCHOV1}}}}}
+                        .converterFunction = &convertHCHOV1}}}}},
+    {PM10_PM25_PM40_PM100,
+     {.dataType = DataType::PM10_PM25_PM40_PM100,
+      .downloadType = 33,
+      .sampleType = 34,
+      .sampleSizeBytes = 8,
+      .sampleCountPerPacket = 1,
+      .sensirionAdvertisementSampleType = 0,
+      .sampleSlots = {{Unit::PM1P0,
+                       {.unit = Unit::PM1P0,
+                        .offset = 0,
+                        .converterFunction = &convertPMV2}},
+                      {Unit::PM2P5,
+                       {.unit = Unit::PM2P5,
+                        .offset = 2,
+                        .converterFunction = &convertPMV2}},
+                      {Unit::PM4P0,
+                       {.unit = Unit::PM4P0,
+                        .offset = 4,
+                        .converterFunction = &convertPMV2}},
+                      {Unit::PM10,
+                       {.unit = Unit::PM10,
+                        .offset = 6,
+                        .converterFunction = &convertPMV2}}}}},
+    {CO2_DataType,
+     {.dataType = DataType::CO2_DataType,
+      .downloadType = 35,
+      .sampleType = 36,
+      .sampleSizeBytes = 2,
+      .sampleCountPerPacket = 1,
+      .sensirionAdvertisementSampleType = 0,
+      .sampleSlots = {{Unit::CO2,
+                       {.unit = Unit::CO2,
+                        .offset = 0,
+                        .converterFunction = &convertSimple}}}}}
     /* Add new SampleConfigs here */
 };
 
@@ -366,7 +400,7 @@ uint16_t convertPM2p5V1(float value) {
     return static_cast<uint16_t>(((value / 1000) * 65535) + 0.5f);
 }
 
-uint16_t convertPM2p5V2(float value) {
+uint16_t convertPMV2(float value) {
     return static_cast<uint16_t>((value * 10) + 0.5f);
 }
 
