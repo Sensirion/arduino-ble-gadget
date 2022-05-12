@@ -50,10 +50,11 @@ The following instructions originate from [here](https://github.com/espressif/ar
 
 ### Setup the requried libraries
 
-We'll be installing 2 libraries. Click the links below and download the newest .zip release packages
+We'll be installing the following libraries. Click the links below and download the newest .zip release packages
 
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
 * The [SCD30 Sensor Driver](https://github.com/Seeed-Studio/Seeed_SCD30/releases/latest) by SeeedStudio
+* The [NimBLE-Arduino Libaray](https://github.com/h2zero/NimBLE-Arduino)
 
 For each of the downloaded .zip files: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the .zip file.
 

@@ -64,11 +64,12 @@ The following instructions originate from [here](https://github.com/espressif/ar
 
 ### Setup the requried libraries
 
-We'll be installing three libraries. Click the links below and download the newest .zip release packages
+We'll be installing the following libraries. Click the links below and download the newest .zip release packages
 
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
 * The [Sensirion I2C SEN44 Arduino Library](https://github.com/Sensirion/arduino-i2c-sen44)
 * The [Sensirion Arduino Core Library](https://github.com/Sensirion/arduino-core)
+* The [NimBLE-Arduino Libaray](https://github.com/h2zero/NimBLE-Arduino)
 
 For the downloaded .zip file: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the
 downloaded .zip file.
