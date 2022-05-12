@@ -1,8 +1,8 @@
-# Tutorial: SEN44 BLE Gadget
+# Tutorial: SEN54 BLE Gadget
 
 ## Summary
 
-This tutorial enables you to setup an Environmental-Air-Quality-Monitor sending Temperature, Humidity, VOC and
+This tutorial enables you to setup an Environmental-Air-Quality-Monitor sending Temperature, Humidity, VOC Index and
 Particulate Matter (PM 2.5) measurements via Bluetooth to nearby mobile phones. All steps necessary and links to the
 compatible app for the interaction with the created Gadget are provided here.
 
@@ -18,16 +18,16 @@ To complete this tutorial, you'll need
 
 * [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
   available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
-* Sensirion SEN44 Sensor Module
+* [Sensirion SEN54 Sensor Module](https://sensirion.com/my-sen-ek)
 * USB cable to connect the ESP32 DevKitC module to your computer
 
-Connect the SEN44 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
+Connect the SEN54 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
 different pin layout. If you're using different pins or have a different layout, you might have to adjust the code
 accordingly.
 
-<img src="images/SEN44_hardware_setup.jpeg" width="500">
+<img src="images/SEN5x_hardware_setup.jpeg" width="500">
 
-| *SEN44* |   *Arduino*    | *Jumper Wire* |
+| *SEN54* |   *Arduino*    | *Jumper Wire* |
 |---------|----------------|---------------|
 |   VCC   |       5V       |     Red       |
 |   GND   |       GND      |     Black     |
@@ -39,12 +39,9 @@ accordingly.
 |-------|--------|---------------|------------|
 | 1     | VDD    | Supply Voltage | 5V ±10%
 | 2     | GND    | Ground |
-| 3     | RX     | UART: Receiving pin for communication | TTL 5V and LVTTL 3.3V compatible
-|       | SDA    | I2C: Serial data input / output | TTL 5V and LVTTL 3.3V compatible
-| 4     | TX     | UART: Transmission pin for communication | TTL 5V and LVTTL 3.3V compatible
-|       | SCL    | I2C: Serial clock input | TTL 5V and LVTTL 3.3V compatible
-| 5     | SEL    | Interface select | Leave floating or pull to VDD to select UART
-|       |        |  | Pull to GND to select I2C
+| 3     | SDA    | I2C: Serial data input / output | TTL 5V and LVTTL 3.3V compatible
+| 4     | SCL    | I2C: Serial clock input | TTL 5V and LVTTL 3.3V compatible
+| 5     | SEL    | Interface select | Pull to GND
 | 6     | NC     | Do not connect |
 
 ## Software Setup
@@ -67,7 +64,7 @@ The following instructions originate from [here](https://github.com/espressif/ar
 We'll be installing the following libraries. Click the links below and download the newest .zip release packages
 
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
-* The [Sensirion I2C SEN44 Arduino Library](https://github.com/Sensirion/arduino-i2c-sen44)
+* The [Sensirion I2C SEN5x Arduino Library](https://github.com/Sensirion/arduino-i2c-sen5x)
 * The [Sensirion Arduino Core Library](https://github.com/Sensirion/arduino-core)
 * The [NimBLE-Arduino Libaray](https://github.com/h2zero/NimBLE-Arduino)
 
@@ -81,7 +78,7 @@ Restart the Arduino IDE.
 ### Launch the Gadget Firmware
 
 1. Open the Arduino IDE.
-2. Go to `File -> Examples -> Sensirion Gadget BLE Lib -> Example9_SEN44_BLE_Gadget_with_RHT`.
+2. Go to `File -> Examples -> Sensirion Gadget BLE Lib -> Example10_SEN54_BLE_Gadget`.
 3. Make sure the ESP32 is connected to your computer.
 4. Press the Upload button on the top left corner of the Arduino IDE.
 
@@ -92,7 +89,7 @@ Restart the Arduino IDE.
 ### Value plotting on your Computer
 
 To verify that everything is working fine, open the Serial Monitor, while your ESP32 ist still connected to your
-computer to see the sensor values measured by the SEN44 module:
+computer to see the sensor values measured by the SEN54 module:
 
 1. Go to `Tools -> Serial Monitor`
 2. Make sure on the bottom left corner `115200 baud` is selected, as depicted in the image below

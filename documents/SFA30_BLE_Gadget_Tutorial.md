@@ -14,9 +14,8 @@ The tutorial is structured in 3 parts
 
 To complete this tutorial, you'll need
 
-* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
-  available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
-* [Sensirions SEK-SFA30](https://www.sensirion.com/en/environmental-sensors/evaluation-kit-sek-sfa30/) (available [here](https://www.digikey.com/en/products/detail/sensirion-ag/SEK-SFA30/13577460?s=N4IgTCBcDaIMoDECCBmADCAugXyA)
+* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
+* [Sensirions SEK-SFA30](https://sensirion.com/products/catalog/SFA30/) (available [here](https://www.digikey.com/en/products/detail/sensirion-ag/SEK-SFA30/13577460?s=N4IgTCBcDaIMoDECCBmADCAugXyA))
 * USB cable to connect the ESP32 DevKitC module to your computer
 
 Connect the SEK-SFA30 module to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
@@ -37,7 +36,7 @@ accordingly.
 
 The following instructions originate from [here](https://github.com/espressif/arduino-esp32)
 
-1. Install the current version of the [Arduino IDE](http://www.arduino.cc/en/main/software).
+1. Install the current version of the [Arduino IDE](https://www.arduino.cc/en/software).
 2. Start the Arduino IDE and open the Preferences window.
 3. Enter the following link into the *Additional Board Manager URLs* field. You can add multiple URLs, separating them with commas.
 	* `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
@@ -47,11 +46,13 @@ The following instructions originate from [here](https://github.com/espressif/ar
 
 ### Setup the requried libraries
 
-We'll be installing one library. Click the link below and download the newest .zip release packages
+We'll be installing the following libraries. Click the link below and download the newest .zip release packages
 
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
+* The [Sensirion I2C SFA3X Arduino Library](https://github.com/Sensirion/arduino-i2c-sfa3x)
+* The [NimBLE-Arduino Libaray](https://github.com/h2zero/NimBLE-Arduino)
 
-For the downloaded .zip file: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the downloaded .zip file.
+For each of the downloaded .zip files: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the downloaded .zip file.
 
 <img src="images/Arduino-import-zip-lib.png" width="500">
 

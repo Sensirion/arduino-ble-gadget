@@ -1,5 +1,5 @@
-// Please install the Sensirion I2C Arduino library for the SEN50 sensor module,
-// before using this example code:
+// Please install the Sensirion I2C Arduino library for the SEN54 sensor module, before
+// using this example code:
 // https://github.com/Sensirion/arduino-i2c-sen5x
 
 #include <Arduino.h>
@@ -12,10 +12,11 @@
 SensirionI2CSen5x sen5x;
 
 // GadgetBle workflow
-static int64_t lastMmntTime = 0;
-static int mmntIntervalUs = 1000000;
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 1000000;
 NimBLELibraryWrapper lib;
-DataProvider provider(lib, DataType::PM10_PM25_PM40_PM100);
+DataProvider provider(lib, DataType::T_RH_VOC_PM25_V2);
+
 
 void printModuleVersions() {
     uint16_t error;
@@ -81,6 +82,7 @@ void printSerialNumber() {
     }
 }
 
+
 void setup() {
 
     Serial.begin(115200);
@@ -92,6 +94,7 @@ void setup() {
     provider.begin();
     Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
     Serial.println(provider.getDeviceIdString());
+
     Wire.begin();
 
     uint16_t error;
@@ -106,7 +109,7 @@ void setup() {
         Serial.println(errorMessage);
     }
 
-    // Print SEN50 module information
+    // Print SEN54 module information
     printSerialNumber();
     printModuleVersions();
 
@@ -121,12 +124,12 @@ void setup() {
 }
 
 void loop() {
-    if (millis() - lastMmntTime >= mmntIntervalUs) {
-        measure_and_report();
-    }
+  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
+    measure_and_report();
+  }
 
-    provider.handleDownload();
-    delay(3);
+  provider.handleDownload();
+  delay(3);
 }
 
 void measure_and_report() {
@@ -140,14 +143,19 @@ void measure_and_report() {
     float massConcentrationPm2p5;
     float massConcentrationPm4p0;
     float massConcentrationPm10p0;
+    float ambientHumidity;
+    float ambientTemperature;
+    float vocIndex;
+    float noxIndex;
 
-    error = sen5x.readMeasuredValuesSen50(
+    error = sen5x.readMeasuredValues(
         massConcentrationPm1p0, massConcentrationPm2p5, massConcentrationPm4p0,
-        massConcentrationPm10p0);
+        massConcentrationPm10p0, ambientHumidity, ambientTemperature, vocIndex,
+        noxIndex);
 
     if (error) {
         Serial.print("Error trying to execute "
-                     "readMeasuredValuesSen50(): ");
+                     "readMeasuredMassConcentrationAndAmbientValues(): ");
         errorToString(error, errorMessage, 256);
         Serial.println(errorMessage);
     } else {
@@ -162,13 +170,22 @@ void measure_and_report() {
         Serial.print("\t");
         Serial.print("MassConcentrationPm10p0:");
         Serial.print(massConcentrationPm10p0);
-        Serial.print("\n");
+        Serial.print("\t");
+        Serial.print("AmbientHumidity:");
+        Serial.print(ambientHumidity);
+        Serial.print("\t");
+        Serial.print("AmbientTemperature:");
+        Serial.print(ambientTemperature);
+        Serial.print("\t");
+        Serial.print("VocIndex:");
+        Serial.println(vocIndex);
     }
 
-    provider.writeValueToCurrentSample(massConcentrationPm1p0, Unit::PM1P0);
+    provider.writeValueToCurrentSample(ambientTemperature, Unit::T);
+    provider.writeValueToCurrentSample(ambientHumidity, Unit::RH);
+    provider.writeValueToCurrentSample(vocIndex, Unit::VOC);
     provider.writeValueToCurrentSample(massConcentrationPm2p5, Unit::PM2P5);
-    provider.writeValueToCurrentSample(massConcentrationPm4p0, Unit::PM4P0);
-    provider.writeValueToCurrentSample(massConcentrationPm10p0, Unit::PM10);
+
     provider.commitSample();
-    lastMmntTime = millis();
+    lastMeasurementTimeMs = millis();
 }

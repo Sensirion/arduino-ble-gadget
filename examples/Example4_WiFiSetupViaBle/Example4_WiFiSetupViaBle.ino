@@ -28,13 +28,13 @@ static int64_t lastMmntTime = 0;
 static int measurementIntervalMs = 1000;
 
 void loop() {
-  if (esp_timer_get_time() - lastMmntTime >= measurementIntervalMs * 1000) {
+  if (millis() - lastMmntTime >= measurementIntervalMs * 1000) {
     Serial.println("Measurement");
     provider.writeValueToCurrentSample(++t % 50, Unit::T);
     provider.writeValueToCurrentSample(++rh % 100, Unit::RH);
     provider.writeValueToCurrentSample(++co2 % 1000, Unit::CO2);
     provider.commitSample();
-    lastMmntTime = esp_timer_get_time();
+    lastMmntTime = millis();
 
     
     if (wifi.isConnected() == false) {

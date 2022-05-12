@@ -3,11 +3,10 @@
 
 #include "DataProvider.h"
 #include "NimBLELibraryWrapper.h"
-
+#include <SensirionI2CSfa3x.h>
 #include <Wire.h>
 
-// SFA30
-const int16_t SFA_ADDRESS = 0x5D;
+SensirionI2CSfa3x sfa3x;
 
 // GadgetBle workflow
 static int64_t lastMeasurementTimeMs = 0;
@@ -20,25 +19,38 @@ void setup() {
   // wait for serial connection from PC
   // comment the following line if you'd like the output
   // without waiting for the interface being ready
-  while(!Serial);
+  while(!Serial){
+    delay(100);
+  }
 
   // Initialize the GadgetBle Library
   provider.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
   Serial.println(provider.getDeviceIdString());
 
-  // init I2C
+  // output format
+  Serial.println();
+  Serial.println("HCHO\tT\tRH");
+
+  uint16_t error;
+  char errorMessage[256];
+
   Wire.begin();
-
-  // wait until sensor is ready
-  delay(10);
   
-  // start SFA measurement in periodic mode, will update every 0.5 s
-  Wire.beginTransmission(SFA_ADDRESS);
-  Wire.write(0x00);
-  Wire.write(0x06);
-  Wire.endTransmission();
+  // init I2C
+  sfa3x.begin(Wire);
 
+  // stop a potentially ongoing measurement
+  sfa3x.stopMeasurement();
+ 
+  // start SFA measurement in periodic mode
+  error = sfa3x.startContinuousMeasurement();
+  if (error) {
+      Serial.print("Error trying to execute startContinuousMeasurement(): ");
+      errorToString(error, errorMessage, 256);
+      Serial.println(errorMessage);
+  }
+  
   // module is not outputing HCHO for the first 10 s after powering up
   delay(10000);
 }
@@ -53,47 +65,35 @@ void loop() {
 }
 
 void measure_and_report() {
-  float hcho, temperature, humidity;
-  uint8_t data[9], counter;
+  int16_t hcho_raw;
+  int16_t humidity_raw;
+  int16_t temperature_raw;
+  
 
-  // send read data command
-  Wire.beginTransmission(SFA_ADDRESS);
-  Wire.write(0x03);
-  Wire.write(0x27);
-  Wire.endTransmission();
-
-  //wait time before reading for the values should be more than 2ms
   delay(10);
-  
-  // read measurement data: 
-  // 2 bytes formaldehyde, 1 byte CRC, scale factor 5
-  // 2 bytes RH, 1 byte CRC, scale factor 100
-  // 2 bytes T, 1 byte CRC, scale factor 200
-  // stop reading after 9 bytes (not used)
-  Wire.requestFrom(SFA_ADDRESS, 9);
-  counter = 0;
-  while (Wire.available()) {
-    data[counter++] = Wire.read();
-  }
-  
-  // floating point conversion according to datasheet
-  hcho = (float)((int16_t)data[0] << 8 | data[1])/5;
-  // convert RH in %
-  humidity = (float)((int16_t)data[3] << 8 | data[4])/100;
-  // convert T in degC
-  temperature = (float)((int16_t)data[6] << 8 | data[7])/200;
+  uint16_t error;
+  char errorMessage[256];
+  error = sfa3x.readMeasuredValues(hcho_raw, humidity_raw, temperature_raw);
+  lastMeasurementTimeMs = millis();
 
-  Serial.print(hcho);
+  if (error) {
+      Serial.print("Error trying to execute readMeasuredValues(): ");
+      errorToString(error, errorMessage, 256);
+      Serial.println(errorMessage);
+      return;
+  }
+
+  // Applying scale factors before printing measured values
+  Serial.print(hcho_raw/5.0);
   Serial.print("\t");
-  Serial.print(temperature);
+  Serial.print(temperature_raw/200.0);
   Serial.print("\t");
-  Serial.print(humidity);
+  Serial.print(humidity_raw/100.0);
   Serial.println();
 
-  provider.writeValueToCurrentSample(hcho, Unit::HCHO);
-  provider.writeValueToCurrentSample(humidity, Unit::RH);
-  provider.writeValueToCurrentSample(temperature, Unit::T);
+  provider.writeValueToCurrentSample(hcho/5.0, Unit::HCHO);
+  provider.writeValueToCurrentSample(humidity/100.0, Unit::RH);
+  provider.writeValueToCurrentSample(temperature/200.0, Unit::T);
 
   provider.commitSample();
-  lastMeasurementTimeMs = millis();
 }
