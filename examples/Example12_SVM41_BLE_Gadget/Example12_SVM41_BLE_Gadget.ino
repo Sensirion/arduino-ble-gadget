@@ -33,15 +33,16 @@
 #include <SensirionI2CSvm41.h>
 #include <Wire.h>
 
-#include "esp_timer.h"
-#include "Sensirion_GadgetBle_Lib.h"
+#include "DataProvider.h"
+#include "NimBLELibraryWrapper.h"
 
 SensirionI2CSvm41 svm41;
 
 // GadgetBle workflow
-static int64_t lastMmntTime = 0;
-static int mmntIntervalUs = 1000000;
-GadgetBle gadgetBle = GadgetBle(GadgetBle::DataType::T_RH_VOC_NOX);
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 1000000;
+NimBLELibraryWrapper lib;
+DataProvider provider(lib, DataType::T_RH_VOC_NOX);
 
 void setup() {
 
@@ -51,9 +52,9 @@ void setup() {
     }
 
     // Initialize the GadgetBle Library
-    gadgetBle.begin();
+    provider.begin();
     Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
-    Serial.println(gadgetBle.getDeviceIdString());
+    Serial.println(provider.getDeviceIdString());
 
     Wire.begin();
 
@@ -79,11 +80,11 @@ void setup() {
 }
 
 void loop() {
-  if (esp_timer_get_time() - lastMmntTime >= mmntIntervalUs) {
+  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
     measure_and_report();
   }
 
-  gadgetBle.handleEvents();
+  provider.handleDownload();
   delay(3);
 }
 
@@ -115,11 +116,11 @@ void measure_and_report() {
         Serial.println(noxIndex);
     }
 
-    gadgetBle.writeTemperature(temperature);
-    gadgetBle.writeHumidity(humidity);
-    gadgetBle.writeVOC(vocIndex);
-    gadgetBle.writeNOx(noxIndex);
+    provider.writeValueToCurrentSample(temperature, Unit::T);
+    provider.writeValueToCurrentSample(humidity, Unit::RH);
+    provider.writeValueToCurrentSample(vocIndex, Unit::VOC);
+    provider.writeValueToCurrentSample(noxIndex, Unit::NOX);
 
-    gadgetBle.commit();
-    lastMmntTime = esp_timer_get_time();
+    provider.commitSample();
+    lastMeasurementTimeMs = millis();
 }
