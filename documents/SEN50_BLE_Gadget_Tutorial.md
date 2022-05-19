@@ -65,6 +65,7 @@ We'll be installing three libraries. Click the links below and download the newe
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
 * The [Sensirion I2C SEN5x Arduino Library](https://github.com/Sensirion/arduino-i2c-sen5x)
 * The [Sensirion Arduino Core Library](https://github.com/Sensirion/arduino-core)
+* The [NimBLE-Arduino Library](https://github.com/h2zero/NimBLE-Arduino)
 
 For the downloaded .zip file: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the
 downloaded .zip file.
