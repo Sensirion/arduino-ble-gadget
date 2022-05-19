@@ -53,7 +53,7 @@ The following instructions originate from [here](https://github.com/espressif/ar
 2. Start the Arduino IDE and open the Preferences window from `File -> Preferences`.
 3. Enter the following link into the *Additional Board Manager URLs* field. You can add multiple URLs, separating them
    with commas.
-    * `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
+    * ` https://dl.espressif.com/dl/package_esp32_index.json`
 4. Open the Boards Manager from `Tools -> Board -> Board Manager` and install the *esp32* platform
 5. Select your ESP32 board from the `Tools -> Board` menu after the successfull installation.
     * E.g. `ESP32 Dev Module`
