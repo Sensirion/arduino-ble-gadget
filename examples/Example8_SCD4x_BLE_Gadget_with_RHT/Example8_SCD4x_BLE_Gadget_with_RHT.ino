@@ -70,7 +70,7 @@ void measure_and_report() {
   float humidity;
 
   error = scd4x.readMeasurement(co2, temperature, humidity);
-  lastMmntTime = millis();
+  lastMeasurementTimeMs = millis();
 
   if (error) {
     Serial.print("Error trying to execute readMeasurement(): ");
@@ -84,10 +84,13 @@ void measure_and_report() {
     return;
   }
   
+  Serial.print("co2:");
   Serial.print(co2);
   Serial.print("\t");
+  Serial.print("temperature:");
   Serial.print(temperature);
   Serial.print("\t");
+  Serial.print("humidity:");
   Serial.println(humidity);
 
   provider.writeValueToCurrentSample(co2, Unit::CO2);
