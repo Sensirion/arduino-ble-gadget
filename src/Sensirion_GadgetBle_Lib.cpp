@@ -334,6 +334,19 @@ void GadgetBle::writeHCHO(float value) {
     _writeValue(value, Unit::HCHO);
 }
 
+void GadgetBle::writeBatteryLevel(uint8_t percent) {
+    uint8_t _percent = constrain(percent, 0, 100);
+
+    _batteryLevelChar->setValue(&_percent, 1);
+
+    // Only trigger a notification if the level actually changes, and when a
+    // download is not in progress (may be unnecessary)
+    if (_percent != _batteryLevel && !_downloading) {
+        _batteryLevelChar->notify();
+    }
+    _batteryLevel = _percent;
+}
+
 void GadgetBle::commit() {
     if (esp_timer_get_time() - _lastCacheTime >= (_sampleIntervalMs * 1000)) {
         _lastCacheTime = esp_timer_get_time();
@@ -454,6 +467,18 @@ void GadgetBle::_bleInit() {
 
     // - Gadget Settings Service: Start
     bleGadgetSettingsService->start();
+
+
+    BLEService* bleBatteryService =
+         bleServer->createService(BATTERY_SERVICE_UUID);
+    _batteryLevelChar = bleBatteryService->createCharacteristic(
+            BATTERY_CHAR_UUID, BLECharacteristic::PROPERTY_READ |
+                               BLECharacteristic::PROPERTY_NOTIFY);
+    _batteryLevelChar->addDescriptor(new BLE2902());
+    _batteryLevelChar->setValue(&_batteryLevel , 1);
+
+    bleBatteryService->start();
+
 
     // Initialize BLE Advertising
     _bleAdvertising = BLEDevice::getAdvertising();

@@ -34,6 +34,11 @@ static const char* const WIFI_SSID_CHAR_UUID =
 static const char* const WIFI_PWD_CHAR_UUID =
     "00008172-b38d-4985-720e-0f993a68ee41";
 
+static const char* const BATTERY_SERVICE_UUID =
+    "180f";
+static const char* const BATTERY_CHAR_UUID = 
+    "2a19";
+
 // BLE Protocol Specifics
 
 static const char* const GADGET_NAME = "S";
@@ -96,6 +101,7 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     void writePM4p0(float pm4p0);
     void writePM10p0(float pm10);
     void writeHCHO(float hcho);
+    void writeBatteryLevel(uint8_t percent);
     void commit();
     void handleEvents();
     String getDeviceIdString() {
@@ -132,6 +138,9 @@ class GadgetBle: BLECharacteristicCallbacks, BLEServerCallbacks {
     BLECharacteristic* _transferChar;
     BLECharacteristic* _sampleCntChar;
     BLECharacteristic* _wifiSsidChar;
+    BLECharacteristic* _batteryLevelChar;
+
+    uint8_t _batteryLevel = 0; 
 
     String _deviceIdString;
 
