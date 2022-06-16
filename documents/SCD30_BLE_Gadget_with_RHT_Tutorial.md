@@ -38,11 +38,11 @@ accordingly.
 The following instructions originate from [here](https://github.com/espressif/arduino-esp32)
 
 1. Install the current version of the [Arduino IDE](http://www.arduino.cc/en/main/software).
-2. Start the Arduino IDE and open the Preferences window.
+2. Start the Arduino IDE and open the Preferences window from `File -> Preferences`.
 3. Enter the following link into the *Additional Board Manager URLs* field. You can add multiple URLs, separating them with commas.
-	* `https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json`
-4. Open the Boards Manager from `Tools > Board -> Board Manager` and install the *esp32* platform
-5. Select your ESP32 board from the `Tools > Board` menu after the successfull installation.
+	* `https://dl.espressif.com/dl/package_esp32_index.json`
+4. Open the Boards Manager from `Tools -> Board -> Board Manager` and install the *esp32* platform
+5. Select your ESP32 board from the `Tools -> Board` menu after the successfull installation.
 	* E.g. `ESP32 Dev Module`
 
 ### Setup the requried libraries
@@ -51,7 +51,7 @@ We'll be installing the following libraries. Click the links below and download 
 
 * The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
 * The [SCD30 Sensor Driver](https://github.com/Seeed-Studio/Seeed_SCD30/releases/latest) by SeeedStudio
-* The [NimBLE-Arduino Libaray](https://github.com/h2zero/NimBLE-Arduino)
+* The [NimBLE-Arduino Library](https://github.com/h2zero/NimBLE-Arduino)
 
 For each of the downloaded .zip files: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the .zip file.
 

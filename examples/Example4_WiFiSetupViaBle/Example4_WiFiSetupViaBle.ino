@@ -28,7 +28,7 @@ static int64_t lastMmntTime = 0;
 static int measurementIntervalMs = 1000;
 
 void loop() {
-  if (millis() - lastMmntTime >= measurementIntervalMs * 1000) {
+  if (millis() - lastMmntTime >= measurementIntervalMs) {
     Serial.println("Measurement");
     provider.writeValueToCurrentSample(++t % 50, Unit::T);
     provider.writeValueToCurrentSample(++rh % 100, Unit::RH);

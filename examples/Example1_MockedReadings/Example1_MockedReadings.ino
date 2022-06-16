@@ -29,6 +29,15 @@ void loop() {
     provider.writeValueToCurrentSample(++co2 % 1000, Unit::CO2);
     provider.commitSample();
     lastMeasurementTimeMs = millis();
+        // Provide the sensor values for Tools -> Serial Monitor or Serial Plotter
+    Serial.print("mockCO2[ppm]:");
+    Serial.print(co2);
+    Serial.print("\t");
+    Serial.print("mockTemperature[℃]:");
+    Serial.print(t);
+    Serial.print("\t");
+    Serial.print("mockHumidity[%]:");
+    Serial.println(rh);
   }
 
   provider.handleDownload();

@@ -110,14 +110,18 @@ void measure_and_report() {
       errorToString(error, errorMessage, 256);
       Serial.println(errorMessage);
   } else {
+      // Provide the sensor values for Tools -> Serial Monitor or Serial Plotter
+      Serial.print("VocIndex:");
       Serial.print(vocIndex / 10.0);
       Serial.print("\t");
+      Serial.print("Humidity[%]:");
       Serial.print(humidity / 100.0);
       Serial.print("\t");
+      Serial.print("Temperature[℃]:");
       Serial.println(temperature / 200.0);
   }
 
-  provider.writeValueToCurrentSample(float(voc) / 10, Unit::VOC);
+  provider.writeValueToCurrentSample(float(vocIndex) / 10, Unit::VOC);
   provider.writeValueToCurrentSample(float(humidity) / 100, Unit::RH);
   provider.writeValueToCurrentSample(float(temperature) / 200, Unit::T);
 

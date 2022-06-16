@@ -84,16 +84,19 @@ void measure_and_report() {
   }
 
   // Applying scale factors before printing measured values
+  Serial.print("Hcho:");
   Serial.print(hcho_raw/5.0);
   Serial.print("\t");
+  Serial.print("Temperature:");
   Serial.print(temperature_raw/200.0);
   Serial.print("\t");
+  Serial.print("Humididty:");
   Serial.print(humidity_raw/100.0);
   Serial.println();
 
-  provider.writeValueToCurrentSample(hcho/5.0, Unit::HCHO);
-  provider.writeValueToCurrentSample(humidity/100.0, Unit::RH);
-  provider.writeValueToCurrentSample(temperature/200.0, Unit::T);
+  provider.writeValueToCurrentSample(hcho_raw/5.0, Unit::HCHO);
+  provider.writeValueToCurrentSample(humidity_raw/100.0, Unit::RH);
+  provider.writeValueToCurrentSample(temperature_raw/200.0, Unit::T);
 
   provider.commitSample();
 }

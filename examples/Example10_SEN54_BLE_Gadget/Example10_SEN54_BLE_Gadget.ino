@@ -13,7 +13,7 @@ SensirionI2CSen5x sen5x;
 
 // GadgetBle workflow
 static int64_t lastMeasurementTimeMs = 0;
-static int measurementIntervalMs = 1000000;
+static int measurementIntervalMs = 1000;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_VOC_PM25_V2);
 
