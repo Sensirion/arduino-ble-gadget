@@ -13,9 +13,9 @@ This library enables you to create your own Do-It-Yourself BLE enabled sensor ga
 
 Important points to keep in mind:
 
-* `writeXX` writes the corresponding sensor values to the library. But the values are not published to the BLE stack until `commit` has been called
+* `writeValueToCurrentSample` writes the sensor values to the library. But the values are not published to the BLE stack until `commitSample` has been called
 * Keep the loop delay at 3ms, to allow the library to provide history data to the smart phone applications and other BLE clients nearby. Increasing this delay will slow down the download process.
-* To allow history data downloads, you need to have the `handleEvents` function within the loop.
+* To allow history data downloads, you need to have the `handleDownload` function within the loop.
 
 ### Recommended Hardware
 
