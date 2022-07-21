@@ -42,7 +42,8 @@ by
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::$YOUR_DATATYPE);
 ```
-The names `lib` and `provider` can be changed, but we'll stick to these as they are also used in the examples.
+When using the `DataProvider` type instead of `GadgetBle`, we change the corresponding name from `gadgetBle` to `provider`, for clarity.
+Names of objects like `provider` or `lib` can be chosen arbitrarily, but we'll stick to these as they are also used in the updated exampleUsages.
 
 *Note: NimBLELibraryWrapper is an implementation of the interface IBLELibraryWrapper for the NimBLE library. If one wants to use an alternative BLE library, a corresponding wrapper needs to be written and used inplace of NimBLEWrapper.*
 
@@ -99,7 +100,7 @@ and replace all instances of
 esp_timer_get_time()
 ```
 by
-```
+```C++
 millis()
 ```
 
