@@ -2,6 +2,8 @@
 
 This library enables you to create your own Do-It-Yourself BLE enabled sensor gadget on the ESP32 platform. 
 
+**Note: The library has changed in version 1.0.0 and won't work with code using version 0.14.0 or earlier. For a detailed guide on how to migrate your code, click [here](MIGRATION.md).**
+
 ### Key features are
 
 * Live sensor value broadcasting without requiring a BLE connection
@@ -13,9 +15,9 @@ This library enables you to create your own Do-It-Yourself BLE enabled sensor ga
 
 Important points to keep in mind:
 
-* `writeXX` writes the corresponding sensor values to the library. But the values are not published to the BLE stack until `commit` has been called
+* `writeValueToCurrentSample` writes the sensor values to the library. But the values are not published to the BLE stack until `commitSample` has been called
 * Keep the loop delay at 3ms, to allow the library to provide history data to the smart phone applications and other BLE clients nearby. Increasing this delay will slow down the download process.
-* To allow history data downloads, you need to have the `handleEvents` function within the loop.
+* To allow history data downloads, you need to have the `handleDownload` function within the loop.
 
 ### Recommended Hardware
 
