@@ -2,7 +2,7 @@
 
 This library enables you to create your own Do-It-Yourself BLE enabled sensor gadget on the ESP32 platform. 
 
-**Note: The library has changed in the most recent update and won't work with preexisting code. For a detailed guide on how to migrate your code, click [here](MIGRATION.md).**
+**Note: The library has changed in version 1.0.0 and won't work with code using version 0.14.0 or earlier. For a detailed guide on how to migrate your code, click [here](MIGRATION.md).**
 
 ### Key features are
 
