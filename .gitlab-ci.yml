@@ -37,4 +37,16 @@ compile_test:
         - arduino-cli lib install "Sensirion I2C SVM40@0.1.0"
         - arduino-cli lib install "Sensirion I2C SVM41@0.1.0"
         - ln -s $PWD ~/Arduino/libraries/
-        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example1_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example2_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example3_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example4_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example5_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example6_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example7_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example8_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example9_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example10_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example11_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example12_*
+        - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example13_*
