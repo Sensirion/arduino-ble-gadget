@@ -37,6 +37,9 @@ compile_test:
         - arduino-cli lib install "Sensirion I2C SVM40@0.1.0"
         - arduino-cli lib install "Sensirion I2C SVM41@0.1.0"
         - ln -s $PWD ~/Arduino/libraries/
+        - mkdir -p ~/Arduino/libraries
+        - git clone https://github.com/Xinyuan-LilyGO/TTGO-T-Display
+        - ln -s $PWD/TTGO-T-Display/TFT_eSPI ~/Arduino/libraries/TFT_eSPI 
         - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example1_*
         - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example2_*
         - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example3_*
