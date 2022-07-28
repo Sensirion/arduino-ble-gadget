@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2022-07-28
+### Added
+- Wrapper for BLE library
+- New WiFi library, wrapped
+### Changed
+- Code base refactored
+- [NimBLE](https://www.arduino.cc/reference/en/libraries/nimble-arduino/) instead of standard Arduino BLE library 
+
+## [0.14.0] - 2022-06-03
+### Added
+- Support CO2 only DIY gadgets
+- Support PM1.0, PM2.5, PM4, PM10 data type
+- Update examples to use the official Sensirion Arduino drivers
+
 ## [0.13.0] - 2022-01-19
 ### Added
 - SEN54 Example code and tutorial
@@ -104,7 +118,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release supporting T_RH_CO2_ALT datatype only.
 
-[Unreleased]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.14.0...v.1.0.0
+[0.14.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.13.0...v0.14.0
 [0.13.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/sensirion/sensirion_gadgetble_arduino_library/compare/v0.10.0...v0.11.0
