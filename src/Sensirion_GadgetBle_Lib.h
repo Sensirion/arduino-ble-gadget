@@ -9,8 +9,6 @@
 #include "Arduino.h"
 #include <functional>
 
-#include "esp_timer.h"
-
 #include <BLE2902.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>

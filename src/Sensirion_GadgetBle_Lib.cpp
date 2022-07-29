@@ -255,8 +255,8 @@ void GadgetBle::writeHCHO(float value) {
 }
 
 void GadgetBle::commit() {
-    if (esp_timer_get_time() - _lastCacheTime >= (_sampleIntervalMs * 1000)) {
-        _lastCacheTime = esp_timer_get_time();
+    if (millis() - _lastCacheTime >= _sampleIntervalMs) {
+        _lastCacheTime = millis();
         _addCurrentSampleToHistory();
     }
 
