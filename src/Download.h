@@ -47,7 +47,7 @@ class DownloadHeader: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
 class DownloadPacket: public ByteArray<DOWNLOAD_PACKET_SIZE_BYTES> {
   public:
     void setDownloadSequenceNumber(int16_t number);
-    void writeSample(Sample sample, size_t sampleSize, size_t position);
+    void writeSample(const Sample& sample, size_t sampleSize, size_t position);
     void writeSampleByte(uint8_t byte, size_t positionInSampleData);
 };
 
