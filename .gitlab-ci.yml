@@ -16,7 +16,7 @@ cppcheck:
         name: registry.gitlab.sensirion.lokal/mso-sw/drivers/docker-driver-generator:0.1.0
     tags: [linux, docker]
     script:
-        - cppcheck --std=c++11 --language=c++ --error-exitcode=1 --enable=warning,style,performance,portability src/*
+        - cppcheck --std=c++11 --language=c++ --error-exitcode=1 --enable=warning,performance,portability src/*
 
 compile_test:
     stage: test
