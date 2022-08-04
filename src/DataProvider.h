@@ -64,7 +64,6 @@ class DataProvider: public IProviderCallbacks {
     Sample _currentSample;
     AdvertisementHeader _advertisementHeader;
     SampleHistoryRingBuffer _sampleHistory;
-    int _sampleHistoryIndex;
     DownloadState _downloadState = INACTIVE;
     int _downloadSequenceIdx = 0; // first packet is the header
     int _numberOfSamplesToDownload = 0;
