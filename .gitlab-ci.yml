@@ -40,6 +40,7 @@ compile_test:
         - mkdir -p ~/Arduino/libraries
         - git clone https://github.com/Xinyuan-LilyGO/TTGO-T-Display
         - ln -s $PWD/TTGO-T-Display/TFT_eSPI ~/Arduino/libraries/TFT_eSPI 
+        - ln -s /builds/Gadgets/arduino-ble-gadget ~/Arduino/libraries/arduino-ble-gadget
         - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example1_*
         - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example2_*
         - arduino-cli compile --warnings all --fqbn esp32:esp32:esp32 examples/Example3_*
