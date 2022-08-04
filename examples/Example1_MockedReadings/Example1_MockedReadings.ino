@@ -1,5 +1,4 @@
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
+#include "Sensirion_Gadget_BLE.h"
 
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_CO2_ALT);

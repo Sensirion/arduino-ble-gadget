@@ -1,5 +1,3 @@
-#include <Wire.h>
-
 // Go to TTGO T-Display's Github Repository
 // Download the code as zip, extract it and copy the Folder TFT_eSPI
 //  => https://github.com/Xinyuan-LilyGO/TTGO-T-Display/archive/master.zip
@@ -14,8 +12,7 @@
 #include "resources/fonts/ArchivoNarrow_Regular10pt7b.h"
 #include "resources/fonts/ArchivoNarrow_Regular50pt7b.h"
 
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
+#include "Sensirion_Gadget_BLE.h"
 
 static int64_t lastMeasurementTimeMs = 0;
 static int measurementIntervalMs = 1900;

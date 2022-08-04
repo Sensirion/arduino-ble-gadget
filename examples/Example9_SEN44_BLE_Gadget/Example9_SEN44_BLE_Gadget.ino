@@ -2,12 +2,8 @@
 // using this example code:
 // https://github.com/Sensirion/arduino-i2c-sen44
 
-#include <Arduino.h>
+#include "Sensirion_Gadget_BLE.h"
 #include <SensirionI2CSen44.h>
-#include <Wire.h>
-
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
 
 SensirionI2CSen44 sen44;
 

@@ -1,11 +1,8 @@
-#include <Wire.h>
-
 // Download the SeeedStudio SCD30 Arduino driver here:
 //  => https://github.com/Seeed-Studio/Seeed_SCD30/releases/latest
-#include "SCD30.h"
 
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
+#include "Sensirion_Gadget_BLE.h"
+#include <SCD30.h>
 
 static int64_t lastMeasurementTimeMs = 0;
 static int measurementIntervalMs = 1900;

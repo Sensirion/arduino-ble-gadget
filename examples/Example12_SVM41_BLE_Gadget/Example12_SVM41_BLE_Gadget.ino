@@ -29,12 +29,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <Arduino.h>
+#include "Sensirion_Gadget_BLE.h"
 #include <SensirionI2CSvm41.h>
-#include <Wire.h>
-
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
 
 SensirionI2CSvm41 svm41;
 
