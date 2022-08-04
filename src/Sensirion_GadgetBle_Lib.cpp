@@ -13,12 +13,10 @@
 static const int INVALID_POSITION = -1;
 static const int ADV_SAMPLE_OFFSET = 6;
 
-GadgetBle::GadgetBle(DataType dataType) {
+GadgetBle::GadgetBle(DataType dataType) : _deviceIdString("n/a") {
     // Company identifier
     _advertisedData[0] = 0xD5;
     _advertisedData[1] = 0x06;
-
-    _deviceIdString = "n/a";
 
     setDataType(dataType);
 }
