@@ -26,7 +26,7 @@ void GadgetBle::enableWifiSetupSettings(
     _onWifiSettingsChanged = onWifiSettingsChanged;
 }
 
-void GadgetBle::setCurrentWifiSsid(std::string ssid) {
+void GadgetBle::setCurrentWifiSsid(const std::string& ssid) {
     _wifiSsidSetting = ssid;
     if (_wifiSsidChar != NULL) {
         _wifiSsidChar->setValue(_wifiSsidSetting);
