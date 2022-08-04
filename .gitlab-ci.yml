@@ -27,7 +27,6 @@ compile_test:
     script:
         - arduino-cli update
         - export ARDUINO_LIBRARY_ENABLE_UNSAFE_INSTALL=true
-        - arduino-cli lib install "Sensirion Core@0.5.3"
         - arduino-cli lib install "NimBLE-Arduino@1.4.0"
         - arduino-cli lib install --git-url https://github.com/Seeed-Studio/Seeed_SCD30
         - arduino-cli lib install "Sensirion I2C SCD4x@0.3.1"
