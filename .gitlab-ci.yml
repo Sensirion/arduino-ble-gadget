@@ -9,6 +9,9 @@ style_check:
   script:
     - clang-format-7 -i src/*
     - git diff --exit-code
+    - cd /usr/local
+    - curl -fsSL https://raw.githubusercontent.com/arduino/arduino-lint/main/etc/install.sh | sh
+    - arduino-lint /builds/Gadgets/arduino-ble-gadget --library-manager update
 
 cppcheck:
     stage: validate
