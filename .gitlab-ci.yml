@@ -9,11 +9,17 @@ style_check:
   script:
     - clang-format-7 -i src/*
     - git diff --exit-code
+
+lint_check:
+  stage: validate
+  image: sensirion/embedded-ci:2.2.0
+  tags: [linux, docker]
+  script:
     - cd /usr/local
     - curl -fsSL https://raw.githubusercontent.com/arduino/arduino-lint/main/etc/install.sh | sh
     - arduino-lint /builds/Gadgets/arduino-ble-gadget --library-manager update
-
-cppcheck:
+      
+cpp_check:
     stage: validate
     image:
         name: registry.gitlab.sensirion.lokal/mso-sw/drivers/docker-driver-generator:0.1.0
