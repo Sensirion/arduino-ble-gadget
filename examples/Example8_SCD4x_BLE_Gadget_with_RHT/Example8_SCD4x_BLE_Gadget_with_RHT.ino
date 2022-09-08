@@ -1,11 +1,8 @@
 // This code is based on Sensirion's Arduino Snippets
 // Check https://github.com/Sensirion/arduino-snippets for the most recent version.
 
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
+#include "Sensirion_Gadget_BLE.h"
 #include <SensirionI2CScd4x.h>
-#include <Wire.h>
-
 
 // GadgetBle workflow
 static int64_t lastMeasurementTimeMs = 0;

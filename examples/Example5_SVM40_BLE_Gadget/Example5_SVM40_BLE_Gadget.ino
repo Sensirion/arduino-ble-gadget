@@ -1,10 +1,8 @@
 // This code is based on Sensirion's Arduino Snippets
 // Check https://github.com/Sensirion/arduino-snippets for the most recent version.
 
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
+#include "Sensirion_Gadget_BLE.h"
 #include <SensirionI2CSvm40.h>
-#include <Wire.h>
 
 SensirionI2CSvm40 svm40;
 

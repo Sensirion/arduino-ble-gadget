@@ -7,8 +7,7 @@ If you are unsure about the notation used here, see the last section for some hi
 
 ## Include Dependencies
 
-The `Sensirion_Gadged_BLE_Lib` dependency is now called `DataProvider` (as it provides sensor data via BLE to a peripheral, e.g. a Smartphone).
-Any methods that were called on the `GadgetBle` object before now need to be called on the `DataProvider` object. 
+The library header file has been renamed.
 
 Concretely, replace
 ```C++
@@ -16,22 +15,12 @@ Concretely, replace
 ```
 by
 ```C++
-#include "DataProvider.h"
+#include "Sensirion_Gadget_BLE.h"
 ```
-
-Additionally, the (wrapped) BLE library needs to be included.
-Add
-```C++
-#include "NimBLELibraryWrapper.h"
-```
-after the previous includes.
-
-*Note: This library now uses the NimBLE library, which is more lightweight and allows for more features to be added to a gadget. As the name suggests, the library is wrapped and thus can be exchanged for another. See details in the next section.*
 
 ## Instantiate Objects
 
-The BLE library wrapper needs to be instantiated first and then be passed to the `DataProvider` constructor as an argument.
-`DataType` is now independent of `GadgetBLE`/`DataProvider`. Don't forget to replace `$YOUR_DATATYPE` by your preferred datatype.
+The `GadgetBle` object from verion 0.14.0 and below has been renamed to `DataProvider` (as it provides sensor data via BLE to a peripheral, e.g. a Smartphone). On instantiation, the `DataProvider` object requires an instance of a `NimBLELibraryWrapper` object as an argument, so the latter needs to be created first. Don't forget to replace `$YOUR_DATATYPE` by your preferred datatype and mind that `DataType` is now independent of `GadgetBLE`/`DataProvider`.
 
 Replace 
 ```C++
@@ -42,15 +31,15 @@ by
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::$YOUR_DATATYPE);
 ```
-When using the `DataProvider` type instead of `GadgetBle`, we change the corresponding name from `gadgetBle` to `provider`, for clarity.
-Names of objects like `provider` or `lib` can be chosen arbitrarily, but we'll stick to these as they are also used in the updated exampleUsages.
 
-*Note: NimBLELibraryWrapper is an implementation of the interface IBLELibraryWrapper for the NimBLE library. If one wants to use an alternative BLE library, a corresponding wrapper needs to be written and used inplace of NimBLEWrapper.*
+*Note:*
+*- Names of objects like `provider`/`gadgetBle` or `lib` can be chosen arbitrarily, but we'll stick to these as they are also used in the exampleUsages.*
+*- NimBLELibraryWrapper is an implementation of the IBLELibraryWrapper interface for the NimBLE library, which is more lightweight and allows for more features to be added to a gadget. If one wants to use an alternative BLE library, a corresponding wrapper needs to be implemented and used inplace of NimBLEWrapper.*
 
 ## Methods
 Methods not listed here are unchanged. Just make sure to call them on the `DataProvider` object instead of the `GadgetBle` one.
 
-The various write methods (`writeTemperature`, `writeHumidity` etc.) are now unified in `writeValueToCurrentSample`. 
+The various write$SOME_UNIT methods (e.g. `writeTemperature`, `writeHumidity`) are now unified in `writeValueToCurrentSample`. 
 This however needs a `Unit` to be specified for its second parameter. 
 As before, replace `$YOUR_UNIT` in the snippet below by the unit of the value you want to write.
 

@@ -1,10 +1,10 @@
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
+#include "Sensirion_Gadget_BLE.h"
 #include "WifiMultiLibraryWrapper.h"
+
 // NOTE: The WiFi library requires quite some space on the ESP32's memory.
-// Make sure to decrease the SAMPLE_BUFFER_SIZE_BYTES, to make it fit.
-// In sensirion-gadgetble-lib/src/Sensirion_GadgetBle_Lib.h, set the 
-// static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000;
+// Make sure the SAMPLE_BUFFER_SIZE_BYTES is low enough to make it fit.
+// In sensirion-BLE Gadget-lib/src/SampleHistoryRingBuffer.h, set the 
+// static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000 (default);
 
 NimBLELibraryWrapper lib(true);
 WifiMultiLibraryWrapper wifi;

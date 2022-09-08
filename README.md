@@ -1,4 +1,4 @@
-# Sensirion Gadget BLE Lib
+# Sensirion Gadget BLE Library
 
 This library enables you to create your own Do-It-Yourself BLE enabled sensor gadget on the ESP32 platform. 
 

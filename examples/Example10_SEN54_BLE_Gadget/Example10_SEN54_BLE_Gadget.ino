@@ -2,12 +2,8 @@
 // using this example code:
 // https://github.com/Sensirion/arduino-i2c-sen5x
 
-#include <Arduino.h>
+#include "Sensirion_Gadget_BLE.h"
 #include <SensirionI2CSen5x.h>
-#include <Wire.h>
-
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
 
 SensirionI2CSen5x sen5x;
 
@@ -16,7 +12,6 @@ static int64_t lastMeasurementTimeMs = 0;
 static int measurementIntervalMs = 1000;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_VOC_PM25_V2);
-
 
 void printModuleVersions() {
     uint16_t error;

@@ -1,13 +1,8 @@
 // Please install the Sensirion I2C Arduino library for the SEN55 sensor module, before
 // using this example code:
 // https://github.com/Sensirion/arduino-i2c-sen5x
-
-#include <Arduino.h>
+#include "Sensirion_Gadget_BLE.h"
 #include <SensirionI2CSen5x.h>
-#include <Wire.h>
-
-#include "DataProvider.h"
-#include "NimBLELibraryWrapper.h"
 
 SensirionI2CSen5x sen5x;
 
