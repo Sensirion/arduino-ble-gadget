@@ -31,6 +31,7 @@
 #ifndef _SENSIRION_GADGET_BLE_H_
 #define _SENSIRION_GADGET_BLE_H_
 
+#include "Arduino.h"
 #include "DataProvider.h"
 #include "NimBLELibraryWrapper.h"
 
