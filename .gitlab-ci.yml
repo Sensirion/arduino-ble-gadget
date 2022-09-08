@@ -1,6 +1,63 @@
-clang-format:
+stages:
+    - validate
+    - test
+
+style_check:
+  stage: validate
   image: sensirion/embedded-ci:2.2.0
   tags: [linux, docker]
   script:
     - clang-format-7 -i src/*
     - git diff --exit-code
+
+lint_check:
+  stage: validate
+  image: sensirion/embedded-ci:2.2.0
+  tags: [linux, docker]
+  script:
+    - cd /usr/local
+    - curl -fsSL https://raw.githubusercontent.com/arduino/arduino-lint/main/etc/install.sh | sh
+    - arduino-lint /builds/Gadgets/arduino-ble-gadget --library-manager update
+      
+cpp_check:
+    stage: validate
+    image:
+        name: registry.gitlab.sensirion.lokal/mso-sw/drivers/docker-driver-generator:0.1.0
+    tags: [linux, docker]
+    script:
+        - cppcheck --std=c++11 --language=c++ --error-exitcode=1 --enable=warning,performance,portability src/*
+
+compile_test:
+    stage: test
+    image:
+        name: registry.gitlab.sensirion.lokal/sensirion/docker/docker-arduino:0.5.0
+    tags: [docker, linux]
+    needs: []
+    script:
+        - arduino-cli update
+        - export ARDUINO_LIBRARY_ENABLE_UNSAFE_INSTALL=true
+        - arduino-cli lib install "NimBLE-Arduino@1.4.0"
+        - arduino-cli lib install --git-url https://github.com/Seeed-Studio/Seeed_SCD30
+        - arduino-cli lib install "Sensirion I2C SCD4x@0.3.1"
+        - arduino-cli lib install "Sensirion I2C SEN44@0.1.0"
+        - arduino-cli lib install "Sensirion I2C SEN5X@0.2.0"
+        - arduino-cli lib install "Sensirion I2C SFA3x@0.1.0"
+        - arduino-cli lib install "Sensirion I2C SVM40@0.1.0"
+        - arduino-cli lib install "Sensirion I2C SVM41@0.1.0"
+        - ln -s $PWD ~/Arduino/libraries/
+        - git clone https://github.com/Xinyuan-LilyGO/TTGO-T-Display
+        - ln -s $PWD/TTGO-T-Display/TFT_eSPI ~/Arduino/libraries/TFT_eSPI 
+        - mkdir tmp
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example1_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example2_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example3_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example4_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example5_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example6_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example7_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example8_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example9_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example10_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example11_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example12_*
+        - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example13_*

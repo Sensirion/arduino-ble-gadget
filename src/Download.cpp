@@ -19,7 +19,7 @@ void DownloadPacket::setDownloadSequenceNumber(int16_t number) {
     _write16BitLittleEndian(number, 0);
 }
 
-void DownloadPacket::writeSample(Sample sample, size_t sampleSize,
+void DownloadPacket::writeSample(const Sample& sample, size_t sampleSize,
                                  size_t position) {
     for (int i = 0; i < sampleSize; ++i) {
         writeSampleByte(sample.getByte(i), position * sampleSize + i);

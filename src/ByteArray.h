@@ -52,21 +52,21 @@ template <size_t SIZE> class ByteArray {
 
   protected:
     void _writeByte(uint8_t byte, size_t position) {
-        assert(position >= 0 && position < SIZE);
+        assert(position < SIZE);
         _data[position] = byte;
     }
     void _write16BitLittleEndian(uint16_t value, size_t position) {
-        assert(position >= 0 && position < SIZE - 1);
+        assert(position < SIZE - 1);
         _data[position] = static_cast<uint8_t>(value);
         _data[position + 1] = static_cast<uint8_t>(value >> 8);
     }
     void _write16BitBigEndian(uint16_t value, size_t position) {
-        assert(position >= 0 && position < SIZE - 1);
+        assert(position < SIZE - 1);
         _data[position + 1] = static_cast<uint8_t>(value);
         _data[position] = static_cast<uint8_t>(value >> 8);
     }
     void _write32BitLittleEndian(uint32_t value, size_t position) {
-        assert(position >= 0 && position < SIZE - 3);
+        assert(position < SIZE - 3);
         _data[position] = static_cast<uint8_t>(value);
         _data[position + 1] = static_cast<uint8_t>(value >> 8);
         _data[position + 2] = static_cast<uint8_t>(value >> 16);
