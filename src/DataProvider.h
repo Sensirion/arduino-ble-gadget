@@ -52,6 +52,7 @@ class DataProvider: public IProviderCallbacks {
     void writeValueToCurrentSample(float value, Unit unit);
     void commitSample();
     void handleDownload();
+    void setBatteryLevel(int value);
     void setSampleConfig(DataType dataType);
     String getDeviceIdString() const;
 

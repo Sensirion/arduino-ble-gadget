@@ -32,12 +32,25 @@
 #define _NIM_BLE_LIBRARY_WRAPPER_H_
 
 #include "IBLELibraryWrapper.h"
+#include <NimBLECharacteristic.h>
 
 struct WrapperPrivateData;
 
 class NimBLELibraryWrapper: public IBLELibraryWrapper {
   public:
-    NimBLELibraryWrapper(bool enableWifiSettings = false);
+    /**
+     * @brief Construct a new Nim BLE Library Wrapper
+     * @note To allow the client, e.g. MyAmbience app, to discover a change in
+     * the provided services switch Bluetooth off and then on again on your
+     * client device.
+     *
+     * @param enableWifiSettings if true, wifi settings service will be
+     * initialized
+     * @param enableBatteryService if true, battery level service will be
+     * initilized
+     */
+    NimBLELibraryWrapper(bool enableWifiSettings = false,
+                         bool enableBatteryService = false);
     NimBLELibraryWrapper(const NimBLELibraryWrapper& other) = delete;
     NimBLELibraryWrapper& operator=(const NimBLELibraryWrapper& other) = delete;
     virtual ~NimBLELibraryWrapper();
@@ -46,17 +59,19 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
     void startAdvertising() override;
     void stopAdvertising() override;
     std::string getDeviceAddress() override;
-    void characteristicSetValue(const char* uuid, const uint8_t* data,
+    bool characteristicSetValue(const char* uuid, const uint8_t* data,
                                 size_t size) override;
-    void characteristicSetValue(const char* uuid, int value) override;
+    bool characteristicSetValue(const char* uuid, int value) override;
     std::string characteristicGetValue(const char* uuid) override;
-    void characteristicNotify(const char* uuid) override;
+    bool characteristicNotify(const char* uuid) override;
     void setProviderCallbacks(IProviderCallbacks* providerCallbacks) override;
 
   private:
     void _deinit();
     void _createDownloadService();
     void _createSettingsService();
+    void _createBatteryService();
+    NimBLECharacteristic* _lookupCharacteristic(const char* uuid);
     static WrapperPrivateData* _data;
     static uint _numberOfInstances;
 };

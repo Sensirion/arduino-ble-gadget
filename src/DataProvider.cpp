@@ -67,6 +67,10 @@ void DataProvider::commitSample() {
     _BLELibrary.startAdvertising();
 }
 
+void DataProvider::setBatteryLevel(int value) {
+    _BLELibrary.characteristicSetValue(BATTERY_LEVEL_UUID, value);
+}
+
 void DataProvider::handleDownload() {
     if (_downloadState == INACTIVE) {
         return;

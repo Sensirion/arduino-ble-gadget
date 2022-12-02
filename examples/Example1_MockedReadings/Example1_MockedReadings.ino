@@ -1,7 +1,18 @@
 #include "Sensirion_Gadget_BLE.h"
 
-NimBLELibraryWrapper lib;
+NimBLELibraryWrapper lib(false, true);
 DataProvider provider(lib, DataType::T_RH_CO2_ALT);
+
+uint16_t t = 0;
+uint16_t rh = 0;
+uint16_t co2 = 0;
+uint16_t batteryLevel = 100;
+
+static int64_t lastMeasurementTimeMs = 0;
+static int measurementIntervalMs = 1000;
+
+static int64_t lastBatteryLevelUpdateMs = 0;
+static int batteryLevelUpdateIntervalMs = 60000;
 
 void setup() {
   Serial.begin(115200);
@@ -11,14 +22,10 @@ void setup() {
   provider.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
   Serial.println(provider.getDeviceIdString());
+
+  // Set initial battery level
+  provider.setBatteryLevel(batteryLevel);
 }
-
-uint16_t t = 0;
-uint16_t rh = 0;
-uint16_t co2 = 0;
-
-static int64_t lastMeasurementTimeMs = 0;
-static int measurementIntervalMs = 1000;
 
 void loop() {
   if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
@@ -37,6 +44,15 @@ void loop() {
     Serial.print("\t");
     Serial.print("mockHumidity[%]:");
     Serial.println(rh);
+  }
+  if (millis() - lastBatteryLevelUpdateMs >= batteryLevelUpdateIntervalMs) {
+    lastBatteryLevelUpdateMs = millis();
+    provider.setBatteryLevel(--batteryLevel);
+    Serial.print("Battery Level Update:");
+    Serial.println(batteryLevel);
+    if (batteryLevel == 0) {
+      batteryLevel = 100;
+    }
   }
 
   provider.handleDownload();
