@@ -9,6 +9,7 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
     NimBLEAdvertising* pNimBLEAdvertising;
     bool BLEDeviceRunning = false;
     bool wifiSettingsEnabled;
+    bool batteryServiceEnabled;
 
     // BLEServer
     NimBLEServer* pBLEServer;
@@ -16,6 +17,7 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
     // BLEServices
     NimBLEService* pBLEDownloadService;
     NimBLEService* pBLESettingsService;
+    NimBLEService* pBLEBatteryService;
 
     // BLECharacteristics
     NimBLECharacteristic* pTransferChararacteristic;
@@ -24,6 +26,8 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
 
     NimBLECharacteristic* pWifiSsidCharacteristic;
     NimBLECharacteristic* pWifiPasswordCharacteristic;
+
+    NimBLECharacteristic* pBatteryLevelCharacteristic;
 
     // BLEServerCallbacks
     void onConnect(BLEServer* serverInst);
@@ -80,11 +84,13 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
 
 WrapperPrivateData* NimBLELibraryWrapper::_data = nullptr;
 
-NimBLELibraryWrapper::NimBLELibraryWrapper(bool enableWifiSettings) {
+NimBLELibraryWrapper::NimBLELibraryWrapper(bool enableWifiSettings,
+                                           bool enableBatteryService) {
     if (NimBLELibraryWrapper::_numberOfInstances == 0) {
         _data = new WrapperPrivateData();
         ++NimBLELibraryWrapper::_numberOfInstances;
         _data->wifiSettingsEnabled = enableWifiSettings;
+        _data->batteryServiceEnabled = enableBatteryService;
     }
 }
 
@@ -122,6 +128,9 @@ void NimBLELibraryWrapper::init() {
 
     // Create Services
     _createDownloadService();
+    if (_data->batteryServiceEnabled) {
+        _createBatteryService();
+    }
     if (_data->wifiSettingsEnabled) {
         _createSettingsService();
     }
@@ -146,22 +155,41 @@ std::string NimBLELibraryWrapper::getDeviceAddress() {
     return NimBLEDevice::getAddress().toString();
 }
 
-void NimBLELibraryWrapper::characteristicSetValue(const char* uuid,
+bool NimBLELibraryWrapper::characteristicSetValue(const char* uuid,
                                                   const uint8_t* data,
                                                   size_t size) {
-    _data->pBLEDownloadService->getCharacteristic(uuid)->setValue(data, size);
+    NimBLECharacteristic* pCharacteristic = _lookupCharacteristic(uuid);
+    if (nullptr == pCharacteristic) {
+        return false;
+    }
+    pCharacteristic->setValue(data, size);
+    return true;
 }
 
-void NimBLELibraryWrapper::characteristicSetValue(const char* uuid, int value) {
-    _data->pBLEDownloadService->getCharacteristic(uuid)->setValue(value);
+bool NimBLELibraryWrapper::characteristicSetValue(const char* uuid, int value) {
+    NimBLECharacteristic* pCharacteristic = _lookupCharacteristic(uuid);
+    if (nullptr == pCharacteristic) {
+        return false;
+    }
+    pCharacteristic->setValue(value);
+    return true;
 }
 
 std::string NimBLELibraryWrapper::characteristicGetValue(const char* uuid) {
-    return _data->pBLEDownloadService->getCharacteristic(uuid)->getValue();
+    NimBLECharacteristic* pCharacteristic = _lookupCharacteristic(uuid);
+    if (nullptr == pCharacteristic) {
+        return "";
+    }
+    return pCharacteristic->getValue();
 }
 
-void NimBLELibraryWrapper::characteristicNotify(const char* uuid) {
-    _data->pBLEDownloadService->getCharacteristic(uuid)->notify(true);
+bool NimBLELibraryWrapper::characteristicNotify(const char* uuid) {
+    NimBLECharacteristic* pCharacteristic = _lookupCharacteristic(uuid);
+    if (nullptr == pCharacteristic) {
+        return false;
+    }
+    pCharacteristic->notify(true);
+    return true;
 }
 
 void NimBLELibraryWrapper::setProviderCallbacks(
@@ -213,4 +241,31 @@ void NimBLELibraryWrapper::_createSettingsService() {
     _data->pWifiPasswordCharacteristic->setCallbacks(_data);
 
     _data->pBLESettingsService->start();
+}
+
+void NimBLELibraryWrapper::_createBatteryService() {
+    _data->pBLEBatteryService =
+        _data->pBLEServer->createService(BATTERY_SERVICE_UUID);
+    _data->pBatteryLevelCharacteristic =
+        _data->pBLEBatteryService->createCharacteristic(BATTERY_LEVEL_UUID,
+                                                        NIMBLE_PROPERTY::READ);
+
+    _data->pBatteryLevelCharacteristic->setValue(0);
+    _data->pBLEBatteryService->start();
+}
+
+NimBLECharacteristic*
+NimBLELibraryWrapper::_lookupCharacteristic(const char* uuid) {
+    NimBLECharacteristic* pCharacteristic = nullptr;
+    pCharacteristic = _data->pBLEDownloadService->getCharacteristic(uuid);
+    if (pCharacteristic != nullptr) {
+        return pCharacteristic;
+    }
+    if (_data->batteryServiceEnabled) {
+        pCharacteristic = _data->pBLEBatteryService->getCharacteristic(uuid);
+        if (pCharacteristic != nullptr) {
+            return pCharacteristic;
+        }
+    }
+    return pCharacteristic;
 }

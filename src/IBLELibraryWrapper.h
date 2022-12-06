@@ -51,6 +51,11 @@ static const char* const WIFI_SSID_UUID =
     "00008171-b38d-4985-720e-0f993a68ee41";
 static const char* const WIFI_PWD_UUID = "00008172-b38d-4985-720e-0f993a68ee41";
 
+static const char* const BATTERY_SERVICE_UUID =
+    "0000180f-0000-1000-8000-00805f9b34fb";
+static const char* const BATTERY_LEVEL_UUID =
+    "00002a19-0000-1000-8000-00805f9b34fb";
+
 // abstract class
 class IBLELibraryWrapper {
   public:
@@ -61,11 +66,11 @@ class IBLELibraryWrapper {
     virtual void startAdvertising() = 0;
     virtual void stopAdvertising() = 0;
     virtual std::string getDeviceAddress() = 0;
-    virtual void characteristicSetValue(const char* uuid, const uint8_t* data,
+    virtual bool characteristicSetValue(const char* uuid, const uint8_t* data,
                                         size_t size) = 0;
-    virtual void characteristicSetValue(const char* uuid, int value);
+    virtual bool characteristicSetValue(const char* uuid, int value);
     virtual std::string characteristicGetValue(const char* uuid) = 0;
-    virtual void characteristicNotify(const char* uuid) = 0;
+    virtual bool characteristicNotify(const char* uuid) = 0;
     virtual void
     setProviderCallbacks(IProviderCallbacks* providerCallbacks) = 0;
 };
