@@ -32,12 +32,12 @@
 #define _DATA_PROVIDER_H_
 
 #include "AdvertisementHeader.h"
-#include "Config.h"
 #include "Download.h"
 #include "IBLELibraryWrapper.h"
 #include "IProviderCallbacks.h"
 #include "IWifiLibraryWrapper.h"
 #include "SampleHistoryRingBuffer.h"
+#include "Sensirion_UPT_Core.h"
 
 class DataProvider: public IProviderCallbacks {
   public:
@@ -49,7 +49,7 @@ class DataProvider: public IProviderCallbacks {
           _pWifiLibaray(pWifiLibrary){};
     ~DataProvider(){};
     void begin();
-    void writeValueToCurrentSample(float value, Unit unit);
+    void writeValueToCurrentSample(float value, SignalType signalType);
     void commitSample();
     void handleDownload();
     void setBatteryLevel(int value);
