@@ -119,9 +119,9 @@ void measure_and_report() {
       Serial.println(temperature / 200.0);
   }
 
-  provider.writeValueToCurrentSample(float(vocIndex) / 10, Unit::VOC);
-  provider.writeValueToCurrentSample(float(humidity) / 100, Unit::RH);
-  provider.writeValueToCurrentSample(float(temperature) / 200, Unit::T);
+  provider.writeValueToCurrentSample(float(vocIndex) / 10, SignalType::VOC_INDEX);
+  provider.writeValueToCurrentSample(float(humidity) / 100, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
+  provider.writeValueToCurrentSample(float(temperature) / 200, SignalType::TEMPERATURE_DEGREES_CELSIUS);
 
   provider.commitSample();
   lastMeasurementTimeMs = millis();

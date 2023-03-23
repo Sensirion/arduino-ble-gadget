@@ -112,10 +112,10 @@ void measure_and_report() {
         Serial.println(noxIndex);
     }
 
-    provider.writeValueToCurrentSample(temperature, Unit::T);
-    provider.writeValueToCurrentSample(humidity, Unit::RH);
-    provider.writeValueToCurrentSample(vocIndex, Unit::VOC);
-    provider.writeValueToCurrentSample(noxIndex, Unit::NOX);
+    provider.writeValueToCurrentSample(temperature, SignalType::TEMPERATURE_DEGREES_CELSIUS);
+    provider.writeValueToCurrentSample(humidity, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
+    provider.writeValueToCurrentSample(vocIndex, SignalType::VOC_INDEX);
+    provider.writeValueToCurrentSample(noxIndex, SignalType::NOX_INDEX);
 
     provider.commitSample();
     lastMeasurementTimeMs = millis();

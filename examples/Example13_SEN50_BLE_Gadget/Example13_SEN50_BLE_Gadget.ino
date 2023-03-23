@@ -161,10 +161,10 @@ void measure_and_report() {
         Serial.print("\n");
     }
 
-    provider.writeValueToCurrentSample(massConcentrationPm1p0, Unit::PM1P0);
-    provider.writeValueToCurrentSample(massConcentrationPm2p5, Unit::PM2P5);
-    provider.writeValueToCurrentSample(massConcentrationPm4p0, Unit::PM4P0);
-    provider.writeValueToCurrentSample(massConcentrationPm10p0, Unit::PM10);
+    provider.writeValueToCurrentSample(massConcentrationPm1p0, SignalType::PM1P0_MICRO_GRAMM_PER_CUBIC_METER);
+    provider.writeValueToCurrentSample(massConcentrationPm2p5, SignalType::PM2P5_MICRO_GRAMM_PER_CUBIC_METER);
+    provider.writeValueToCurrentSample(massConcentrationPm4p0, SignalType::PM4P0_MICRO_GRAMM_PER_CUBIC_METER);
+    provider.writeValueToCurrentSample(massConcentrationPm10p0, SignalType::PM10P0_MICRO_GRAMM_PER_CUBIC_METER);
     provider.commitSample();
     lastMeasurementTimeMs = millis();
 }
