@@ -44,6 +44,7 @@ compile_test:
         - arduino-cli lib install "Sensirion I2C SFA3x@0.1.0"
         - arduino-cli lib install "Sensirion I2C SVM40@0.1.0"
         - arduino-cli lib install "Sensirion I2C SVM41@0.1.0"
+        - arduino-cli lib install "Sensirion_UPT_Core@0.1.1"
         - ln -s $PWD ~/Arduino/libraries/
         - git clone https://github.com/Xinyuan-LilyGO/TTGO-T-Display
         - ln -s $PWD/TTGO-T-Display/TFT_eSPI ~/Arduino/libraries/TFT_eSPI 
