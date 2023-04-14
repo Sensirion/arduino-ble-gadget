@@ -32,6 +32,8 @@ Download the **Sensirion MyAmbience CO2** App to monitor your gadget, plot the s
 
 ## Getting Started
 
+### Arduino
+
 1. Download Arduino IDE and setup the environment for ESP32 platform
 	* Follow [this guide](https://docs.espressif.com/projects/arduino-esp32/en/latest/installing.html)
 
@@ -43,6 +45,30 @@ Download the **Sensirion MyAmbience CO2** App to monitor your gadget, plot the s
 	* [How to import a zip library](https://www.arduino.cc/en/Guide/Libraries#importing-a-zip-library)
 5. Select File -> Examples -> Sensirion Gadget BLE Lib -> **Example 1**
 6. Click the upload button
+
+### PlatformIO
+
+Install PlatformIO Core by following the [official instructions](https://docs.platformio.org/en/latest/core/installation/methods/index.html).
+
+To install this library (in `~/.platformio/lib`), execute the following command in a terminal.
+```bash
+pio lib --global install "Sensirion Gadget BLE Arduino Lib"
+```
+
+To test an example (e.g `Example1_MockedReadings`), navigate to the example directory,
+```bash
+cd ~/.platformio/lib/Sensirion\ Gadget\ BLE\ Arduino\ Lib/examples/Example1_MockedReadings
+```
+compile and Upload
+```bash
+pio run -t upload
+```
+and start the Serial monitor.
+```bash
+pio device monitor
+```
+
+In order to use this library in your project, add it to the `lib_deps` in your `platformio.ini` file and include `Sensirion_Gadget_BLE.h`.
 
 
 ### Create your own CO2 Monitor
