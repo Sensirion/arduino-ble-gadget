@@ -12,6 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - characteristicSetValue and characteristicNotify of IBLELibraryWrapper now return a bool indiciating whether the set/notify was successful
 
+## [1.2.0] - 2023-04-17
+### Added
+- Battery Level Service
+- PlatformIO support
+### Changed
+- Extract BLE Configuration into UPT Core Dependency 
+
+## [1.1.0] - 2022-09-08
+### Added
+- BLE Protocol Documentation
+- Compilation step in GitLab CI
 
 ## [1.0.0] - 2022-07-28
 ### Added
