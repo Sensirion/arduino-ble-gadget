@@ -49,8 +49,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
      * @param enableBatteryService if true, battery level service will be
      * initilized
      */
-    NimBLELibraryWrapper(bool enableWifiSettings = false,
-                         bool enableBatteryService = false);
+    NimBLELibraryWrapper();
     NimBLELibraryWrapper(const NimBLELibraryWrapper& other) = delete;
     NimBLELibraryWrapper& operator=(const NimBLELibraryWrapper& other) = delete;
     virtual ~NimBLELibraryWrapper();

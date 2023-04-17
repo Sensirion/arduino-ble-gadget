@@ -8,26 +8,12 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
                            BLEServerCallbacks {
     NimBLEAdvertising* pNimBLEAdvertising;
     bool BLEDeviceRunning = false;
-    bool wifiSettingsEnabled;
-    bool batteryServiceEnabled;
 
-    // BLEServer
+    // owned by NimBLE
     NimBLEServer* pBLEServer;
-
-    // BLEServices
-    NimBLEService* pBLEDownloadService;
-    NimBLEService* pBLESettingsService;
-    NimBLEService* pBLEBatteryService;
-
-    // BLECharacteristics
-    NimBLECharacteristic* pTransferChararacteristic;
-    NimBLECharacteristic* pNumberOfSamplesCharacteristic;
-    NimBLECharacteristic* pSampleHistoryIntervalCharacteristic;
-
-    NimBLECharacteristic* pWifiSsidCharacteristic;
-    NimBLECharacteristic* pWifiPasswordCharacteristic;
-
-    NimBLECharacteristic* pBatteryLevelCharacteristic;
+    NimBLEService* services[MAX_NUMBER_OF_SERVICES] = {nullptr};
+    NimBLECharacteristic* characteristics[MAX_NUMBER_OF_CHARACTERISTICS] = {
+        nullptr};
 
     // BLEServerCallbacks
     void onConnect(BLEServer* serverInst);
@@ -71,26 +57,21 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
         if (providerCallbacks != nullptr) {
             providerCallbacks->onHistoryIntervalChange(sampleIntervalMs);
         }
-    } else if (wifiSettingsEnabled &&
-               characteristic->getUUID().toString().compare(WIFI_SSID_UUID) ==
-                   0) {
+    } else if (characteristic->getUUID().toString().compare(WIFI_SSID_UUID) ==
+               0) {
         providerCallbacks->onWifiSsidChange(characteristic->getValue());
-    } else if (wifiSettingsEnabled &&
-               characteristic->getUUID().toString().compare(WIFI_PWD_UUID) ==
-                   0) {
+    } else if (characteristic->getUUID().toString().compare(WIFI_PWD_UUID) ==
+               0) {
         providerCallbacks->onWifiPasswordChange(characteristic->getValue());
     }
 }
 
 WrapperPrivateData* NimBLELibraryWrapper::_data = nullptr;
 
-NimBLELibraryWrapper::NimBLELibraryWrapper(bool enableWifiSettings,
-                                           bool enableBatteryService) {
+NimBLELibraryWrapper::NimBLELibraryWrapper() {
     if (NimBLELibraryWrapper::_numberOfInstances == 0) {
         _data = new WrapperPrivateData();
         ++NimBLELibraryWrapper::_numberOfInstances;
-        _data->wifiSettingsEnabled = enableWifiSettings;
-        _data->batteryServiceEnabled = enableBatteryService;
     }
 }
 
