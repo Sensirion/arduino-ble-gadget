@@ -101,20 +101,66 @@ void NimBLELibraryWrapper::init() {
     // Helps with iPhone connection issues (copy/paste)
     _data->pNimBLEAdvertising->setMinPreferred(0x06);
     _data->pNimBLEAdvertising->setMaxPreferred(0x12);
+}
 
-    // Initialize BLEServer
-    _data->pBLEServer =
-        NimBLEDevice::createServer(); // NimBLEDevice has ownership
+void NimBLELibraryWrapper::createServer() {
+    _data->pBLEServer = NimBLEDevice::createServer();
     _data->pBLEServer->setCallbacks(_data);
+}
 
-    // Create Services
-    _createDownloadService();
-    if (_data->batteryServiceEnabled) {
-        _createBatteryService();
+bool NimBLELibraryWrapper::createService(const char* uuid) {
+    for (int i = 0; i < MAX_NUMBER_OF_SERVICES; ++i) {
+        if (_data->services[i] == nullptr) {
+            _data->services[i] = _data->pBLEServer->createService(uuid);
+            return true;
+        }
     }
-    if (_data->wifiSettingsEnabled) {
-        _createSettingsService();
+    return false; // no space in services[]
+}
+
+bool NimBLELibraryWrapper::createCharacteristic(const char* serviceUuid,
+                                                const char* characteristicUuid,
+                                                Permission permission) {
+    NimBLEService* service = _lookupService(serviceUuid);
+    if (service == nullptr) { // invalid service uuid
+        return false;
     }
+    for (int i = 0; i < MAX_NUMBER_OF_CHARACTERISTICS; ++i) {
+        if (_data->characteristics[i] == nullptr) {
+            switch (permission) {
+                case (Permission::READWRITE_PERMISSION):
+                    _data->characteristics[i] =
+                        service->createCharacteristic(characteristicUuid);
+                    _data->characteristics[i]->setCallbacks(_data);
+                    return true;
+                case (Permission::READ_PERMISSION):
+                    _data->characteristics[i] = service->createCharacteristic(
+                        characteristicUuid, NIMBLE_PROPERTY::READ);
+                    return true;
+                case (Permission::WRITE_PERMISSION):
+                    _data->characteristics[i] = service->createCharacteristic(
+                        characteristicUuid, NIMBLE_PROPERTY::WRITE);
+                    _data->characteristics[i]->setCallbacks(_data);
+                    return true;
+                case (Permission::NOTIFY_PERMISSION):
+                    _data->characteristics[i] = service->createCharacteristic(
+                        characteristicUuid, NIMBLE_PROPERTY::NOTIFY);
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+    return false; // no space in characteristics[]
+}
+
+bool NimBLELibraryWrapper::startService(const char* uuid) {
+    NimBLEService* service = _lookupService(uuid);
+    if (service == nullptr) {
+        return false;
+    }
+    bool success = service->start();
+    return success;
 }
 
 void NimBLELibraryWrapper::setAdvertisingData(const std::string& data) {
@@ -176,63 +222,6 @@ bool NimBLELibraryWrapper::characteristicNotify(const char* uuid) {
 void NimBLELibraryWrapper::setProviderCallbacks(
     IProviderCallbacks* providerCallbacks) {
     _data->providerCallbacks = providerCallbacks;
-}
-
-void NimBLELibraryWrapper::_createDownloadService() {
-    // Create service
-    _data->pBLEDownloadService =
-        _data->pBLEServer->createService(DOWNLOAD_SERVICE_UUID);
-
-    // Create characteristics
-    _data->pNumberOfSamplesCharacteristic =
-        _data->pBLEDownloadService->createCharacteristic(NUMBER_OF_SAMPLES_UUID,
-                                                         NIMBLE_PROPERTY::READ);
-    _data->pNumberOfSamplesCharacteristic->setValue(0);
-
-    _data->pSampleHistoryIntervalCharacteristic =
-        _data->pBLEDownloadService->createCharacteristic(
-            SAMPLE_HISTORY_INTERVAL_UUID,
-            NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE);
-    _data->pSampleHistoryIntervalCharacteristic->setCallbacks(_data);
-
-    _data->pTransferChararacteristic =
-        _data->pBLEDownloadService->createCharacteristic(
-            DOWNLOAD_PACKET_UUID, NIMBLE_PROPERTY::NOTIFY);
-    _data->pTransferChararacteristic->setCallbacks(_data);
-
-    _data->pBLEDownloadService->start();
-}
-
-void NimBLELibraryWrapper::_createSettingsService() {
-    // Create Service
-    _data->pBLESettingsService =
-        _data->pBLEServer->createService(SETTINGS_SERVICE_UUID);
-
-    // Create Characteristics
-    _data->pWifiSsidCharacteristic =
-        _data->pBLESettingsService->createCharacteristic(
-            WIFI_SSID_UUID, NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE);
-    _data->pWifiSsidCharacteristic->setValue("ssid placeholder");
-    _data->pWifiSsidCharacteristic->setCallbacks(_data);
-
-    _data->pWifiPasswordCharacteristic =
-        _data->pBLESettingsService->createCharacteristic(
-            WIFI_PWD_UUID, NIMBLE_PROPERTY::WRITE);
-    _data->pWifiPasswordCharacteristic->setValue("n/a");
-    _data->pWifiPasswordCharacteristic->setCallbacks(_data);
-
-    _data->pBLESettingsService->start();
-}
-
-void NimBLELibraryWrapper::_createBatteryService() {
-    _data->pBLEBatteryService =
-        _data->pBLEServer->createService(BATTERY_SERVICE_UUID);
-    _data->pBatteryLevelCharacteristic =
-        _data->pBLEBatteryService->createCharacteristic(BATTERY_LEVEL_UUID,
-                                                        NIMBLE_PROPERTY::READ);
-
-    _data->pBatteryLevelCharacteristic->setValue(0);
-    _data->pBLEBatteryService->start();
 }
 
 NimBLECharacteristic*

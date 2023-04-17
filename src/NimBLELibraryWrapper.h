@@ -54,6 +54,12 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
     NimBLELibraryWrapper& operator=(const NimBLELibraryWrapper& other) = delete;
     virtual ~NimBLELibraryWrapper();
     void init() override;
+    void createServer() override;
+    bool createService(const char* uuid) override;
+    bool createCharacteristic(const char* serviceUuid,
+                              const char* characteristicUuid,
+                              Permission permission) override;
+    bool startService(const char* uuid) override;
     void setAdvertisingData(const std::string& data) override;
     void startAdvertising() override;
     void stopAdvertising() override;
