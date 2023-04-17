@@ -92,9 +92,9 @@ void measure_and_report() {
   Serial.print(humidity_raw/100.0);
   Serial.println();
 
-  provider.writeValueToCurrentSample(hcho_raw/5.0, Unit::HCHO);
-  provider.writeValueToCurrentSample(humidity_raw/100.0, Unit::RH);
-  provider.writeValueToCurrentSample(temperature_raw/200.0, Unit::T);
+  provider.writeValueToCurrentSample(hcho_raw/5.0, SignalType::HCHO_PARTS_PER_BILLION);
+  provider.writeValueToCurrentSample(humidity_raw/100.0, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
+  provider.writeValueToCurrentSample(temperature_raw/200.0, SignalType::TEMPERATURE_DEGREES_CELSIUS);
 
   provider.commitSample();
 }

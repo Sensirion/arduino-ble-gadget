@@ -90,9 +90,9 @@ void measure_and_report() {
   Serial.print("humidity:");
   Serial.println(humidity);
 
-  provider.writeValueToCurrentSample(co2, Unit::CO2);
-  provider.writeValueToCurrentSample(temperature, Unit::T);
-  provider.writeValueToCurrentSample(humidity, Unit::RH);
+  provider.writeValueToCurrentSample(co2, SignalType::CO2_PARTS_PER_MILLION);
+  provider.writeValueToCurrentSample(temperature, SignalType::TEMPERATURE_DEGREES_CELSIUS);
+  provider.writeValueToCurrentSample(humidity, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
 
   provider.commitSample();
   

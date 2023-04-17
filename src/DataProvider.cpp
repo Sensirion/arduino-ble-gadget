@@ -24,22 +24,23 @@ void DataProvider::begin() {
     _BLELibrary.startAdvertising();
 }
 
-void DataProvider::writeValueToCurrentSample(float value, Unit unit) {
+void DataProvider::writeValueToCurrentSample(float value,
+                                             SignalType signalType) {
     // Check for valid value
     if (isnan(value)) {
         return;
     }
 
-    // Check for correct unit
-    if (_sampleConfig.sampleSlots.count(unit) ==
-        0) { // implies unit is not part of sample
+    // Check for correct signal type
+    if (_sampleConfig.sampleSlots.count(signalType) ==
+        0) { // implies signal type is not part of sample
         return;
     }
 
     // Get relevant metaData
     uint16_t (*converterFunction)(float value) =
-        _sampleConfig.sampleSlots.at(unit).converterFunction;
-    size_t offset = _sampleConfig.sampleSlots.at(unit).offset;
+        _sampleConfig.sampleSlots.at(signalType).converterFunction;
+    size_t offset = _sampleConfig.sampleSlots.at(signalType).offset;
 
     // Convert float to 16 bit int
     uint16_t convertedValue = converterFunction(value);

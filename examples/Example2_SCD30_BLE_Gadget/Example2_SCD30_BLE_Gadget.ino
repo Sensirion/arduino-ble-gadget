@@ -31,9 +31,9 @@ void loop() {
     if (scd30.isAvailable()) {
       scd30.getCarbonDioxideConcentration(result);
 
-      provider.writeValueToCurrentSample(result[0], Unit::CO2);
-      provider.writeValueToCurrentSample(result[1], Unit::T);
-      provider.writeValueToCurrentSample(result[2], Unit::RH);
+      provider.writeValueToCurrentSample(result[0], SignalType::CO2_PARTS_PER_MILLION);
+      provider.writeValueToCurrentSample(result[1], SignalType::TEMPERATURE_DEGREES_CELSIUS);
+      provider.writeValueToCurrentSample(result[2], SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
       provider.commitSample();
 
       lastMeasurementTimeMs = millis();

@@ -164,10 +164,10 @@ void measure_and_report() {
         Serial.println(ambientTemperature);
     }
 
-    provider.writeValueToCurrentSample(ambientTemperature, Unit::T);
-    provider.writeValueToCurrentSample(ambientHumidity, Unit::RH);
-    provider.writeValueToCurrentSample(vocIndex, Unit::VOC);
-    provider.writeValueToCurrentSample(massConcentrationPm2p5, Unit::PM2P5);
+    provider.writeValueToCurrentSample(ambientTemperature, SignalType::TEMPERATURE_DEGREES_CELSIUS);
+    provider.writeValueToCurrentSample(ambientHumidity, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
+    provider.writeValueToCurrentSample(vocIndex, SignalType::VOC_INDEX);
+    provider.writeValueToCurrentSample(massConcentrationPm2p5, SignalType::PM2P5_MICRO_GRAMM_PER_CUBIC_METER);
     
     provider.commitSample();
     lastMeasurementTimeMs = millis();

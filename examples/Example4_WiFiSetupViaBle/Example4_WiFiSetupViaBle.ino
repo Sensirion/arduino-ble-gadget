@@ -30,12 +30,11 @@ static int measurementIntervalMs = 1000;
 void loop() {
   if (millis() - lastMmntTime >= measurementIntervalMs) {
     Serial.println("Measurement");
-    provider.writeValueToCurrentSample(++t % 50, Unit::T);
-    provider.writeValueToCurrentSample(++rh % 100, Unit::RH);
-    provider.writeValueToCurrentSample(++co2 % 1000, Unit::CO2);
+    provider.writeValueToCurrentSample(++t % 50, SignalType::TEMPERATURE_DEGREES_CELSIUS);
+    provider.writeValueToCurrentSample(++rh % 100, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
+    provider.writeValueToCurrentSample(++co2 % 1000, SignalType::CO2_PARTS_PER_MILLION);
     provider.commitSample();
     lastMmntTime = millis();
-
     
     if (wifi.isConnected() == false) {
       Serial.println("WiFi not connected");
