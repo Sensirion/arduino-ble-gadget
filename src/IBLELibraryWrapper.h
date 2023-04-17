@@ -56,11 +56,27 @@ static const char* const BATTERY_SERVICE_UUID =
 static const char* const BATTERY_LEVEL_UUID =
     "00002a19-0000-1000-8000-00805f9b34fb";
 
+static const unsigned int MAX_NUMBER_OF_SERVICES = 3;
+static const unsigned int MAX_NUMBER_OF_CHARACTERISTICS = 10;
+
+enum Permission {
+    READWRITE_PERMISSION,
+    READ_PERMISSION,
+    WRITE_PERMISSION,
+    NOTIFY_PERMISSION
+};
+
 // abstract class
 class IBLELibraryWrapper {
   public:
     virtual ~IBLELibraryWrapper() = default;
     virtual void init() = 0;
+    virtual void createServer() = 0;
+    virtual bool createService(const char* uuid) = 0;
+    virtual bool startService(const char* uuid) = 0;
+    virtual bool createCharacteristic(const char* serviceUuid,
+                                      const char* characteristicUuid,
+                                      Permission permission) = 0;
     // set device name and manufacturer data
     virtual void setAdvertisingData(const std::string& data) = 0;
     virtual void startAdvertising() = 0;
