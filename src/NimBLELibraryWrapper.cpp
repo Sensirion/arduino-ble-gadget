@@ -237,16 +237,28 @@ void NimBLELibraryWrapper::_createBatteryService() {
 
 NimBLECharacteristic*
 NimBLELibraryWrapper::_lookupCharacteristic(const char* uuid) {
-    NimBLECharacteristic* pCharacteristic = nullptr;
-    pCharacteristic = _data->pBLEDownloadService->getCharacteristic(uuid);
-    if (pCharacteristic != nullptr) {
-        return pCharacteristic;
-    }
-    if (_data->batteryServiceEnabled) {
-        pCharacteristic = _data->pBLEBatteryService->getCharacteristic(uuid);
-        if (pCharacteristic != nullptr) {
-            return pCharacteristic;
+    // NimBLECharacteristic* pCharacteristic = nullptr;
+    for (int i = 0; i < MAX_NUMBER_OF_CHARACTERISTICS; ++i) {
+        if (_data->characteristics[i] == nullptr) {
+            continue;
+        }
+        if (strcmp(_data->characteristics[i]->getUUID().toString().c_str(),
+                   uuid) == 0) {
+            return _data->characteristics[i];
         }
     }
-    return pCharacteristic;
+    return nullptr;
+}
+
+NimBLEService* NimBLELibraryWrapper::_lookupService(const char* uuid) {
+    for (int i = 0; i < MAX_NUMBER_OF_SERVICES; ++i) {
+        if (_data->services[i] == nullptr) {
+            continue;
+        }
+        if (strcmp(_data->services[i]->getUUID().toString().c_str(), uuid) ==
+            0) {
+            return _data->services[i];
+        }
+    }
+    return nullptr;
 }

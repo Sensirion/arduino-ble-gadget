@@ -71,6 +71,8 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
     void _createSettingsService();
     void _createBatteryService();
     NimBLECharacteristic* _lookupCharacteristic(const char* uuid);
+    NimBLEService* _lookupService(const char* uuid);
+
     static WrapperPrivateData* _data;
     static uint _numberOfInstances;
 };
