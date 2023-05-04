@@ -6,13 +6,13 @@
 // In sensirion-BLE Gadget-lib/src/SampleHistoryRingBuffer.h, set the 
 // static const size_t SAMPLE_BUFFER_SIZE_BYTES = 30000 (default);
 
-NimBLELibraryWrapper lib(true);
+NimBLELibraryWrapper lib;
 WifiMultiLibraryWrapper wifi;
-DataProvider provider(lib, DataType::T_RH_CO2_ALT, &wifi);
+DataProvider provider(lib, DataType::T_RH_CO2_ALT, true, false, &wifi);
 
 void setup() {
   Serial.begin(115200);
-  delay(100);
+  delay(1000); // Wait for Serial monitor to start
 
   // Start the GadgetBle Library
   provider.begin();

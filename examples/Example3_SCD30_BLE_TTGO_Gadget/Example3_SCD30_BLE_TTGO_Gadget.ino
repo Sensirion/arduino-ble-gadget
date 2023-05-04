@@ -98,7 +98,7 @@ void displayCo2(uint16_t co2) {
 
 void setup() {
   Serial.begin(115200);
-  delay(100);
+  delay(1000); // Wait for Serial monitor to start
 
   // Initialize the GadgetBle Library
   provider.begin();

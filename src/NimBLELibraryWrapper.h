@@ -49,12 +49,17 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
      * @param enableBatteryService if true, battery level service will be
      * initilized
      */
-    NimBLELibraryWrapper(bool enableWifiSettings = false,
-                         bool enableBatteryService = false);
+    NimBLELibraryWrapper();
     NimBLELibraryWrapper(const NimBLELibraryWrapper& other) = delete;
     NimBLELibraryWrapper& operator=(const NimBLELibraryWrapper& other) = delete;
     virtual ~NimBLELibraryWrapper();
     void init() override;
+    void createServer() override;
+    bool createService(const char* uuid) override;
+    bool createCharacteristic(const char* serviceUuid,
+                              const char* characteristicUuid,
+                              Permission permission) override;
+    bool startService(const char* uuid) override;
     void setAdvertisingData(const std::string& data) override;
     void startAdvertising() override;
     void stopAdvertising() override;
@@ -72,6 +77,8 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
     void _createSettingsService();
     void _createBatteryService();
     NimBLECharacteristic* _lookupCharacteristic(const char* uuid);
+    NimBLEService* _lookupService(const char* uuid);
+
     static WrapperPrivateData* _data;
     static uint _numberOfInstances;
 };

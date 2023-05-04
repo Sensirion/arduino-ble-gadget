@@ -2,12 +2,7 @@
 #include <math.h>
 
 void DataProvider::begin() {
-    _BLELibrary.init();
-    _BLELibrary.setProviderCallbacks(this);
-    _BLELibrary.characteristicSetValue(SAMPLE_HISTORY_INTERVAL_UUID,
-                                       _historyIntervalMilliSeconds);
-    _BLELibrary.characteristicSetValue(
-        NUMBER_OF_SAMPLES_UUID, _sampleHistory.numberOfSamplesInHistory());
+    _setupBLEInfrastructure();
 
     _sampleHistory.setSampleSize(_sampleConfig.sampleSizeBytes);
 
@@ -170,6 +165,59 @@ int DataProvider::_numberOfPacketsRequired(int numberOfSamples) const {
         ++numberOfPacketsRequired;
     }
     return numberOfPacketsRequired;
+}
+
+void DataProvider::_setupBLEInfrastructure() {
+    _BLELibrary.init();
+    _BLELibrary.createServer();
+
+    // Download Service
+    _BLELibrary.createService(DOWNLOAD_SERVICE_UUID);
+    _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
+                                     NUMBER_OF_SAMPLES_UUID,
+                                     Permission::READ_PERMISSION);
+    _BLELibrary.characteristicSetValue(NUMBER_OF_SAMPLES_UUID, 0);
+    _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
+                                     SAMPLE_HISTORY_INTERVAL_UUID,
+                                     Permission::READWRITE_PERMISSION);
+    _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
+                                     DOWNLOAD_PACKET_UUID,
+                                     Permission::NOTIFY_PERMISSION);
+    _BLELibrary.startService(DOWNLOAD_SERVICE_UUID);
+
+    // Settings Service
+    if (_enableWifiSettings) {
+        _BLELibrary.createService(SETTINGS_SERVICE_UUID);
+        _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID, WIFI_SSID_UUID,
+                                         Permission::READWRITE_PERMISSION);
+        const char* ssid = "ssid";
+        Serial.println(strlen(ssid));
+        _BLELibrary.characteristicSetValue(
+            WIFI_SSID_UUID, reinterpret_cast<const uint8_t*>(ssid),
+            strlen(ssid));
+        _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID, WIFI_PWD_UUID,
+                                         Permission::WRITE_PERMISSION);
+        const char* pwd = "password";
+        _BLELibrary.characteristicSetValue(
+            WIFI_PWD_UUID, reinterpret_cast<const uint8_t*>(pwd), strlen(pwd));
+        _BLELibrary.startService(SETTINGS_SERVICE_UUID);
+    }
+
+    // Battery Service
+    if (_enableBatteryService) {
+        _BLELibrary.createService(BATTERY_SERVICE_UUID);
+        _BLELibrary.createCharacteristic(BATTERY_SERVICE_UUID,
+                                         BATTERY_LEVEL_UUID,
+                                         Permission::READ_PERMISSION);
+        _BLELibrary.characteristicSetValue(BATTERY_LEVEL_UUID, 0);
+        _BLELibrary.startService(BATTERY_SERVICE_UUID);
+    }
+
+    _BLELibrary.setProviderCallbacks(this);
+    _BLELibrary.characteristicSetValue(SAMPLE_HISTORY_INTERVAL_UUID,
+                                       _historyIntervalMilliSeconds);
+    _BLELibrary.characteristicSetValue(
+        NUMBER_OF_SAMPLES_UUID, _sampleHistory.numberOfSamplesInHistory());
 }
 
 void DataProvider::onHistoryIntervalChange(int interval) {

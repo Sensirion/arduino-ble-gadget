@@ -1,7 +1,7 @@
 #include "Sensirion_Gadget_BLE.h"
 
-NimBLELibraryWrapper lib(false, true);
-DataProvider provider(lib, DataType::T_RH_CO2_ALT);
+NimBLELibraryWrapper lib;
+DataProvider provider(lib, DataType::T_RH_CO2_ALT, false, true);
 
 uint16_t t = 0;
 uint16_t rh = 0;
@@ -16,10 +16,11 @@ static int batteryLevelUpdateIntervalMs = 60000;
 
 void setup() {
   Serial.begin(115200);
-  delay(100);
-
+  delay(1000); // Wait for Serial monitor to start
+  
   // Initialize the GadgetBle Library
   provider.begin();
+
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
   Serial.println(provider.getDeviceIdString());
 

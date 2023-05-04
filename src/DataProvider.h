@@ -43,8 +43,11 @@ class DataProvider: public IProviderCallbacks {
   public:
     explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
                           DataType dataType = T_RH_V3,
+                          bool enableWifiSettings = false,
+                          bool enableBatteryService = false,
                           IWifiLibraryWrapper* pWifiLibrary = nullptr)
-        : _BLELibrary(libraryWrapper),
+        : _BLELibrary(libraryWrapper), _enableWifiSettings(enableWifiSettings),
+          _enableBatteryService(enableBatteryService),
           _sampleConfig(sampleConfigSelector.at(dataType)),
           _pWifiLibaray(pWifiLibrary){};
     ~DataProvider(){};
@@ -63,6 +66,7 @@ class DataProvider: public IProviderCallbacks {
     DownloadPacket _buildDownloadPacket();
     int _numberOfPacketsRequired(int numberOfSamples) const;
     IBLELibraryWrapper& _BLELibrary;
+    void _setupBLEInfrastructure();
     Sample _currentSample;
     AdvertisementHeader _advertisementHeader;
     SampleHistoryRingBuffer _sampleHistory;
@@ -70,6 +74,9 @@ class DataProvider: public IProviderCallbacks {
     int _downloadSequenceIdx = 0; // first packet is the header
     int _numberOfSamplesToDownload = 0;
     int _numberOfSamplePacketsToDownload = 0;
+
+    bool _enableWifiSettings;
+    bool _enableBatteryService;
 
     SampleConfig _sampleConfig;
     uint64_t _historyIntervalMilliSeconds = 600000; // = 10 minutes
