@@ -55,6 +55,7 @@ class DataProvider: public IProviderCallbacks {
     void setBatteryLevel(int value);
     void setSampleConfig(DataType dataType);
     String getDeviceIdString() const;
+    bool isDownloading() const;
 
   private:
     std::string _buildAdvertisementData();

@@ -128,6 +128,10 @@ String DataProvider::getDeviceIdString() const {
     return cDevId;
 }
 
+bool DataProvider::isDownloading() const {
+    return (_downloadState != DownloadState::INACTIVE);
+}
+
 std::string DataProvider::_buildAdvertisementData() {
     _advertisementHeader.writeSampleType(_sampleConfig.sampleType);
     std::string data = _advertisementHeader.getDataString();
