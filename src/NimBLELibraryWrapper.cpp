@@ -145,6 +145,7 @@ bool NimBLELibraryWrapper::createCharacteristic(const char* serviceUuid,
                 case (Permission::NOTIFY_PERMISSION):
                     _data->characteristics[i] = service->createCharacteristic(
                         characteristicUuid, NIMBLE_PROPERTY::NOTIFY);
+                    _data->characteristics[i]->setCallbacks(_data);
                     return true;
                 default:
                     return false;
