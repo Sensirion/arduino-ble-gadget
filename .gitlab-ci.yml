@@ -42,7 +42,7 @@ compile_test:
     - arduino-cli lib install "Sensirion I2C SEN44@0.1.0"
     - arduino-cli lib install "Sensirion I2C SEN5X@0.2.0"
     - arduino-cli lib install "Sensirion I2C SFA3x@0.1.0"
-    - arduino-cli lib install "Sensirion I2C SVM4x@0.1.0"
+    - arduino-cli lib install "Sensirion I2C SVM4x@0.2.0"
     - arduino-cli lib install "Sensirion_UPT_Core@0.1.1"
     - ln -s $PWD ~/Arduino/libraries/
     - git clone https://github.com/Xinyuan-LilyGO/TTGO-T-Display
