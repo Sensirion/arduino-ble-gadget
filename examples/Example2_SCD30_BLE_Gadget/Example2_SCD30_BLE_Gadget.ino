@@ -1,8 +1,5 @@
-// Download the SeeedStudio SCD30 Arduino driver here:
-//  => https://github.com/Seeed-Studio/Seeed_SCD30/releases/latest
-
 #include "Sensirion_Gadget_BLE.h"
-#include "SCD30.h"
+#include <SensirionI2cScd30.h>
 
 static int64_t lastMeasurementTimeMs = 0;
 static int measurementIntervalMs = 1900;
@@ -10,46 +7,76 @@ static int measurementIntervalMs = 1900;
 NimBLELibraryWrapper lib;
 DataProvider provider(lib, DataType::T_RH_CO2_ALT);
 
+SensirionI2cScd30 sensor;
+static char errorMessage[128];
+static int16_t error;
+
 void setup() {
-  Serial.begin(115200);
-  delay(1000); // Wait for Serial monitor to start
+    Serial.begin(115200);
+    delay(100);
 
-  // Initialize the GadgetBle Library
-  provider.begin();
-  Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
-  Serial.println(provider.getDeviceIdString());
+    // Initialize the GadgetBle Library
+    provider.begin();
+    Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
+    Serial.println(provider.getDeviceIdString());
 
-  // Initialize the SCD30 driver
-  Wire.begin();
-  scd30.initialize();
-  scd30.setAutoSelfCalibration(1);
+    // Initialize the SCD30 driver
+    Wire.begin();
+    sensor.begin(Wire, SCD30_I2C_ADDR_61);
+
+    sensor.stopPeriodicMeasurement();
+    sensor.softReset();
+    sensor.activateAutoCalibration(1);
+
+    error = sensor.startPeriodicMeasurement(0);
+    if (error != NO_ERROR) {
+        Serial.print("Error trying to execute startPeriodicMeasurement(): ");
+        errorToString(error, errorMessage, sizeof errorMessage);
+        Serial.println(errorMessage);
+        return;
+    }
 }
 
 void loop() {
-  float result[3] = {0};
-  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
-    if (scd30.isAvailable()) {
-      scd30.getCarbonDioxideConcentration(result);
+    float co2Concentration = 0.0;
+    float temperature = 0.0;
+    float humidity = 0.0;
+    uint16_t data_ready = 0;
+    if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
+        sensor.getDataReady(data_ready);
+        if (bool(data_ready)) {
+            error = sensor.readMeasurementData(co2Concentration, temperature,
+                                               humidity);
+            if (error != NO_ERROR) {
+                Serial.print("Error trying to execute readMeasurementData(): ");
+                errorToString(error, errorMessage, sizeof errorMessage);
+                Serial.println(errorMessage);
+                return;
+            }
 
-      provider.writeValueToCurrentSample(result[0], SignalType::CO2_PARTS_PER_MILLION);
-      provider.writeValueToCurrentSample(result[1], SignalType::TEMPERATURE_DEGREES_CELSIUS);
-      provider.writeValueToCurrentSample(result[2], SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
-      provider.commitSample();
+            provider.writeValueToCurrentSample(
+                co2Concentration, SignalType::CO2_PARTS_PER_MILLION);
+            provider.writeValueToCurrentSample(
+                temperature, SignalType::TEMPERATURE_DEGREES_CELSIUS);
+            provider.writeValueToCurrentSample(
+                humidity, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
+            provider.commitSample();
 
-      lastMeasurementTimeMs = millis();
+            lastMeasurementTimeMs = millis();
 
-      // Provide the sensor values for Tools -> Serial Monitor or Serial Plotter
-      Serial.print("CO2[ppm]:");
-      Serial.print(result[0]);
-      Serial.print("\t");
-      Serial.print("Temperature[℃]:");
-      Serial.print(result[1]);
-      Serial.print("\t");
-      Serial.print("Humidity[%]:");
-      Serial.println(result[2]);
+            // Provide the sensor values for Tools -> Serial Monitor or Serial
+            // Plotter
+            Serial.print("CO2[ppm]:");
+            Serial.print(co2Concentration);
+            Serial.print("\t");
+            Serial.print("Temperature[℃]:");
+            Serial.print(temperature);
+            Serial.print("\t");
+            Serial.print("Humidity[%]:");
+            Serial.println(humidity);
+        }
     }
-  }
 
-  provider.handleDownload();
-  delay(3);
+    provider.handleDownload();
+    delay(3);
 }
