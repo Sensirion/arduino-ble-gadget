@@ -4,60 +4,59 @@
 
 This tutorial enables you to setup a CO2-Monitor sending Temperature, Humidity and CO2 measurements via Bluetooth to nearby mobile phones. All steps necessary and links to the compatible app for the Gadget interaction (Android and iOS) are provided here.
 
-The tutorial is structured in 3 parts
+The tutorial is structured in 3 parts:
 
-* **Hardware Setup**: Learn how to wire the sensor to the development board
-* **Software Setup**: Learn how to setup your computer to program the development board
-* **Monitor Setup**: Learn how to monitor your CO2 levels on your computer and via the *Sensirion MyAmbience* app
+- **Hardware Setup**: Learn how to wire the sensor to the development board.
+- **Software Setup**: Learn how to setup your computer to program the development board.
+- **Monitor Setup**: Learn how to monitor your CO2 levels on your computer and via the _Sensirion MyAmbience_ app.
 
 ## Hardware Setup
 
-To complete this tutorial, you'll need
+To complete this tutorial, you'll need:
 
-* [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (
-  available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
-* [Sensirions SCD30 Sensor](https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/carbon-dioxide-sensors-co2/) (available [here](https://www.digikey.com/en/products/detail/sensirion-ag/SCD30/8445334) or with [Grove Plug](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/101020634/10060357?s=N4IgTCBcDaIMoGEAiBmADCAugXyA) if you don't want to solder anything)
-* Cables for soldering the connection or a Grove-to-Jumper cable (available [here](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/110990028/5482559?s=N4IgTCBcDaIOYCcD2A3ApgAgC5IwKwFcBbABzQQwDM0iBDAGzRAF0BfIA))
-* USB cable to connect the ESP32 DevKitC module to your computer
+- [ESP32 DevKitC-32D](https://www.espressif.com/en/products/devkits/esp32-devkitc) (available [here](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32D/9356990))
+- [Sensirions SCD30 Sensor](https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/carbon-dioxide-sensors-co2/) (available [here](https://www.digikey.com/en/products/detail/sensirion-ag/SCD30/8445334) or with [Grove Plug](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/101020634/10060357?s=N4IgTCBcDaIMoGEAiBmADCAugXyA) if you don't want to solder anything)
+- Cables for soldering the connection or a Grove-to-Jumper cable (available [here](https://www.digikey.com/en/products/detail/seeed-technology-co-ltd/110990028/5482559?s=N4IgTCBcDaIOYCcD2A3ApgAgC5IwKwFcBbABzQQwDM0iBDAGzRAF0BfIA))
+- USB cable to connect the ESP32 DevKitC module to your computer
 
 Connect the SCD30 sensor to the ESP32 DevKitC as depicted below. Please note, that your developer kit may have a
 different pin layout. If you're using different pins or have a different layout, you might have to adjust the code
 accordingly.
 
-* **VDD** of the SCD30 to the **3.3V** of the ESP32
-* **GND** of the SCD30 to the **GND** of the ESP32
-* **SCL** of the SCD30 to the **IO22** of the ESP32
-* **SDA** of the SCD30 to the **IO21** of the ESP32
+- **VDD** of the SCD30 to the **3.3V** of the ESP32
+- **GND** of the SCD30 to the **GND** of the ESP32
+- **SCL** of the SCD30 to the **IO22** of the ESP32
+- **SDA** of the SCD30 to the **IO21** of the ESP32
 
 <img src="images/SCD30_hardware_setup.png" width="500">
 
 ## Software Setup
 
+The step by step guide uses ArduinoIDE but the example file is also supported by [PlatformIO](##PlatformIO-Support).
+
 ### Setup the Arduino IDE for the ESP32 platform
 
-The following instructions originate from [here](https://github.com/espressif/arduino-esp32)
+The following instructions originate from [here](https://github.com/espressif/arduino-esp32).
 
 1. Install the current version of the [Arduino IDE](http://www.arduino.cc/en/main/software).
 2. Start the Arduino IDE and open the Preferences window from `File -> Preferences`.
-3. Enter the following link into the *Additional Board Manager URLs* field. You can add multiple URLs, separating them with commas.
-	* `https://dl.espressif.com/dl/package_esp32_index.json`
-4. Open the Boards Manager from `Tools -> Board -> Board Manager` and install the *esp32* platform
+3. Enter the following link into the _Additional Board Manager URLs_ field. You can add multiple URLs, separating them with commas.
+   - `https://dl.espressif.com/dl/package_esp32_index.json`
+4. Open the Boards Manager from `Tools -> Board -> Board Manager` and install the _esp32_ platform
 5. Select your ESP32 board from the `Tools -> Board` menu after the successfull installation.
-	* E.g. `ESP32 Dev Module`
+   - E.g. `ESP32 Dev Module`
 
-### Setup the requried libraries
+### Setup the required libraries
 
-We'll be installing the following libraries. Click the links below and download the newest .zip release packages
+We'll be installing the following libraries using the library manager included with Arduino IDE:
 
-* The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
-* The [SCD30 Sensor Driver](https://github.com/Seeed-Studio/Seeed_SCD30/releases/latest) by SeeedStudio
-* The [NimBLE-Arduino Library](https://github.com/h2zero/NimBLE-Arduino)
+- [Sensirion Gadget BLE Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
+- [Sensirion I2C SCD30](https://github.com/Sensirion/arduino-i2c-scd30)
+- [NimBLE](https://github.com/h2zero/NimBLE-Arduino) (dependency of _Sensirion Gadget BLE Arduino Library_)
+- [Sensirion Core](https://github.com/Sensirion/arduino-core/) (dependency of _Sensirion Gadget BLE Arduino Library_)
+- [Sensirion UPT Core](https://github.com/Sensirion/upt-core) (dependency of _Sensirion Gadget BLE Arduino Library_)
 
-For each of the downloaded .zip files: In the Arduino IDE, select `Sketch -> include Library -> Add .zip Library` and select the .zip file.
-
-<img src="images/Arduino-import-zip-lib.png" width="500">
-
-Restart the Arduino IDE.
+Once done, it is good to restart the Arduino IDE.
 
 ### Launch the CO2 Monitor
 
@@ -85,9 +84,14 @@ You should see the measured values plotted in the opened window. Alternatively y
 
 Download the **Sensirion MyAmbience** app to monitor your sensor signals, download history values and export and share the data with your friends.
 
-* [Download for Android](https://play.google.com/store/apps/details?id=com.sensirion.myam)
-* [Download for iOS](https://apps.apple.com/ch/app/id1529131572)
+- [Download for Android](https://play.google.com/store/apps/details?id=com.sensirion.myam)
+- [Download for iOS](https://apps.apple.com/ch/app/id1529131572)
 
-Note that on Android devices the Location services need to be enabled and the corresponding permissions granted to the application. This is required to allow the app to continuously scan for nearby Bluetooth devices. This is a requirement of the Android OS for Bluetooth scanning. The app itself does not use your location.
+Note that on Android devices the location services need to be enabled and the corresponding permissions granted to the application. This is required to allow the app to continuously scan for nearby Bluetooth devices. This is a requirement of the Android OS for Bluetooth scanning. The app itself does not use your location.
 
-<img src="images/SCD30_AppScreenshot.PNG" width="300">
+<img src="images/myam-scd30-dashboard.png" width="300">
+<img src="images/myam-scd30-plot.png" width="300">
+
+## PlatformIO Support
+
+The folder _Example2_SCD30_BLE_Gadget_ contains a `platformio.ini` file which allows you to use PlatformIO instead fo ArduinoIDE if you wish to do so.

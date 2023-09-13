@@ -76,12 +76,12 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
-    measure_and_report();
-  }
+    if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
+        measure_and_report();
+    }
 
-  provider.handleDownload();
-  delay(3);
+    provider.handleDownload();
+    delay(3);
 }
 
 void measure_and_report() {
@@ -112,8 +112,10 @@ void measure_and_report() {
         Serial.println(noxIndex);
     }
 
-    provider.writeValueToCurrentSample(temperature, SignalType::TEMPERATURE_DEGREES_CELSIUS);
-    provider.writeValueToCurrentSample(humidity, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
+    provider.writeValueToCurrentSample(temperature,
+                                       SignalType::TEMPERATURE_DEGREES_CELSIUS);
+    provider.writeValueToCurrentSample(
+        humidity, SignalType::RELATIVE_HUMIDITY_PERCENTAGE);
     provider.writeValueToCurrentSample(vocIndex, SignalType::VOC_INDEX);
     provider.writeValueToCurrentSample(noxIndex, SignalType::NOX_INDEX);
 
