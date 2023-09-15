@@ -62,11 +62,18 @@ The following instructions originate from [here](https://github.com/espressif/ar
 
 We'll be installing the following libraries using the library manager included with Arduino IDE:
 
+<<<<<<< HEAD
+
 - [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
 - [Sensirion I2C SEN5x Arduino Library](https://github.com/Sensirion/arduino-i2c-sen5x)
 - [Sensirion Arduino Core Library](https://github.com/Sensirion/arduino-core) (dependency of _Sensirion Gadget BLE Arduino Library_)
 - [Sensirion UPT Core](https://github.com/Sensirion/upt-core) (dependency of _Sensirion Gadget BLE Arduino Library_)
-- [NimBLE-Arduino Library](https://github.com/h2zero/NimBLE-Arduino) (dependency of _Sensirion Gadget BLE Arduino Library_)
+- # [NimBLE-Arduino Library](https://github.com/h2zero/NimBLE-Arduino) (dependency of _Sensirion Gadget BLE Arduino Library_)
+- The [Sensirion GadgetBle Arduino Library](https://github.com/Sensirion/Sensirion_GadgetBle_Arduino_Library/releases)
+- The [Sensirion I2C SEN5x Arduino Library](https://github.com/Sensirion/arduino-i2c-sen5x)
+- The [Sensirion Arduino Core Library](https://github.com/Sensirion/arduino-core)
+- The [NimBLE-Arduino Library](https://github.com/h2zero/NimBLE-Arduino)
+  > > > > > > > 0cc037f (updated SEN50 Tutorial)
 
 Once done, it is good to restart the Arduino IDE.
 
