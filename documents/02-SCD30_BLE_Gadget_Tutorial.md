@@ -1,4 +1,4 @@
-# Tutorial: SCD30 BLE Gadget with RHT
+# Tutorial: SCD30 BLE Gadget
 
 ## Summary
 
