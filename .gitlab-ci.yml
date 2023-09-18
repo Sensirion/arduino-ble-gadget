@@ -52,7 +52,6 @@ compile_test:
     - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example3_*
     - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example4_*
     - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example6_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example7_*
     - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example8_*
     - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example10_*
     - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example11_*
