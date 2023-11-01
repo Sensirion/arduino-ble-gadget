@@ -27,13 +27,13 @@ cpp_check:
   script:
     - cppcheck --std=c++11 --language=c++ --error-exitcode=1 --enable=warning,performance,portability src/*
 
-compile_test:
+example_compilation:
   stage: test
   image:
     name: registry.gitlab.sensirion.lokal/sensirion/docker/docker-arduino:0.5.0
   tags: [docker, linux]
   needs: []
-  script:
+  before_script:
     - arduino-cli update
     - export ARDUINO_LIBRARY_ENABLE_UNSAFE_INSTALL=true
     - arduino-cli lib install "NimBLE-Arduino@1.4.0"
@@ -47,13 +47,8 @@ compile_test:
     - git clone https://github.com/Xinyuan-LilyGO/TTGO-T-Display
     - ln -s $PWD/TTGO-T-Display/TFT_eSPI ~/Arduino/libraries/TFT_eSPI
     - mkdir tmp
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example1_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example2_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example3_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example4_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example6_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example8_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example10_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example11_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example12_*
-    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example13_*
+  parallel:
+    matrix:
+      - ExampleID: [1, 2, 3, 4, 6, 8, 10, 11, 12, 13]
+  script:
+    - arduino-cli compile --warnings all --build-cache-path tmp --fqbn esp32:esp32:esp32 examples/Example${ExampleID}_*
