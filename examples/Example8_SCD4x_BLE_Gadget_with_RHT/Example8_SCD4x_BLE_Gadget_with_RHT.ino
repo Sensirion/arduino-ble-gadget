@@ -8,10 +8,12 @@
 static int64_t lastMeasurementTimeMs = 0;
 static int measurementIntervalMs = 5000;
 NimBLELibraryWrapper lib;
-DataProvider provider(lib, DataType::T_RH_CO2);
+// initialize DataProvider with SCD FRC BLE Servie enabled
+DataProvider provider(lib, DataType::T_RH_CO2, false, false, true);
+char errorMessage[256];
 
 SensirionI2CScd4x scd4x;
-
+  
 void setup() {
   Serial.begin(115200);
   // wait for serial connection from PC
@@ -27,9 +29,7 @@ void setup() {
   // init I2C
   Wire.begin();
 
-  uint16_t error;
-  char errorMessage[256];
-
+  uint16_t error; 
   scd4x.begin(Wire);
 
   // stop potentially previously started measurement
@@ -50,16 +50,16 @@ void setup() {
 
 void loop() {
   if (millis() - lastMeasurementTimeMs >= measurementIntervalMs) {
-    measure_and_report();
+    measureAndReport();
   }
 
   provider.handleDownload();
+  handleFrcRequest();
   delay(3);
 }
 
-void measure_and_report() {
+void measureAndReport() {
   uint16_t error;
-  char errorMessage[256];
     
   // Read Measurement
   uint16_t co2;
@@ -96,4 +96,46 @@ void measure_and_report() {
 
   provider.commitSample();
   
+}
+
+void handleFrcRequest() {
+  if(!provider.isFRCRequested()) {
+    return;
+  }
+  uint16_t reference_co2_level = provider.getReferenceCO2Level();
+  Serial.print("Performing FRC with CO2 reference level [ppm]: ");
+  Serial.println(reference_co2_level);
+  uint16_t frcCorrection;
+  uint16_t error = 0;
+
+  // FRC can only be performed when no measurement is running
+  error = scd4x.stopPeriodicMeasurement();
+  if(error) {
+    Serial.print("Error trying to execute stopPeriodicMeasurement(): ");
+    errorToString(error, errorMessage, 256);
+    Serial.println(errorMessage);
+    Serial.println("FRC could not be performed.");
+    provider.completeFRCRequest();
+    return;
+  }
+
+  error = scd4x.performForcedRecalibration(reference_co2_level, frcCorrection);
+  if(error) {
+    Serial.print("Error trying to execute performForcedRecalibration(): ");
+    errorToString(error, errorMessage, 256);
+    Serial.println(errorMessage);
+  } else {
+    Serial.print("FRC performed successfully. Correction value is now at: ");
+    Serial.println(frcCorrection);
+  }
+
+  provider.completeFRCRequest();
+
+  error = scd4x.startPeriodicMeasurement();
+  if (error) {
+      Serial.print("Error trying to execute startPeriodicMeasurement(): ");
+      errorToString(error, errorMessage, 256);
+      Serial.println(errorMessage);
+  }
+  delay(5000);
 }

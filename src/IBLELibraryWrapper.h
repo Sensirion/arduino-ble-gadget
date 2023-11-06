@@ -36,6 +36,10 @@
 
 const char* const GADGET_NAME = "S";
 
+// when adding a new characteristic, make sure to
+// write numbers in lower case and to increlase
+// the constants MAX_NUMBER_OF_xxx
+
 static const char* const DOWNLOAD_SERVICE_UUID =
     "00008000-b38d-4985-720e-0f993a68ee41";
 static const char* const SAMPLE_HISTORY_INTERVAL_UUID =
@@ -56,8 +60,13 @@ static const char* const BATTERY_SERVICE_UUID =
 static const char* const BATTERY_LEVEL_UUID =
     "00002a19-0000-1000-8000-00805f9b34fb";
 
-static const unsigned int MAX_NUMBER_OF_SERVICES = 3;
-static const unsigned int MAX_NUMBER_OF_CHARACTERISTICS = 10;
+static const char* const SCD_SERVICE_UUID =
+    "00007000-b38d-4985-720e-0f993a68ee41";
+static const char* const SCD_FRC_REQUEST_UUID =
+    "00007004-b38d-4985-720e-0f993a68ee41";
+
+static const unsigned int MAX_NUMBER_OF_SERVICES = 4;
+static const unsigned int MAX_NUMBER_OF_CHARACTERISTICS = 11;
 
 enum Permission {
     READWRITE_PERMISSION,

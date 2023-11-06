@@ -212,6 +212,14 @@ void DataProvider::_setupBLEInfrastructure() {
         _BLELibrary.characteristicSetValue(BATTERY_LEVEL_UUID, 0);
         _BLELibrary.startService(BATTERY_SERVICE_UUID);
     }
+    // SCD FRC Service
+    if (_enalbeFRCService) {
+        _BLELibrary.createService(SCD_SERVICE_UUID);
+        _BLELibrary.createCharacteristic(SCD_SERVICE_UUID, SCD_FRC_REQUEST_UUID,
+                                         Permission::WRITE_PERMISSION);
+        _BLELibrary.characteristicSetValue(SCD_FRC_REQUEST_UUID, 0);
+        _BLELibrary.startService(SCD_SERVICE_UUID);
+    }
 
     _BLELibrary.setProviderCallbacks(this);
     _BLELibrary.characteristicSetValue(SAMPLE_HISTORY_INTERVAL_UUID,
@@ -234,4 +242,22 @@ void DataProvider::onConnectionEvent() {
 
 void DataProvider::onDownloadRequest() {
     _downloadState = START;
+}
+
+void DataProvider::onFRCRequest(uint16_t reference_co2_level) {
+    _frc_requested = true;
+    _reference_co2_level = reference_co2_level;
+}
+
+void DataProvider::completeFRCRequest() {
+    _frc_requested = false;
+    _reference_co2_level = 0;
+}
+
+bool DataProvider::isFRCRequested() const {
+    return _frc_requested;
+}
+
+uint32_t DataProvider::getReferenceCO2Level() const {
+    return _reference_co2_level;
 }

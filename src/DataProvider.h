@@ -45,9 +45,11 @@ class DataProvider: public IProviderCallbacks {
                           DataType dataType = T_RH_V3,
                           bool enableWifiSettings = false,
                           bool enableBatteryService = false,
+                          bool enableFRCService = false,
                           IWifiLibraryWrapper* pWifiLibrary = nullptr)
         : _BLELibrary(libraryWrapper), _enableWifiSettings(enableWifiSettings),
           _enableBatteryService(enableBatteryService),
+          _enalbeFRCService(enableFRCService),
           _sampleConfig(sampleConfigSelector.at(dataType)),
           _pWifiLibaray(pWifiLibrary){};
     ~DataProvider(){};
@@ -59,6 +61,9 @@ class DataProvider: public IProviderCallbacks {
     void setSampleConfig(DataType dataType);
     String getDeviceIdString() const;
     bool isDownloading() const;
+    bool isFRCRequested() const;
+    uint32_t getReferenceCO2Level() const;
+    void completeFRCRequest();
 
   private:
     std::string _buildAdvertisementData();
@@ -74,9 +79,12 @@ class DataProvider: public IProviderCallbacks {
     int _downloadSequenceIdx = 0; // first packet is the header
     int _numberOfSamplesToDownload = 0;
     int _numberOfSamplePacketsToDownload = 0;
+    bool _frc_requested = false;
+    uint32_t _reference_co2_level = 0;
 
     bool _enableWifiSettings;
     bool _enableBatteryService;
+    bool _enalbeFRCService;
 
     SampleConfig _sampleConfig;
     uint64_t _historyIntervalMilliSeconds = 600000; // = 10 minutes
@@ -90,6 +98,7 @@ class DataProvider: public IProviderCallbacks {
     void onDownloadRequest() override;
     void onWifiSsidChange(std::string ssid) override;
     void onWifiPasswordChange(std::string pwd) override;
+    void onFRCRequest(uint16_t reference_co2_level) override;
 };
 
 #endif /* _DATA_PROVIDER_H_ */
