@@ -41,6 +41,7 @@ class IProviderCallbacks {
     virtual void onHistoryIntervalChange(int interval) = 0;
     virtual void onWifiSsidChange(std::string ssid) = 0;
     virtual void onWifiPasswordChange(std::string pwd) = 0;
+    virtual void onFRCRequest(uint16_t reference_co2_level) = 0;
 };
 
 #endif /* _PROVIDER_CALLBACKS_H_ */

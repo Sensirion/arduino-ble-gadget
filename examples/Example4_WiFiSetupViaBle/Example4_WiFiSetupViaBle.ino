@@ -8,7 +8,7 @@
 
 NimBLELibraryWrapper lib;
 WifiMultiLibraryWrapper wifi;
-DataProvider provider(lib, DataType::T_RH_CO2_ALT, true, false, &wifi);
+DataProvider provider(lib, DataType::T_RH_CO2_ALT, true, false, false, &wifi);
 
 void setup() {
   Serial.begin(115200);
