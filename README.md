@@ -73,7 +73,7 @@ In order to use this library in your project, add it to the `lib_deps` in your `
 
 ### Create your own CO2 Monitor
 
-Follow the [instructions in this tutorial](documents/SCD30_Monitor_Tutorial.md).
+Follow the [instructions in this tutorial](documents/03-SCD30_BLE_Gadget_with_Screen_Tutorial.md).
 
 
 
@@ -85,7 +85,7 @@ Follow the [instructions in this tutorial](documents/SCD30_Monitor_Tutorial.md).
 
 #### BLE protocol used by the library
 If you want to retrieve the data of your new BLE gadget using your own device or application, you will need more information on the protocol used by this library.  
-Everything you will need should be available in the following [document](documents/Sensirion_BLE_communication_protocol.pdf)
+Everything you will need should be available in the following [document](documents/00-Sensirion_BLE_communication_protocol.pdf)
 ## License
 
 See [LICENSE](LICENSE.txt).
