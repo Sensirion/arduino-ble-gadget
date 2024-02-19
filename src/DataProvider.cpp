@@ -33,12 +33,12 @@ void DataProvider::writeValueToCurrentSample(float value,
     }
 
     // Get relevant metaData
-    uint16_t (*converterFunction)(float value) =
-        _sampleConfig.sampleSlots.at(signalType).converterFunction;
+    uint16_t (*encodingFunction)(float value) =
+        _sampleConfig.sampleSlots.at(signalType).encodingFunction;
     size_t offset = _sampleConfig.sampleSlots.at(signalType).offset;
 
     // Convert float to 16 bit int
-    uint16_t convertedValue = converterFunction(value);
+    uint16_t convertedValue = encodingFunction(value);
     _currentSample.writeValue(convertedValue, offset);
 }
 
