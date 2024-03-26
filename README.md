@@ -1,5 +1,7 @@
 # Sensirion Gadget BLE Library
 
+[![arduino-library-badge](https://www.ardu-badge.com/badge/Sensirion%20Gadget%20BLE%20Arduino%20Lib.svg?)](https://www.ardu-badge.com/Sensirion%20Gadget%20BLE%20Arduino%20Lib) [![PlatformIO Registry](https://badges.registry.platformio.org/packages/sensirion/library/Sensirion%20Gadget%20BLE%20Arduino%20Lib.svg)](https://registry.platformio.org/libraries/sensirion/Sensirion%20Gadget%20BLE%20Arduino%20Lib)
+
 This library enables you to create your own Do-It-Yourself BLE enabled sensor gadget on the ESP32 platform.
 
 **Note: The library has changed in version 1.0.0 and won't work with code using version 0.14.0 or earlier. For a detailed guide on how to migrate your code, click [here](MIGRATION.md).**
@@ -27,8 +29,7 @@ This project was developed and tested on Espressif [ESP32 DevKitC](https://www.e
 
 Download the **Sensirion MyAmbience CO2** App to monitor your gadget, plot the sensor values and share/export the data:
 
-- [Download for Android](https://play.google.com/store/apps/details?id=com.sensirion.myam)
-- [Download for iOS](https://apps.apple.com/ch/app/sensirion-myambience-co2/id1529131572)
+[<img src="documents/images/google-play-badge.png" height="50">](https://play.google.com/store/apps/details?id=com.sensirion.myam)[<img src="documents/images/download_on_appstore.png" height="50">](https://apps.apple.com/ch/app/id1529131572)
 
 ## Getting Started
 
