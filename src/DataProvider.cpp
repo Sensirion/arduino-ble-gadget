@@ -123,6 +123,22 @@ String DataProvider::getDeviceIdString() const {
     return cDevId;
 }
 
+String DataProvider::getWifiSSID() {
+    return _wifiSSID;
+}
+
+String DataProvider::getWifiPassword() {
+    return _wifiPassword;
+}
+
+bool DataProvider::wifiChanged() {
+    if (_wifiSettingsChanged) {
+        _wifiSettingsChanged = false;
+        return true;
+    }
+    return false;
+}
+
 bool DataProvider::isDownloading() const {
     return (_downloadState != DownloadState::INACTIVE);
 }

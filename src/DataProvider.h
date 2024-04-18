@@ -59,7 +59,10 @@ class DataProvider: public IProviderCallbacks {
     void handleDownload();
     void setBatteryLevel(int value);
     void setSampleConfig(DataType dataType);
-    String getDeviceIdString() const;
+    String getDeviceIdString() const;    
+    String getWifiSSID();
+    String getWifiPassword();
+    bool wifiChanged();
     bool isDownloading() const;
     bool isFRCRequested() const;
     uint32_t getReferenceCO2Level() const;
@@ -81,6 +84,10 @@ class DataProvider: public IProviderCallbacks {
     int _numberOfSamplePacketsToDownload = 0;
     bool _frc_requested = false;
     uint32_t _reference_co2_level = 0;
+
+    String _wifiSSID = "";
+    String _wifiPassword = "";
+    bool _wifiSettingsChanged = false;
 
     bool _enableWifiSettings;
     bool _enableBatteryService;
