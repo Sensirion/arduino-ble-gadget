@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.3.1] - 2024-04-17
+
+### Fixed
+
+- Fixed dependency list (Sensirion_UPT_Core was renamed 'Sensirion UPT Core')
+
 ## [1.3.0] - 2024-03-25
 
 ### Added
