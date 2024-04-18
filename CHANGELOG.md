@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed dependency list (Sensirion_UPT_Core was renamed 'Sensirion UPT Core')
+- Added missing include <string.h> in ByteArray.h
 
 ## [1.3.0] - 2024-03-25
 
