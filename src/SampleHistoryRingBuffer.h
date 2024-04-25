@@ -34,7 +34,7 @@
 #include "ByteArray.h"
 #include "Sample.h"
 
-const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 30000;
+const static size_t SAMPLE_HISTORY_RING_BUFFER_SIZE_BYTES = 10000;
 
 // Logs Samples over time to be downloaded
 class SampleHistoryRingBuffer
