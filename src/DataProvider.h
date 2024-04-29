@@ -94,7 +94,7 @@ class DataProvider: public IProviderCallbacks {
     bool _enalbeFRCService;
 
     SampleConfig _sampleConfig;
-    uint64_t _historyIntervalMilliSeconds = 60000; // = 1 minutes
+    uint64_t _historyIntervalMilliSeconds = 60000; // = 10 minutes
     uint64_t _latestHistoryTimeStamp = 0;
     uint64_t _latestHistoryTimeStampAtDownloadStart = 0;
     IWifiLibraryWrapper* _pWifiLibaray;
