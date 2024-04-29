@@ -12,7 +12,5 @@ void DataProvider::onWifiPasswordChange(std::string pwd) {
         _pWifiLibaray->connect(pwd.c_str());
         _wifiPassword = pwd.c_str();
         _wifiSettingsChanged = true;
-        Serial.println("-->[BLE-Lib] Wifi password changed to: " +
-                       _wifiPassword);
     }
 }
