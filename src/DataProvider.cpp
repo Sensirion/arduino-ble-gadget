@@ -137,7 +137,7 @@ std::string DataProvider::_buildAdvertisementData() {
 DownloadHeader DataProvider::_buildDownloadHeader() {
     DownloadHeader header;
     uint32_t age = static_cast<uint32_t>(
-        ((millis() - _latestHistoryTimeStampAtDownloadStart) / 1000));
+        millis() - _latestHistoryTimeStampAtDownloadStart);
     header.setDownloadSampleType(_sampleConfig.downloadType);
     header.setIntervalMilliSeconds(_historyIntervalMilliSeconds);
     header.setAgeOfLatestSampleMilliSeconds(age);
