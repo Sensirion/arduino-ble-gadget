@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.3.2] - 2024-06-19
+
+### Fixed
+- Change string import to from <string.h> to <string>
+- Reporting age for latest samples needs to be in milli-seconds
+
 ## [1.3.1] - 2024-04-17
 
 ### Fixed
