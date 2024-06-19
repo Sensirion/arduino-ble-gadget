@@ -33,7 +33,7 @@
 
 #include "Arduino.h"
 #include <array>
-#include <string.h>
+#include <string>
 
 // Must explicitly instantiate template in Samples.cpp before usage
 template <size_t SIZE> class ByteArray {
