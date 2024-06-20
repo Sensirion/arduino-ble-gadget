@@ -75,6 +75,7 @@ class DataProvider: public IProviderCallbacks {
     Sample _currentSample;
     AdvertisementHeader _advertisementHeader;
     SampleHistoryRingBuffer _sampleHistory;
+    int _nrOfSamplesRequested = 0;
     DownloadState _downloadState = INACTIVE;
     int _downloadSequenceIdx = 0; // first packet is the header
     int _numberOfSamplesToDownload = 0;
@@ -99,6 +100,7 @@ class DataProvider: public IProviderCallbacks {
     void onWifiSsidChange(std::string ssid) override;
     void onWifiPasswordChange(std::string pwd) override;
     void onFRCRequest(uint16_t reference_co2_level) override;
+    void onNrOfSamplesRequest(int nr_of_samples) override;
 };
 
 #endif /* _DATA_PROVIDER_H_ */

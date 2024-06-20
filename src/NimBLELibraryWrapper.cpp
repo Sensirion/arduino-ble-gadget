@@ -71,6 +71,11 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
         // the first two bytes are obfusation and can be ignored
         uint16_t referenceCO2Level = value[2] | (value[3] << 8);
         providerCallbacks->onFRCRequest(referenceCO2Level);
+    } else if (characteristic->getUUID().toString().compare(
+                   REQUESTED_SAMPLES_UUID) == 0) {
+        std::string value = characteristic->getValue();
+        uint32_t nr_of_samples = value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
+        providerCallbacks->onNrOfSamplesRequest(nr_of_samples);
     }
 }
 
