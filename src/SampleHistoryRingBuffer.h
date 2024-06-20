@@ -44,7 +44,7 @@ class SampleHistoryRingBuffer
     void setSampleSize(size_t sampleSize);
     int numberOfSamplesInHistory() const;
     bool isFull() const;
-    void startReadOut();
+    void startReadOut(int nrOfSamples);
     Sample readOutNextSample(bool& allSamplesRead);
     void reset();
 

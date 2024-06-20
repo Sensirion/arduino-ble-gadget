@@ -75,6 +75,7 @@ void DataProvider::handleDownload() {
     // Download Completed
     if (_downloadState == COMPLETED) {
         _downloadSequenceIdx = 0;
+        _nrOfSamplesRequested = 0;
         _numberOfSamplesToDownload = 0;
         _numberOfSamplePacketsToDownload = 0;
         _downloadState = INACTIVE;
@@ -83,18 +84,19 @@ void DataProvider::handleDownload() {
 
     // Start Download
     if (_downloadState == START) {
-        _numberOfSamplesToDownload = _sampleHistory.numberOfSamplesInHistory();
-
+        if(_nrOfSamplesRequested > 0 && _nrOfSamplesRequested < _sampleHistory.numberOfSamplesInHistory()) {
+            _numberOfSamplesToDownload = _nrOfSamplesRequested;
+        } else {
+            _numberOfSamplesToDownload = _sampleHistory.numberOfSamplesInHistory();
+        }
         _numberOfSamplePacketsToDownload =
             _numberOfPacketsRequired(_numberOfSamplesToDownload);
-        _BLELibrary.characteristicSetValue(NUMBER_OF_SAMPLES_UUID,
-                                           _numberOfSamplesToDownload);
         DownloadHeader header = _buildDownloadHeader();
         _BLELibrary.characteristicSetValue(DOWNLOAD_PACKET_UUID,
                                            header.getDataArray().data(),
                                            header.getDataArray().size());
         _downloadState = DOWNLOADING;
-        _sampleHistory.startReadOut();
+        _sampleHistory.startReadOut(_numberOfSamplesToDownload);
 
     } else if (_downloadState == DOWNLOADING) { // Continue Download
         DownloadPacket packet = _buildDownloadPacket();
@@ -102,6 +104,7 @@ void DataProvider::handleDownload() {
                                            packet.getDataArray().data(),
                                            packet.getDataArray().size());
     }
+
     _BLELibrary.characteristicNotify(DOWNLOAD_PACKET_UUID);
 
     ++_downloadSequenceIdx;
@@ -177,6 +180,9 @@ void DataProvider::_setupBLEInfrastructure() {
                                      NUMBER_OF_SAMPLES_UUID,
                                      Permission::READ_PERMISSION);
     _BLELibrary.characteristicSetValue(NUMBER_OF_SAMPLES_UUID, 0);
+    _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID, 
+                                     REQUESTED_SAMPLES_UUID,
+                                     Permission::WRITE_PERMISSION);
     _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
                                      SAMPLE_HISTORY_INTERVAL_UUID,
                                      Permission::READWRITE_PERMISSION);
@@ -247,6 +253,10 @@ void DataProvider::onDownloadRequest() {
 void DataProvider::onFRCRequest(uint16_t reference_co2_level) {
     _frc_requested = true;
     _reference_co2_level = reference_co2_level;
+}
+
+void DataProvider::onNrOfSamplesRequest(int nr_of_samples) {
+    _nrOfSamplesRequested = nr_of_samples;
 }
 
 void DataProvider::completeFRCRequest() {

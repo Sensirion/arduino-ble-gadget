@@ -31,8 +31,15 @@ bool SampleHistoryRingBuffer::isFull() const {
     return _nextIndex(_head) == _tail;
 }
 
-void SampleHistoryRingBuffer::startReadOut() {
-    _sampleReadOutIndex = _tail;
+void SampleHistoryRingBuffer::startReadOut(int nrOfSamples) {
+    if (nrOfSamples >= numberOfSamplesInHistory()) {
+        _sampleReadOutIndex = _tail;
+    } else {
+        _sampleReadOutIndex = _head - nrOfSamples;
+        if (_sampleReadOutIndex < 0) {
+            _sampleReadOutIndex = _sampleReadOutIndex + _sizeInSamples();
+        }
+    }
 }
 
 // May give out invalid sample if called on an empty sample history
