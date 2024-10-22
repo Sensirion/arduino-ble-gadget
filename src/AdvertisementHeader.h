@@ -40,7 +40,7 @@ class AdvertisementHeader: public ByteArray<ADVERTISEMENT_HEADER_SIZE_BYTES> {
     void writeCompanyId(uint16_t companyID);
     void writeSensirionAdvertisementType(uint8_t advType);
     void writeSampleType(uint8_t sampleType);
-    void writeDeviceId(uint16_t deviceID);
+    void writeDeviceId(uint8_t deviceIDHigh, uint8_t deviceIDLow);
 };
 
 #endif /* _ADVERTISEMENT_HEADER_H_ */

@@ -13,7 +13,9 @@ void DataProvider::begin() {
     // Use part of MAC address as device id
     std::string macAddress = _BLELibrary.getDeviceAddress();
     _advertisementHeader.writeDeviceId(
-        strtol(macAddress.substr(12, 17).c_str(), NULL, 16));
+        static_cast<uint8_t>(strtol(macAddress.substr(12, 14).c_str(), NULL, 16)),
+        static_cast<uint8_t>(strtol(macAddress.substr(15, 17).c_str(), NULL, 16))
+    );
 
     _BLELibrary.setAdvertisingData(_buildAdvertisementData());
     _BLELibrary.startAdvertising();
