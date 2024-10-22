@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Allow to request only the last X samples when doing a data download (implement Requested Samples Characterisitc on Download Service)
 
+### Fixed
+- use the last 2 Bytes of Mac Address as Device ID in BLE Advertisment (fixes mismatch of logged id and id appearing in MyAmbience as mentiond in https://github.com/Sensirion/arduino-ble-gadget/issues/44)
+
 ## [1.3.2] - 2024-06-19
 
 ### Fixed
