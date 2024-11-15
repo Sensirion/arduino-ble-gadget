@@ -75,7 +75,8 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
     } else if (characteristic->getUUID().toString().compare(
                    REQUESTED_SAMPLES_UUID) == 0) {
         std::string value = characteristic->getValue();
-        uint32_t nr_of_samples = value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
+        uint32_t nr_of_samples =
+            value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
         providerCallbacks->onNrOfSamplesRequest(nr_of_samples);
     } else if (characteristic->getUUID().toString().compare(
                    ALT_DEVICE_NAME_UUID) == 0) {

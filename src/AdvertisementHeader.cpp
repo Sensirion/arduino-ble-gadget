@@ -12,7 +12,8 @@ void AdvertisementHeader::writeSampleType(uint8_t sampleType) {
     _writeByte(sampleType, 3);
 }
 
-void AdvertisementHeader::writeDeviceId(uint8_t deviceIDHigh, uint8_t deviceIDLow) {
+void AdvertisementHeader::writeDeviceId(uint8_t deviceIDHigh,
+                                        uint8_t deviceIDLow) {
     _writeByte(deviceIDHigh, 4);
     _writeByte(deviceIDLow, 5);
 }

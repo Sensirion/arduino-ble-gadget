@@ -50,8 +50,7 @@ class DataProvider: public IProviderCallbacks {
                           IWifiLibraryWrapper* pWifiLibrary = nullptr)
         : _BLELibrary(libraryWrapper), _enableWifiSettings(enableWifiSettings),
           _enableBatteryService(enableBatteryService),
-          _enableFRCService(enableFRCService),
-          _enableAltDeviceName(false),
+          _enableFRCService(enableFRCService), _enableAltDeviceName(false),
           _sampleConfig(sampleConfigSelector.at(dataType)),
           _pWifiLibaray(pWifiLibrary){};
     ~DataProvider(){};
@@ -76,7 +75,7 @@ class DataProvider: public IProviderCallbacks {
     std::string getAltDeviceName();
     void setAltDeviceName(std::string altDeviceName);
 
-    private: 
+  private:
     std::string _buildAdvertisementData();
     DownloadHeader _buildDownloadHeader();
     DownloadPacket _buildDownloadPacket();

@@ -87,10 +87,12 @@ void DataProvider::handleDownload() {
 
     // Start Download
     if (_downloadState == START) {
-        if (_nrOfSamplesRequested > 0 && _nrOfSamplesRequested < _sampleHistory.numberOfSamplesInHistory()) {
+        if (_nrOfSamplesRequested > 0 &&
+            _nrOfSamplesRequested < _sampleHistory.numberOfSamplesInHistory()) {
             _numberOfSamplesToDownload = _nrOfSamplesRequested;
         } else {
-            _numberOfSamplesToDownload = _sampleHistory.numberOfSamplesInHistory();
+            _numberOfSamplesToDownload =
+                _sampleHistory.numberOfSamplesInHistory();
         }
         _numberOfSamplePacketsToDownload =
             _numberOfPacketsRequired(_numberOfSamplesToDownload);
@@ -168,7 +170,7 @@ DownloadHeader DataProvider::_buildDownloadHeader() {
     header.setIntervalMilliSeconds(_historyIntervalMilliSeconds);
     header.setAgeOfLatestSampleMilliSeconds(age);
     header.setDownloadSampleCount(
-            static_cast<uint16_t>(_numberOfSamplesToDownload));
+        static_cast<uint16_t>(_numberOfSamplesToDownload));
     return header;
 }
 
@@ -214,19 +216,18 @@ void DataProvider::_setupBLEInfrastructure() {
                                      Permission::NOTIFY_PERMISSION);
     _BLELibrary.startService(DOWNLOAD_SERVICE_UUID);
 
-
     // Settings Service
     _BLELibrary.createService(SETTINGS_SERVICE_UUID);
     if (_enableWifiSettings) {
         _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID, WIFI_SSID_UUID,
                                          Permission::READWRITE_PERMISSION);
-        const char *ssid = "ssid";
+        const char* ssid = "ssid";
         _BLELibrary.characteristicSetValue(
             WIFI_SSID_UUID, reinterpret_cast<const uint8_t*>(ssid),
             strlen(ssid));
         _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID, WIFI_PWD_UUID,
                                          Permission::WRITE_PERMISSION);
-        const char *pwd = "password";
+        const char* pwd = "password";
         _BLELibrary.characteristicSetValue(
             WIFI_PWD_UUID, reinterpret_cast<const uint8_t*>(pwd), strlen(pwd));
     }
