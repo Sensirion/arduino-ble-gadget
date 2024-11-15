@@ -132,6 +132,26 @@ bool DataProvider::isDownloading() const {
     return (_downloadState != DownloadState::INACTIVE);
 }
 
+void DataProvider::enableAltDeviceName() {
+    _enableAltDeviceName = true;
+}
+
+std::string DataProvider::getAltDeviceName() {
+    return _altDeviceName;
+}
+
+void DataProvider::setAltDeviceName(std::string altDeviceName) {
+    _altDeviceName = altDeviceName;
+    _BLELibrary.characteristicSetValue(
+        ALT_DEVICE_NAME_UUID,
+        reinterpret_cast<const uint8_t*>(_altDeviceName.c_str()),
+        _altDeviceName.length());
+}
+
+void DataProvider::onAltDeviceNameChange(std::string altDeviceName) {
+    setAltDeviceName(altDeviceName);
+}
+
 std::string DataProvider::_buildAdvertisementData() {
     _advertisementHeader.writeSampleType(_sampleConfig.sampleType);
     std::string data = _advertisementHeader.getDataString();
@@ -194,8 +214,8 @@ void DataProvider::_setupBLEInfrastructure() {
     _BLELibrary.startService(DOWNLOAD_SERVICE_UUID);
 
     // Settings Service
+    _BLELibrary.createService(SETTINGS_SERVICE_UUID);
     if (_enableWifiSettings) {
-        _BLELibrary.createService(SETTINGS_SERVICE_UUID);
         _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID, WIFI_SSID_UUID,
                                          Permission::READWRITE_PERMISSION);
         const char* ssid = "ssid";
@@ -208,8 +228,14 @@ void DataProvider::_setupBLEInfrastructure() {
         const char* pwd = "password";
         _BLELibrary.characteristicSetValue(
             WIFI_PWD_UUID, reinterpret_cast<const uint8_t*>(pwd), strlen(pwd));
-        _BLELibrary.startService(SETTINGS_SERVICE_UUID);
     }
+    if (_enableAltDeviceName) {
+        _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID,
+                                         ALT_DEVICE_NAME_UUID,
+                                         Permission::READWRITE_PERMISSION);
+        setAltDeviceName(_altDeviceName);
+    }
+    _BLELibrary.startService(SETTINGS_SERVICE_UUID);
 
     // Battery Service
     if (_enableBatteryService) {

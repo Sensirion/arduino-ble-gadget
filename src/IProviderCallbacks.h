@@ -43,6 +43,7 @@ class IProviderCallbacks {
     virtual void onWifiPasswordChange(std::string pwd) = 0;
     virtual void onFRCRequest(uint16_t reference_co2_level) = 0;
     virtual void onNrOfSamplesRequest(int nr_of_samples) = 0;
+    virtual void onAltDeviceNameChange(std::string altDeviceName) = 0;
 };
 
 #endif /* _PROVIDER_CALLBACKS_H_ */

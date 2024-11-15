@@ -38,6 +38,7 @@
 #include "IWifiLibraryWrapper.h"
 #include "SampleHistoryRingBuffer.h"
 #include "Sensirion_UPT_Core.h"
+#include <string>
 
 class DataProvider: public IProviderCallbacks {
   public:
@@ -50,6 +51,7 @@ class DataProvider: public IProviderCallbacks {
         : _BLELibrary(libraryWrapper), _enableWifiSettings(enableWifiSettings),
           _enableBatteryService(enableBatteryService),
           _enalbeFRCService(enableFRCService),
+          _enableAltDeviceName(false),
           _sampleConfig(sampleConfigSelector.at(dataType)),
           _pWifiLibaray(pWifiLibrary){};
     ~DataProvider(){};
@@ -64,8 +66,17 @@ class DataProvider: public IProviderCallbacks {
     bool isFRCRequested() const;
     uint32_t getReferenceCO2Level() const;
     void completeFRCRequest();
+    /*
+     * enableAltDeviceName must be called before begin() to ensure
+     * the characteristic is created.
+     * Initially the alternative device name is empty.
+     * Use setAltDeviceName to change the device name.
+     */
+    void enableAltDeviceName();
+    std::string getAltDeviceName();
+    void setAltDeviceName(std::string altDeviceName);
 
-  private:
+    private: 
     std::string _buildAdvertisementData();
     DownloadHeader _buildDownloadHeader();
     DownloadPacket _buildDownloadPacket();
@@ -82,10 +93,12 @@ class DataProvider: public IProviderCallbacks {
     int _numberOfSamplePacketsToDownload = 0;
     bool _frc_requested = false;
     uint32_t _reference_co2_level = 0;
+    std::string _altDeviceName = "";
 
     bool _enableWifiSettings;
     bool _enableBatteryService;
     bool _enalbeFRCService;
+    bool _enableAltDeviceName;
 
     SampleConfig _sampleConfig;
     uint64_t _historyIntervalMilliSeconds = 600000; // = 10 minutes
@@ -101,6 +114,7 @@ class DataProvider: public IProviderCallbacks {
     void onWifiPasswordChange(std::string pwd) override;
     void onFRCRequest(uint16_t reference_co2_level) override;
     void onNrOfSamplesRequest(int nr_of_samples) override;
+    void onAltDeviceNameChange(std::string altDeviceName) override;
 };
 
 #endif /* _DATA_PROVIDER_H_ */
