@@ -52,6 +52,7 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
     if (providerCallbacks == nullptr) {
         return;
     }
+
     if (characteristic->getUUID().toString().compare(
             SAMPLE_HISTORY_INTERVAL_UUID) == 0) {
         std::string value = characteristic->getValue();
@@ -68,7 +69,7 @@ void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
                    SCD_FRC_REQUEST_UUID) == 0) {
         std::string value = characteristic->getValue();
         // co2 level is encoded in lower two bytes, little endian
-        // the first two bytes are obfusation and can be ignored
+        // the first two bytes are obfuscation and can be ignored
         uint16_t referenceCO2Level = value[2] | (value[3] << 8);
         providerCallbacks->onFRCRequest(referenceCO2Level);
     } else if (characteristic->getUUID().toString().compare(

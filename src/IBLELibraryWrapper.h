@@ -37,7 +37,7 @@
 const char* const GADGET_NAME = "S";
 
 // when adding a new characteristic, make sure to
-// write numbers in lower case and to increlase
+// write numbers in lower case and to increase
 // the constants MAX_NUMBER_OF_xxx
 
 static const char* const DOWNLOAD_SERVICE_UUID =

@@ -13,9 +13,10 @@ void DataProvider::begin() {
     // Use part of MAC address as device id
     std::string macAddress = _BLELibrary.getDeviceAddress();
     _advertisementHeader.writeDeviceId(
-        static_cast<uint8_t>(strtol(macAddress.substr(12, 14).c_str(), NULL, 16)),
-        static_cast<uint8_t>(strtol(macAddress.substr(15, 17).c_str(), NULL, 16))
-    );
+        static_cast<uint8_t>(
+            strtol(macAddress.substr(12, 14).c_str(), NULL, 16)),
+        static_cast<uint8_t>(
+            strtol(macAddress.substr(15, 17).c_str(), NULL, 16)));
 
     _BLELibrary.setAdvertisingData(_buildAdvertisementData());
     _BLELibrary.startAdvertising();
@@ -29,8 +30,8 @@ void DataProvider::writeValueToCurrentSample(float value,
     }
 
     // Check for correct signal type
-    if (_sampleConfig.sampleSlots.count(signalType) ==
-        0) { // implies signal type is not part of sample
+    if (_sampleConfig.sampleSlots.count(signalType) == 0) {
+        // implies signal type is not part of sample
         return;
     }
 
@@ -86,7 +87,7 @@ void DataProvider::handleDownload() {
 
     // Start Download
     if (_downloadState == START) {
-        if(_nrOfSamplesRequested > 0 && _nrOfSamplesRequested < _sampleHistory.numberOfSamplesInHistory()) {
+        if (_nrOfSamplesRequested > 0 && _nrOfSamplesRequested < _sampleHistory.numberOfSamplesInHistory()) {
             _numberOfSamplesToDownload = _nrOfSamplesRequested;
         } else {
             _numberOfSamplesToDownload = _sampleHistory.numberOfSamplesInHistory();
@@ -167,7 +168,7 @@ DownloadHeader DataProvider::_buildDownloadHeader() {
     header.setIntervalMilliSeconds(_historyIntervalMilliSeconds);
     header.setAgeOfLatestSampleMilliSeconds(age);
     header.setDownloadSampleCount(
-        static_cast<uint16_t>(_numberOfSamplesToDownload));
+            static_cast<uint16_t>(_numberOfSamplesToDownload));
     return header;
 }
 
@@ -202,7 +203,7 @@ void DataProvider::_setupBLEInfrastructure() {
                                      NUMBER_OF_SAMPLES_UUID,
                                      Permission::READ_PERMISSION);
     _BLELibrary.characteristicSetValue(NUMBER_OF_SAMPLES_UUID, 0);
-    _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID, 
+    _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
                                      REQUESTED_SAMPLES_UUID,
                                      Permission::WRITE_PERMISSION);
     _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
@@ -213,19 +214,19 @@ void DataProvider::_setupBLEInfrastructure() {
                                      Permission::NOTIFY_PERMISSION);
     _BLELibrary.startService(DOWNLOAD_SERVICE_UUID);
 
+
     // Settings Service
     _BLELibrary.createService(SETTINGS_SERVICE_UUID);
     if (_enableWifiSettings) {
         _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID, WIFI_SSID_UUID,
                                          Permission::READWRITE_PERMISSION);
-        const char* ssid = "ssid";
-        Serial.println(strlen(ssid));
+        const char *ssid = "ssid";
         _BLELibrary.characteristicSetValue(
             WIFI_SSID_UUID, reinterpret_cast<const uint8_t*>(ssid),
             strlen(ssid));
         _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID, WIFI_PWD_UUID,
                                          Permission::WRITE_PERMISSION);
-        const char* pwd = "password";
+        const char *pwd = "password";
         _BLELibrary.characteristicSetValue(
             WIFI_PWD_UUID, reinterpret_cast<const uint8_t*>(pwd), strlen(pwd));
     }
@@ -247,7 +248,7 @@ void DataProvider::_setupBLEInfrastructure() {
         _BLELibrary.startService(BATTERY_SERVICE_UUID);
     }
     // SCD FRC Service
-    if (_enalbeFRCService) {
+    if (_enableFRCService) {
         _BLELibrary.createService(SCD_SERVICE_UUID);
         _BLELibrary.createCharacteristic(SCD_SERVICE_UUID, SCD_FRC_REQUEST_UUID,
                                          Permission::WRITE_PERMISSION);

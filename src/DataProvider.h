@@ -50,7 +50,7 @@ class DataProvider: public IProviderCallbacks {
                           IWifiLibraryWrapper* pWifiLibrary = nullptr)
         : _BLELibrary(libraryWrapper), _enableWifiSettings(enableWifiSettings),
           _enableBatteryService(enableBatteryService),
-          _enalbeFRCService(enableFRCService),
+          _enableFRCService(enableFRCService),
           _enableAltDeviceName(false),
           _sampleConfig(sampleConfigSelector.at(dataType)),
           _pWifiLibaray(pWifiLibrary){};
@@ -97,7 +97,7 @@ class DataProvider: public IProviderCallbacks {
 
     bool _enableWifiSettings;
     bool _enableBatteryService;
-    bool _enalbeFRCService;
+    bool _enableFRCService;
     bool _enableAltDeviceName;
 
     SampleConfig _sampleConfig;
