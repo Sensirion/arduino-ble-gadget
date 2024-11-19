@@ -13,9 +13,10 @@ void DataProvider::begin() {
     // Use part of MAC address as device id
     std::string macAddress = _BLELibrary.getDeviceAddress();
     _advertisementHeader.writeDeviceId(
-        static_cast<uint8_t>(strtol(macAddress.substr(12, 14).c_str(), NULL, 16)),
-        static_cast<uint8_t>(strtol(macAddress.substr(15, 17).c_str(), NULL, 16))
-    );
+        static_cast<uint8_t>(
+            strtol(macAddress.substr(12, 14).c_str(), NULL, 16)),
+        static_cast<uint8_t>(
+            strtol(macAddress.substr(15, 17).c_str(), NULL, 16)));
 
     _BLELibrary.setAdvertisingData(_buildAdvertisementData());
     _BLELibrary.startAdvertising();
@@ -29,8 +30,8 @@ void DataProvider::writeValueToCurrentSample(float value,
     }
 
     // Check for correct signal type
-    if (_sampleConfig.sampleSlots.count(signalType) ==
-        0) { // implies signal type is not part of sample
+    if (_sampleConfig.sampleSlots.count(signalType) == 0) {
+        // implies signal type is not part of sample
         return;
     }
 
@@ -86,10 +87,12 @@ void DataProvider::handleDownload() {
 
     // Start Download
     if (_downloadState == START) {
-        if(_nrOfSamplesRequested > 0 && _nrOfSamplesRequested < _sampleHistory.numberOfSamplesInHistory()) {
+        if (_nrOfSamplesRequested > 0 &&
+            _nrOfSamplesRequested < _sampleHistory.numberOfSamplesInHistory()) {
             _numberOfSamplesToDownload = _nrOfSamplesRequested;
         } else {
-            _numberOfSamplesToDownload = _sampleHistory.numberOfSamplesInHistory();
+            _numberOfSamplesToDownload =
+                _sampleHistory.numberOfSamplesInHistory();
         }
         _numberOfSamplePacketsToDownload =
             _numberOfPacketsRequired(_numberOfSamplesToDownload);
@@ -130,6 +133,26 @@ String DataProvider::getDeviceIdString() const {
 
 bool DataProvider::isDownloading() const {
     return (_downloadState != DownloadState::INACTIVE);
+}
+
+void DataProvider::enableAltDeviceName() {
+    _enableAltDeviceName = true;
+}
+
+std::string DataProvider::getAltDeviceName() {
+    return _altDeviceName;
+}
+
+void DataProvider::setAltDeviceName(std::string altDeviceName) {
+    _altDeviceName = altDeviceName;
+    _BLELibrary.characteristicSetValue(
+        ALT_DEVICE_NAME_UUID,
+        reinterpret_cast<const uint8_t*>(_altDeviceName.c_str()),
+        _altDeviceName.length());
+}
+
+void DataProvider::onAltDeviceNameChange(std::string altDeviceName) {
+    setAltDeviceName(altDeviceName);
 }
 
 std::string DataProvider::_buildAdvertisementData() {
@@ -182,7 +205,7 @@ void DataProvider::_setupBLEInfrastructure() {
                                      NUMBER_OF_SAMPLES_UUID,
                                      Permission::READ_PERMISSION);
     _BLELibrary.characteristicSetValue(NUMBER_OF_SAMPLES_UUID, 0);
-    _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID, 
+    _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
                                      REQUESTED_SAMPLES_UUID,
                                      Permission::WRITE_PERMISSION);
     _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
@@ -194,12 +217,11 @@ void DataProvider::_setupBLEInfrastructure() {
     _BLELibrary.startService(DOWNLOAD_SERVICE_UUID);
 
     // Settings Service
+    _BLELibrary.createService(SETTINGS_SERVICE_UUID);
     if (_enableWifiSettings) {
-        _BLELibrary.createService(SETTINGS_SERVICE_UUID);
         _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID, WIFI_SSID_UUID,
                                          Permission::READWRITE_PERMISSION);
         const char* ssid = "ssid";
-        Serial.println(strlen(ssid));
         _BLELibrary.characteristicSetValue(
             WIFI_SSID_UUID, reinterpret_cast<const uint8_t*>(ssid),
             strlen(ssid));
@@ -208,8 +230,14 @@ void DataProvider::_setupBLEInfrastructure() {
         const char* pwd = "password";
         _BLELibrary.characteristicSetValue(
             WIFI_PWD_UUID, reinterpret_cast<const uint8_t*>(pwd), strlen(pwd));
-        _BLELibrary.startService(SETTINGS_SERVICE_UUID);
     }
+    if (_enableAltDeviceName) {
+        _BLELibrary.createCharacteristic(SETTINGS_SERVICE_UUID,
+                                         ALT_DEVICE_NAME_UUID,
+                                         Permission::READWRITE_PERMISSION);
+        setAltDeviceName(_altDeviceName);
+    }
+    _BLELibrary.startService(SETTINGS_SERVICE_UUID);
 
     // Battery Service
     if (_enableBatteryService) {
@@ -221,7 +249,7 @@ void DataProvider::_setupBLEInfrastructure() {
         _BLELibrary.startService(BATTERY_SERVICE_UUID);
     }
     // SCD FRC Service
-    if (_enalbeFRCService) {
+    if (_enableFRCService) {
         _BLELibrary.createService(SCD_SERVICE_UUID);
         _BLELibrary.createCharacteristic(SCD_SERVICE_UUID, SCD_FRC_REQUEST_UUID,
                                          Permission::WRITE_PERMISSION);
