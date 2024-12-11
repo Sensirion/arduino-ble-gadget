@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - use the last 2 Bytes of Mac Address as Device ID in BLE Advertisment (fixes mismatch of logged id and id appearing in MyAmbience as mentiond in https://github.com/Sensirion/arduino-ble-gadget/issues/44)
+- pin version of NimBLE lib to < 2.0.0 as 2.0.0 is not a proper release and breaks writing to BLE Characteristics
 
 ## [1.3.2] - 2024-06-19
 
