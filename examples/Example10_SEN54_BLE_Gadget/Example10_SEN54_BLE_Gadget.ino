@@ -131,8 +131,6 @@ void measure_and_report() {
     uint16_t error;
     char errorMessage[256];
 
-    delay(1000);
-
     // Read Measurement
     float massConcentrationPm1p0;
     float massConcentrationPm2p5;
