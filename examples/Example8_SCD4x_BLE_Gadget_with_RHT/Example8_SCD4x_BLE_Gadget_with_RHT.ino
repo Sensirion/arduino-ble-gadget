@@ -55,7 +55,7 @@ void loop() {
 
   provider.handleDownload();
   handleFrcRequest();
-  delay(3);
+  delay(5);
 }
 
 void measureAndReport() {

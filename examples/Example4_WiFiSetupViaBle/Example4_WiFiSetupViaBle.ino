@@ -45,5 +45,5 @@ void loop() {
   }
 
   provider.handleDownload();
-  delay(3);
+  delay(20);
 }

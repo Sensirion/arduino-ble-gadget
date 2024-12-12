@@ -124,14 +124,12 @@ void loop() {
   }
 
   provider.handleDownload();
-  delay(3);
+  delay(20);
 }
 
 void measure_and_report() {
     uint16_t error;
     char errorMessage[256];
-
-    delay(1000);
 
     // Read Measurement
     float massConcentrationPm1p0;
