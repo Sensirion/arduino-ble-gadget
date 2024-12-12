@@ -123,7 +123,7 @@ void loop() {
   }
 
   provider.handleDownload();
-  delay(3); 
+  delay(20); 
 }
 
 void measure_and_report() {
