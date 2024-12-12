@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.4.0] - 2024-12-12
+
 ### Added
 - Allow to request only the last X samples when doing a data download (implement Requested Samples Characterisitc on Download Service)
 
