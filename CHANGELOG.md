@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [1.4.1] -2024-12-18
+- Fix version of dependency to sensirion-core to >= 0.5.1
+
 ## [1.4.0] - 2024-12-12
 
 ### Added
