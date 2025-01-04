@@ -269,6 +269,9 @@ void DataProvider::onHistoryIntervalChange(int interval) {
     _sampleHistory.reset();
     _BLELibrary.characteristicSetValue(
         NUMBER_OF_SAMPLES_UUID, _sampleHistory.numberOfSamplesInHistory());
+    if (_callbackHistoryIntervalChange != nullptr) {
+        _callbackHistoryIntervalChange(interval);
+    }
 }
 
 void DataProvider::onConnectionEvent() {
@@ -281,8 +284,12 @@ void DataProvider::onDownloadRequest() {
 }
 
 void DataProvider::onFRCRequest(uint16_t reference_co2_level) {
-    _frc_requested = true;
-    _reference_co2_level = reference_co2_level;
+    if (_callbackFRC != nullptr) {
+        _callbackFRC(reference_co2_level);
+    } else {
+        _frc_requested = true;
+        _reference_co2_level = reference_co2_level;
+    }
 }
 
 void DataProvider::onNrOfSamplesRequest(int nr_of_samples) {

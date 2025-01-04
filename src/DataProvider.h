@@ -47,11 +47,15 @@ class DataProvider: public IProviderCallbacks {
                           bool enableWifiSettings = false,
                           bool enableBatteryService = false,
                           bool enableFRCService = false,
+                          void (*CallbackFRC)(uint16_t) = nullptr,
+                          void (*CallbackHistoryIntervalChange)(int) = nullptr,
                           IWifiLibraryWrapper* pWifiLibrary = nullptr)
         : _BLELibrary(libraryWrapper), _enableWifiSettings(enableWifiSettings),
           _enableBatteryService(enableBatteryService),
           _enableFRCService(enableFRCService), _enableAltDeviceName(false),
           _sampleConfig(sampleConfigSelector.at(dataType)),
+          _callbackFRC(CallbackFRC),
+          _callbackHistoryIntervalChange(CallbackHistoryIntervalChange),
           _pWifiLibaray(pWifiLibrary){};
     ~DataProvider(){};
     void begin();
@@ -104,6 +108,10 @@ class DataProvider: public IProviderCallbacks {
     uint64_t _latestHistoryTimeStamp = 0;
     uint64_t _latestHistoryTimeStampAtDownloadStart = 0;
     IWifiLibraryWrapper* _pWifiLibaray;
+
+    // ExternalCallbacks
+    void (*_callbackFRC)(uint16_t);
+    void (*_callbackHistoryIntervalChange)(int);
 
     // ProviderCallbacks
     void onHistoryIntervalChange(int interval) override;
