@@ -37,6 +37,7 @@ class IWifiLibraryWrapper {
   public:
     virtual void setSsid(String ssid) = 0;
     virtual void connect(String password) = 0;
+    virtual void loadCredentials() = 0;
     virtual bool isConnected() = 0;
     virtual String localIP() = 0;
 };

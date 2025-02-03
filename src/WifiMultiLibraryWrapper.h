@@ -33,15 +33,18 @@
 
 #include "IWifiLibraryWrapper.h"
 #include "WiFiMulti.h"
+#include <Preferences.h>
 
 class WifiMultiLibraryWrapper: public IWifiLibraryWrapper {
   public:
     void setSsid(String ssid) override;
     void connect(String password) override;
+    void loadCredentials() override;
     bool isConnected() override;
     String localIP() override;
 
   private:
+    Preferences preferences;
     String _ssid = "";
     WiFiMulti wiFiMulti;
 };
