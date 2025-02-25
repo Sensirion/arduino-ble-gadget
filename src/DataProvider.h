@@ -40,6 +40,9 @@
 #include "Sensirion_UPT_Core.h"
 #include <string>
 
+class SCDDataProvider;
+class SCD4xDataProvider;
+
 class DataProvider: public IProviderCallbacks {
   public:
     explicit DataProvider(IBLELibraryWrapper& libraryWrapper,
@@ -76,12 +79,15 @@ class DataProvider: public IProviderCallbacks {
     void setAltDeviceName(std::string altDeviceName);
 
   private:
+    friend class SCDDataProvider;
+    friend class SCD4xDataProvider;
     std::string _buildAdvertisementData();
     DownloadHeader _buildDownloadHeader();
     DownloadPacket _buildDownloadPacket();
     int _numberOfPacketsRequired(int numberOfSamples) const;
     IBLELibraryWrapper& _BLELibrary;
     void _setupBLEInfrastructure();
+    virtual void _setupBLEServices();
     Sample _currentSample;
     AdvertisementHeader _advertisementHeader;
     SampleHistoryRingBuffer _sampleHistory;
