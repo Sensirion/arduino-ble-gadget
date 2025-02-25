@@ -32,6 +32,7 @@
 #define _I_BLE_LIBRARY_WRAPPER_H_
 
 #include "IProviderCallbacks.h"
+#include <functional>
 #include <string>
 
 const char* const GADGET_NAME = "S";
@@ -115,6 +116,9 @@ class IBLELibraryWrapper {
     virtual bool characteristicNotify(const char* uuid) = 0;
     virtual void
     setProviderCallbacks(IProviderCallbacks* providerCallbacks) = 0;
+    virtual void
+    registerCallback(const char* characteristicUuid,
+                     std::function<void(std::string)> callbackFunction) = 0;
 };
 
 #endif /* _I_BLE_LIBRARY_WRAPPER_H_ */
