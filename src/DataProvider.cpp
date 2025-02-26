@@ -199,6 +199,16 @@ void DataProvider::_setupBLEInfrastructure() {
     _BLELibrary.init();
     _BLELibrary.createServer();
 
+    _setupBLEServices();
+
+    _BLELibrary.setProviderCallbacks(this);
+    _BLELibrary.characteristicSetValue(SAMPLE_HISTORY_INTERVAL_UUID,
+                                       _historyIntervalMilliSeconds);
+    _BLELibrary.characteristicSetValue(
+        NUMBER_OF_SAMPLES_UUID, _sampleHistory.numberOfSamplesInHistory());
+}
+
+void DataProvider::_setupBLEServices() {
     // Download Service
     _BLELibrary.createService(DOWNLOAD_SERVICE_UUID);
     _BLELibrary.createCharacteristic(DOWNLOAD_SERVICE_UUID,
@@ -256,12 +266,6 @@ void DataProvider::_setupBLEInfrastructure() {
         _BLELibrary.characteristicSetValue(SCD_FRC_REQUEST_UUID, 0);
         _BLELibrary.startService(SCD_SERVICE_UUID);
     }
-
-    _BLELibrary.setProviderCallbacks(this);
-    _BLELibrary.characteristicSetValue(SAMPLE_HISTORY_INTERVAL_UUID,
-                                       _historyIntervalMilliSeconds);
-    _BLELibrary.characteristicSetValue(
-        NUMBER_OF_SAMPLES_UUID, _sampleHistory.numberOfSamplesInHistory());
 }
 
 void DataProvider::onHistoryIntervalChange(int interval) {
