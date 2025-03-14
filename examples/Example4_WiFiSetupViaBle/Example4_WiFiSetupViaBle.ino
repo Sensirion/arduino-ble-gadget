@@ -18,6 +18,7 @@ void setup() {
   provider.begin();
   Serial.print("Sensirion GadgetBle Lib initialized with deviceId = ");
   Serial.println(provider.getDeviceIdString());
+  wifi.loadCredentials();
 }
 
 uint16_t t = 0;
