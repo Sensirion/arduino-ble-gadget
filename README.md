@@ -103,10 +103,10 @@ We will not cover it in details here but you can refer to [the following link](h
 - **/src** - Source files for the library (.cpp, .h).
 - **library.properties** - General library properties for the Arduino package manager.
 
-#### BLE protocol used by the library
+## Sensirion BLE Specification
 
 If you want to retrieve the data of your new BLE gadget using your own device or application, you will need more information on the protocol used by this library.  
-Everything you will need should be available in the following [document](documents/00-Sensirion_BLE_communication_protocol.pdf)
+Everything you will need should be available on the dedicated [page](https://sensirion.github.io/ble-services/)
 
 ## License
 
