@@ -56,6 +56,12 @@ void loop() {
     }
   }
 
-  provider.handleDownload();
-  delay(20);
+  delay(7); // ok: 10 bad: 5 (from davidkreidler)
+  if (lib.getConnected()) {
+    provider.handleDownload();
+    delay(20);
+  } else {
+    esp_sleep_enable_timer_wakeup(1000 * 1000);
+    esp_light_sleep_start();
+  }
 }
