@@ -119,11 +119,20 @@ void NimBLELibraryWrapper::init() {
     // Helps with iPhone connection issues (copy/paste)
     _data->pNimBLEAdvertising->setMinPreferred(0x06);
     _data->pNimBLEAdvertising->setMaxPreferred(0x12);
+
+    // Reduce power consumption by advertising every 1s
+    _data->pNimBLEAdvertising->setMinInterval(1600); // 1s
+    _data->pNimBLEAdvertising->setMaxInterval(1600); // 1s
 }
 
 void NimBLELibraryWrapper::createServer() {
     _data->pBLEServer = NimBLEDevice::createServer();
     _data->pBLEServer->setCallbacks(_data);
+}
+
+bool NimBLELibraryWrapper::getConnected() {
+    if (_data->pBLEServer->getConnectedCount() > 0) return true;
+    else return false;
 }
 
 bool NimBLELibraryWrapper::createService(const char* uuid) {
