@@ -14,6 +14,13 @@ static int measurementIntervalMs = 1000;
 static int64_t lastBatteryLevelUpdateMs = 0;
 static int batteryLevelUpdateIntervalMs = 60000;
 
+/* Delay  in ms before going to light sleep. This allows phones to still connect
+ * to the gadge once light sleep cylce is finished. If the connection is not reliable, try to
+ * increase the delay to e.g 15ms.
+ * Tests from davidkreidler: good: 10; bad: 5
+ */
+static const uint16_t preSleepDelayMs = 7;
+
 void setup() {
   Serial.begin(115200);
   delay(1000); // Wait for Serial monitor to start
@@ -56,12 +63,16 @@ void loop() {
     }
   }
 
-  delay(7); // ok: 10 bad: 5 (from davidkreidler)
+
   if (lib.getConnected()) {
     provider.handleDownload();
     delay(20);
-  } else {
-    esp_sleep_enable_timer_wakeup(1000 * 1000);
-    esp_light_sleep_start();
+    return;
   }
+
+  delay(preSleepDelayMs);
+  uint64_t timeToSlepepUs = (measurementIntervalMs - preSleepDelayMs) * 1000;
+  esp_sleep_enable_timer_wakeup(timeToSlepepUs);
+  esp_light_sleep_start();
+
 }

@@ -60,7 +60,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
                               const char* characteristicUuid,
                               Permission permission) override;
     bool startService(const char* uuid) override;
-    bool getConneted();
+    bool getConnected();
     void setAdvertisingData(const std::string& data) override;
     void startAdvertising() override;
     void stopAdvertising() override;
