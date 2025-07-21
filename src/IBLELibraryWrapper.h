@@ -32,6 +32,7 @@
 #define _I_BLE_LIBRARY_WRAPPER_H_
 
 #include "IProviderCallbacks.h"
+#include <functional>
 #include <string>
 
 const char* const GADGET_NAME = "S";
@@ -67,9 +68,23 @@ static const char* const SCD_SERVICE_UUID =
     "00007000-b38d-4985-720e-0f993a68ee41";
 static const char* const SCD_FRC_REQUEST_UUID =
     "00007004-b38d-4985-720e-0f993a68ee41";
+static const char* const SCD_REQUEST_UUID_MEASUREMENT_INTERVAL =
+    "00007005-b38d-4985-720e-0f993a68ee41";
+static const char* const SCD_REQUEST_UUID_TEMPERATURE_OFFSET =
+    "00007006-b38d-4985-720e-0f993a68ee41";
+static const char* const SCD_REQUEST_UUID_ALTITUDE_SETTING =
+    "00007007-b38d-4985-720e-0f993a68ee41";
+static const char* const SCD_REQUEST_UUID_ASC_STATUS =
+    "00007008-b38d-4985-720e-0f993a68ee41";
+static const char* const SCD_REQUEST_UUID_ASC_INTERVAL =
+    "00007009-b38d-4985-720e-0f993a68ee41";
+static const char* const SCD_REQUEST_UUID_ASC_INITIAL_INTERVAL =
+    "00007010-b38d-4985-720e-0f993a68ee41";
+static const char* const SCD_REQUEST_UUID_ASC_TARGET =
+    "00007011-b38d-4985-720e-0f993a68ee41";
 
 static const unsigned int MAX_NUMBER_OF_SERVICES = 4;
-static const unsigned int MAX_NUMBER_OF_CHARACTERISTICS = 12;
+static const unsigned int MAX_NUMBER_OF_CHARACTERISTICS = 16;
 
 enum Permission {
     READWRITE_PERMISSION,
@@ -101,6 +116,9 @@ class IBLELibraryWrapper {
     virtual bool characteristicNotify(const char* uuid) = 0;
     virtual void
     setProviderCallbacks(IProviderCallbacks* providerCallbacks) = 0;
+    virtual void
+    registerCallback(const char* characteristicUuid,
+                     std::function<void(std::string)> callbackFunction) = 0;
 };
 
 #endif /* _I_BLE_LIBRARY_WRAPPER_H_ */

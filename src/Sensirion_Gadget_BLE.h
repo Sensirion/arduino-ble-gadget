@@ -33,6 +33,8 @@
 
 #include "Arduino.h"
 #include "DataProvider.h"
+#include "SCDDataProvider.h"
+#include "SCD4xDataProvider.h"
 #include "NimBLELibraryWrapper.h"
 
 #endif /* _SENSIRION_GADGET_BLE_H_ */

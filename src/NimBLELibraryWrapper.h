@@ -33,6 +33,8 @@
 
 #include "IBLELibraryWrapper.h"
 #include <NimBLECharacteristic.h>
+#include <functional>
+#include <string>
 
 struct WrapperPrivateData;
 
@@ -71,6 +73,7 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
     std::string characteristicGetValue(const char* uuid) override;
     bool characteristicNotify(const char* uuid) override;
     void setProviderCallbacks(IProviderCallbacks* providerCallbacks) override;
+    void registerCallback(const char* characteristicUuid, std::function<void(std::string)> callbackFunction);
 
   private:
     void _deinit();
