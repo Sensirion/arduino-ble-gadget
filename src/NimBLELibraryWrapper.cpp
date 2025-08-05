@@ -4,8 +4,8 @@
 
 uint NimBLELibraryWrapper::_numberOfInstances = 0;
 
-struct WrapperPrivateData: public BLECharacteristicCallbacks,
-                           BLEServerCallbacks {
+struct WrapperPrivateData: public NimBLECharacteristicCallbacks,
+                           NimBLEServerCallbacks {
     NimBLEAdvertising* pNimBLEAdvertising;
     bool BLEDeviceRunning = false;
 
@@ -16,71 +16,68 @@ struct WrapperPrivateData: public BLECharacteristicCallbacks,
         nullptr};
 
     // BLEServerCallbacks
-    void onConnect(BLEServer* serverInst);
-    void onDisconnect(BLEServer* serverInst);
+    void onConnect(NimBLEServer* pServer, NimBLEConnInfo& connInfo);
+    void onDisconnect(NimBLEServer* pServer, NimBLEConnInfo& connInfo, int reason);
 
     // BLECharacteristicCallbacks
-    void onWrite(BLECharacteristic* characteristic);
-    void onSubscribe(NimBLECharacteristic* pCharacteristic,
-                     ble_gap_conn_desc* desc, uint16_t subValue);
+    void onWrite(NimBLECharacteristic* pCharacteristic, NimBLEConnInfo& connInfo);
+    void onSubscribe(NimBLECharacteristic* pCharacteristic, NimBLEConnInfo& connInfo, uint16_t subValue);
 
     // DataProvider Callbacks
     IProviderCallbacks* providerCallbacks = nullptr;
 };
 
-void WrapperPrivateData::onConnect(NimBLEServer* serverInst) {
+void WrapperPrivateData::onConnect(NimBLEServer* pServer, NimBLEConnInfo& connInfo) {
     if (providerCallbacks != nullptr) {
         providerCallbacks->onConnectionEvent();
     }
 }
 
-void WrapperPrivateData::onDisconnect(BLEServer* serverInst) {
+void WrapperPrivateData::onDisconnect(NimBLEServer* pServer, NimBLEConnInfo& connInfo, int reason) {
     if (providerCallbacks != nullptr) {
         providerCallbacks->onConnectionEvent();
     }
 }
 
-void WrapperPrivateData::onSubscribe(NimBLECharacteristic* pCharacteristic,
-                                     ble_gap_conn_desc* desc,
-                                     uint16_t subValue) {
+void WrapperPrivateData::onSubscribe(NimBLECharacteristic* pCharacteristic, NimBLEConnInfo& connInfo, uint16_t subValue) {
     if ((providerCallbacks != nullptr) && (subValue == 1)) {
         providerCallbacks->onDownloadRequest();
     }
 }
 
-void WrapperPrivateData::onWrite(BLECharacteristic* characteristic) {
+void WrapperPrivateData::onWrite(NimBLECharacteristic* pCharacteristic, NimBLEConnInfo& connInfo) {
     if (providerCallbacks == nullptr) {
         return;
     }
 
-    if (characteristic->getUUID().toString().compare(
+    if (pCharacteristic->getUUID().toString().compare(
             SAMPLE_HISTORY_INTERVAL_UUID) == 0) {
-        std::string value = characteristic->getValue();
+        std::string value = pCharacteristic->getValue();
         uint32_t sampleIntervalMs =
             value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
         providerCallbacks->onHistoryIntervalChange(sampleIntervalMs);
-    } else if (characteristic->getUUID().toString().compare(WIFI_SSID_UUID) ==
+    } else if (pCharacteristic->getUUID().toString().compare(WIFI_SSID_UUID) ==
                0) {
-        providerCallbacks->onWifiSsidChange(characteristic->getValue());
-    } else if (characteristic->getUUID().toString().compare(WIFI_PWD_UUID) ==
+        providerCallbacks->onWifiSsidChange(pCharacteristic->getValue());
+    } else if (pCharacteristic->getUUID().toString().compare(WIFI_PWD_UUID) ==
                0) {
-        providerCallbacks->onWifiPasswordChange(characteristic->getValue());
-    } else if (characteristic->getUUID().toString().compare(
+        providerCallbacks->onWifiPasswordChange(pCharacteristic->getValue());
+    } else if (pCharacteristic->getUUID().toString().compare(
                    SCD_FRC_REQUEST_UUID) == 0) {
-        std::string value = characteristic->getValue();
+        std::string value = pCharacteristic->getValue();
         // co2 level is encoded in lower two bytes, little endian
         // the first two bytes are obfuscation and can be ignored
         uint16_t referenceCO2Level = value[2] | (value[3] << 8);
         providerCallbacks->onFRCRequest(referenceCO2Level);
-    } else if (characteristic->getUUID().toString().compare(
+    } else if (pCharacteristic->getUUID().toString().compare(
                    REQUESTED_SAMPLES_UUID) == 0) {
-        std::string value = characteristic->getValue();
+        std::string value = pCharacteristic->getValue();
         uint32_t nr_of_samples =
             value[0] | (value[1] << 8) | (value[2] << 16) | (value[3] << 24);
         providerCallbacks->onNrOfSamplesRequest(nr_of_samples);
-    } else if (characteristic->getUUID().toString().compare(
+    } else if (pCharacteristic->getUUID().toString().compare(
                    ALT_DEVICE_NAME_UUID) == 0) {
-        providerCallbacks->onAltDeviceNameChange(characteristic->getValue());
+        providerCallbacks->onAltDeviceNameChange(pCharacteristic->getValue());
     }
 }
 
@@ -116,10 +113,7 @@ void NimBLELibraryWrapper::init() {
     _data->BLEDeviceRunning = true;
 
     _data->pNimBLEAdvertising = NimBLEDevice::getAdvertising();
-    // Helps with iPhone connection issues (copy/paste)
-    _data->pNimBLEAdvertising->setMinPreferred(0x06);
-    _data->pNimBLEAdvertising->setMaxPreferred(0x12);
-
+    
     // Reduce power consumption by advertising every 1s
     _data->pNimBLEAdvertising->setMinInterval(1600); // 1s
     _data->pNimBLEAdvertising->setMaxInterval(1600); // 1s
@@ -128,6 +122,8 @@ void NimBLELibraryWrapper::init() {
 void NimBLELibraryWrapper::createServer() {
     _data->pBLEServer = NimBLEDevice::createServer();
     _data->pBLEServer->setCallbacks(_data);
+    // Restart adverisement after disconnect
+    _data->pBLEServer->advertiseOnDisconnect(true);
 }
 
 bool NimBLELibraryWrapper::getConnected() {
@@ -243,7 +239,7 @@ bool NimBLELibraryWrapper::characteristicNotify(const char* uuid) {
     if (nullptr == pCharacteristic) {
         return false;
     }
-    pCharacteristic->notify(true);
+    pCharacteristic->indicate();
     return true;
 }
 
