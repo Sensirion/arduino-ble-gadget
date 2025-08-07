@@ -1,13 +1,13 @@
 #include "DataProvider.h"
 
 void DataProvider::onWifiSsidChange(std::string ssid) {
-    if (_pWifiLibaray != nullptr) {
-        _pWifiLibaray->setSsid(ssid.c_str());
+    if (_pWifiLibrary != nullptr) {
+        _pWifiLibrary->setSsid(ssid.c_str());
     }
 }
 
 void DataProvider::onWifiPasswordChange(std::string pwd) {
-    if (_pWifiLibaray != nullptr) {
-        _pWifiLibaray->connect(pwd.c_str());
+    if (_pWifiLibrary != nullptr) {
+        _pWifiLibrary->connect(pwd.c_str());
     }
 }
