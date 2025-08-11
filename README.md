@@ -83,7 +83,20 @@ In order to use this library in your project, add it to the `lib_deps` in your `
 
 Follow the [instructions in this tutorial](documents/03-SCD30_BLE_Gadget_with_Screen_Tutorial.md).
 
-## How to allow larger programs on your ESP32
+## Repository Contents
+
+- **/examples** - Example sketches for the library (.ino). Run these from the Arduino IDE.
+- **/src** - Source files for the library (.cpp, .h).
+- **library.properties** - General library properties for the Arduino package manager.
+
+## Sensirion BLE Specification
+
+If you want to retrieve the data of your new BLE gadget using your own device or application, you will need more information on the protocol used by this library.  
+Everything you will need should be available on the dedicated [page](https://sensirion.github.io/ble-services/)
+
+## Frequent issues
+
+### How to allow larger programs on your ESP32
 
 When your code gets larger, you might run out of space on your board or run into weird behaviour caused by overflowing/colliding memory.
 This problem can be solved by modifying the size of the partition allocated to your program.
@@ -97,16 +110,17 @@ On Arduino IDE, the partion scheme can easily be modified using `Tools` → `Par
 On PlatformIO, on the other hand the process involves creating a `.csv` configuration file.
 We will not cover it in details here but you can refer to [the following link](https://docs.platformio.org/en/latest/platforms/espressif32.html#partition-tables) for support.
 
-## Repository Contents
-
-- **/examples** - Example sketches for the library (.ino). Run these from the Arduino IDE.
-- **/src** - Source files for the library (.cpp, .h).
-- **library.properties** - General library properties for the Arduino package manager.
-
-## Sensirion BLE Specification
-
-If you want to retrieve the data of your new BLE gadget using your own device or application, you will need more information on the protocol used by this library.  
-Everything you will need should be available on the dedicated [page](https://sensirion.github.io/ble-services/)
+### Failing I2C communication
+It is possible that the default definition of the pins of your board is incorrect in the underlying library.
+To mitigate this issue, it is possible to explicitely declare the pins used for I2C communication.
+For example, in the case of the `ESP32-C6-DevKitC-1` the pins 6 and 7  of the PCB should be used. In this case it is enough to replace the line:
+```
+Wire.begin();
+```
+by
+```
+Wire.begin(6,7);
+```
 
 ## License
 
