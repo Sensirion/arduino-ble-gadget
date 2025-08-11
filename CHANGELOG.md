@@ -6,10 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
-- Upgraded nimBLE dependency to 2.3.
+
+## [1.5.0] - 2025-08-11
+
+### Changed
+- Upgraded nimBLE dependency to 2.3.4
+### Fixed
 - Fixed SEN66 example filename typo.
 
 ## [1.4.1] - 2024-12-18
+
+### Fixed
 - Fix version of dependency to sensirion-core to >= 0.5.1
 
 ## [1.4.0] - 2024-12-12
