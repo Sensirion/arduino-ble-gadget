@@ -43,11 +43,6 @@ class NimBLELibraryWrapper: public IBLELibraryWrapper {
      * @note To allow the client, e.g. MyAmbience app, to discover a change in
      * the provided services switch Bluetooth off and then on again on your
      * client device.
-     *
-     * @param enableWifiSettings if true, wifi settings service will be
-     * initialized
-     * @param enableBatteryService if true, battery level service will be
-     * initilized
      */
     NimBLELibraryWrapper();
     NimBLELibraryWrapper(const NimBLELibraryWrapper& other) = delete;

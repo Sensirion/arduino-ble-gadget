@@ -52,7 +52,7 @@ class DataProvider: public IProviderCallbacks {
           _enableBatteryService(enableBatteryService),
           _enableFRCService(enableFRCService), _enableAltDeviceName(false),
           _sampleConfig(sampleConfigSelector.at(dataType)),
-          _pWifiLibaray(pWifiLibrary){};
+          _pWifiLibrary(pWifiLibrary){};
     ~DataProvider(){};
     void begin();
     void writeValueToCurrentSample(float value, SignalType signalType);
@@ -103,7 +103,7 @@ class DataProvider: public IProviderCallbacks {
     uint64_t _historyIntervalMilliSeconds = 600000; // = 10 minutes
     uint64_t _latestHistoryTimeStamp = 0;
     uint64_t _latestHistoryTimeStampAtDownloadStart = 0;
-    IWifiLibraryWrapper* _pWifiLibaray;
+    IWifiLibraryWrapper* _pWifiLibrary;
 
     // ProviderCallbacks
     void onHistoryIntervalChange(int interval) override;
